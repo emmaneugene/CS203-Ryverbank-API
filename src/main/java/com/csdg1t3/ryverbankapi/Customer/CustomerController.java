@@ -25,8 +25,8 @@ public class CustomerController {
      * @return list of all books
      */
     @GetMapping("/customers")
-    public List<Book> getCustomers(){
-        return bookService.listCustomers();
+    public List<Customer> getCustomers(){
+        return customerService.listCustomers();
     }
 
     /**
@@ -78,6 +78,6 @@ public class CustomerController {
      */
     @DeleteMapping("/books/{id}")
     public void deleteCustomer(@PathVariable Long id){
-        if(bookService.deleteCustomer(id) == 0) throw new CustomerNotFoundException(id);
+        if(customerService.deleteCustomer(id) == 0) throw new CustomerNotFoundException(id);
     }
 }

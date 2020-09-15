@@ -41,7 +41,7 @@ public class CustomerClient{
      * @param newBook
      * @return
      */
-    public Book addCustomer(final String URI, final Customer newCustomer) {
+    public Customer addCustomer(final String URI, final Customer newCustomer) {
         final Customer toReturn = template.postForObject(URI, newCustomer, Customer.class);
         return toReturn;
     }
