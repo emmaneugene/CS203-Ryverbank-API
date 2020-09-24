@@ -1,4 +1,4 @@
-package com.csdg1t3.ryverbankapi.Customer;
+package com.csdg1t3.ryverbankapi.customer;
 
 public class Customer {
     private long custID;
