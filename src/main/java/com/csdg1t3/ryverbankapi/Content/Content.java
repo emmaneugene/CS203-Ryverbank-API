@@ -8,7 +8,7 @@ public class Content {
     private String conLink;
     private Boolean conApproval;
 
-    public Content(Long conID, String conTitle, String conSummary, String conLink, Boolean conApproval) {
+    public Content(Long conID, String conTitle, String conSummary, String conBody, String conLink, Boolean conApproval) {
         this.conID = conID;
         this.conTitle = conTitle;
         this.conSummary = conSummary;
@@ -38,7 +38,7 @@ public class Content {
     }
 
     public Boolean getContentApproval() {
-        retun conApproval;
+        return conApproval;
     }
 
     public void setContentID(Long conID) {
