@@ -78,6 +78,6 @@ public class ContentController {
      */
     @DeleteMapping("/content/{id}")
     public void deleteContent(@PathVariable Long id) {
-        if (contentService.deleteContent(id) == 0) throw ContentNotFoundException(id);
+        if (contentService.deleteContent(id) == 0) throw new ContentNotFoundException(id);
     }
 }

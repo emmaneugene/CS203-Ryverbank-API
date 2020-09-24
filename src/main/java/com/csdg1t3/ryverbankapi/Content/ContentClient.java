@@ -1,6 +1,5 @@
 package com.csdg1t3.ryverbankapi.Content;
 
-import java.beans.BeanProperty;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
