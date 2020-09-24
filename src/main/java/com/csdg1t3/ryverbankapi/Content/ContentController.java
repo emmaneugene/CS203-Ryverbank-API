@@ -1,4 +1,4 @@
-package comm.csg1t3.ryverbankapi.Content;
+package com.csdg1t3.ryverbankapi.Content;
 
 import java.util.List;
 
