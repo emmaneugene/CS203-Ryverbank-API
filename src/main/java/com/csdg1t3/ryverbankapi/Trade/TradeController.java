@@ -1,4 +1,4 @@
-package com.csdg1t3.ryverbankapi.Trade;
+package com.csdg1t3.ryverbankapi.trade;
 
 public class TradeController {
     

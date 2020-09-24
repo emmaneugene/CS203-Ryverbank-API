@@ -1,4 +1,4 @@
-package com.csdg1t3.ryverbankapi.Stock;
+package com.csdg1t3.ryverbankapi.stock;
 
 public class Stock {
     private String symbol;

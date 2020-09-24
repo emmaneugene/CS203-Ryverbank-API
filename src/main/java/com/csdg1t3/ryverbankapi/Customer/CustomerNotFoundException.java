@@ -1,4 +1,4 @@
-package com.csdg1t3.ryverbankapi.Customer;
+package com.csdg1t3.ryverbankapi.customer;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
