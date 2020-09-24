@@ -7,6 +7,11 @@ public interface ContentService {
     Content getContent(Long id);
 
     /**
+     * Return newly added content
+     */
+    Content addContent(Content content);
+
+    /**
      * Return updated content
      * @param id
      * @param content

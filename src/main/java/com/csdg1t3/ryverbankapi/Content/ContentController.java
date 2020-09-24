@@ -1,4 +1,4 @@
-package comm.csg1t3.ryverbankapi.Content;
+package com.csdg1t3.ryverbankapi.Content;
 
 import java.util.List;
 
@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import jdk.javadoc.internal.doclets.formats.html.Contents;
 
 @RestController
 public class ContentController {
@@ -80,6 +78,6 @@ public class ContentController {
      */
     @DeleteMapping("/content/{id}")
     public void deleteContent(@PathVariable Long id) {
-        if (contentService.deleteCustomer(id) == 0) throw ContentNotFoundException(id);
+        if (contentService.deleteContent(id) == 0) throw ContentNotFoundException(id);
     }
 }
