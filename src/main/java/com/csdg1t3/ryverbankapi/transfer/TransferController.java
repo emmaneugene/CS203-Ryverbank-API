@@ -1,6 +1,7 @@
 package com.csdg1t3.ryverbankapi.transfer;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +14,45 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TransferController {
-    private TransferRepository tranfers;
-    // private AccountRepository accounts;
+    private TransferService transferService;
 
-    public TransferController(TransferRepository transfers /*, AccountRepository accounts*/) {
-        this.transfers = transfers;
-        // this.accounts = accounts;
+    public TransferController (TransferService ts) {
+        this.transferService = ts;
     }
 
-    @PostMapping("/accountURL/{account_id}/transactions")
-    public Transfer addTransfer(@Valid @PathVariable (value = "account_id") Long accountId, @Valid @RequestBody Transfer trasnfer) {
+    /**
+     * List all transfer in the system
+     * @return list of all transfer
+     */
+    @GetMapping("/transfer")
+    public List<Transfer> getTransfer() {
+        return transferService.listTransfer();
+    }
+
+    /**
+     * Search for transfer with the given id
+     * If there isn't one with the given id, throw TransferNotFoundException
+     * @param id
+     * @return transfer with the given id
+     */
+    @GetMapping("/transfer/{id}")
+    public Transfer getTransfer(@PathVariable Long id) {
+        Transfer transfer = transferService.getTransfer(id);
         
+        // Handle "transfer not found" error using appropriate http codes
+        if (transfer == null) throw new TransferNotFoundException(id);
+        return transferService.getTransfer(id);
+    }
+
+    /**
+     * Add new transfer with POST request to "/transfer"
+     * Note the use of @RequestBody
+     * @param transfer
+     * @return list of all transfer
+     */
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/transfer")
+    public Transfer addTransfer(@RequestBody Transfer transfer) {
+        return transferService.addTransfer(transfer);
     }
 }

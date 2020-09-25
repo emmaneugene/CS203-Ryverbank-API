@@ -1,4 +1,4 @@
-package com.csdg1t3.ryverbankapi.content;
+package com.csdg1t3.ryverbankapi.transfer;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class ContentClient{
+public class TransferClient{
     private RestTemplate template;
 
     @Autowired
@@ -28,20 +28,20 @@ public class ContentClient{
     * @param id
     * @return
     */
-    public Content getContent(final String URI, final long id) {
-        final Content content = template.getForObject(URI + "/" + id, Content.class);
-        return content;
+    public Transfer getTransfer(final String URI, final long id) {
+        final Transfer transfer = template.getForObject(URI + "/" + id, Transfer.class);
+        return transfer;
     }
 
     /**
-     * Add new content
+     * Add new transfer
      * 
      * @param URI
      * @param newContent
      * @return
      */
-    public Content addContent(final String URI, final Content newContent) {
-        final Content toReturn = template.postForObject(URI, newContent, Content.class);
+    public Transfer addTransfer(final String URI, final Transfer newTransfer) {
+        final Transfer toReturn = template.postForObject(URI, newTransfer, Transfer.class);
         return toReturn;
     }
 }
