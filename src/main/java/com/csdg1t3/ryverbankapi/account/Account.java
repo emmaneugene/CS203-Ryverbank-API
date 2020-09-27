@@ -8,7 +8,8 @@ import com.csdg1t3.ryverbankapi.customer.*;
 
 /**
  * POJO that stores the details of a customer's bank account
- * Account is linked to Customer in a many-to-one relationship, and each account must have a customer
+ * Account is linked to Customer in a many-to-one relationship, and each account must have a 
+ * customer
  * 
  */
 @Entity

@@ -22,9 +22,19 @@ public class AccountController {
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
+
     @GetMapping("/accounts")
     public List<Account> getAccounts() {
         return accountService.listAccounts();
+    }
+
+    @GetMapping("/accounts/{id}")
+    public Account getAccount(@PathVariable Long id) {
+        Account account = accountService.getAccount(id);
+        if (account == null) {
+            throw new AccountNotFoundException(id);
+        }
+        return account;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
