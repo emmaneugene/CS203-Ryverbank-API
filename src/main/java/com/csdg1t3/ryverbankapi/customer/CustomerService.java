@@ -2,30 +2,14 @@ package com.csdg1t3.ryverbankapi.customer;
 
 import java.util.List;
 
-
+/**
+ * Convenience interface for a service class allowing from CustomerController to read and modify 
+ * data from CustomerRepository
+ */
 public interface CustomerService {
     List<Customer> listCustomers();
     Customer getCustomer(Long id);
-
-    /**
-     * Return the newly added customer
-     */
     Customer addCustomer(Customer customer);
-
-    /**
-     * Return the updated customer
-     * @param id
-     * @param customer
-     * @return
-     */
     Customer updateCustomer(Long id, Customer customer);
-
-    /**
-     * Return status of the delete
-     * If it's 1: the customer has been removed
-     * If it's 0: the customer does not exist
-     * @param id
-     * @return 
-     */
-    int deleteCustomer(Long id);
+    void deleteCustomer(Long id);
 }
