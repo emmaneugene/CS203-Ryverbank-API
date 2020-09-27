@@ -29,6 +29,8 @@ public class Customer {
     @JsonIgnore
     private List<Account> accounts;
 
+    public Customer() {}
+
     public Customer(long id, String name, String nric, int phoneNo, String address,String username, 
     String password,String authorities, boolean status) {
         this.id = id;

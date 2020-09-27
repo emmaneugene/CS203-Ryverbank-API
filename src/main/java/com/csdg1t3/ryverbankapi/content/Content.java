@@ -17,6 +17,8 @@ public class Content {
     private String link;
     private Boolean approval;
 
+    public Content() {}
+
     public Content(Long Id, String title, String summary, String body, String link,
     Boolean approval) {
         this.Id = Id;
