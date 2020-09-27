@@ -1,26 +1,37 @@
 package com.csdg1t3.ryverbankapi.account;
 
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import com.csdg1t3.ryverbankapi.customer.*;
+
 /**
  * Account
  */
+@Entity
 public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long customerId;
+    @ManyToOne
+    @JoinColumn(name = "cust_id", nullable = false)
+    private Customer customer;
     private Double balance;
     private Double availableBalance;
 
     public Account() {}
 
-    public Account(Long id, Long customerId, Double balance, Double availableBalance) {
+    public Account(Long id, Customer customer, Double balance, Double availableBalance) {
         this.id = id;
-        this.customerId = customerId;
+        this.customer = customer;
         this.balance = balance;
         this.availableBalance = availableBalance;
     }
 
     public Long getId() { return id; }
 
-    public Long getCustomerId() { return customerId; }
+    public Customer getCustomer() { return customer; }
 
     public Double getBalance() { return balance; }
 
@@ -32,6 +43,11 @@ public class Account {
 
     public void setAvailableBalance(Double availableBalance) {
         this.availableBalance = availableBalance;
-    } 
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Account[id=%d, customerId=%d, balance=%lf, availableBalance=%lf]", id, customer.getCustomerID(), balance, availableBalance);
+    }
     
 }
