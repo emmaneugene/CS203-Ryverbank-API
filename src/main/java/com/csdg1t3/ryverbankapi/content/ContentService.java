@@ -20,11 +20,8 @@ public interface ContentService {
     Content updateContent(Long id, Content content);
 
     /**
-     * Return status of the delete
-     * If 1, the content has been removed
-     * If 0, the content does not exist
+     * Delete content. If unsuccessful, throws exception
      * @param id
-     * @return
      */
-    int deleteContent(Long id);
+    void deleteContent(Long id);
 }

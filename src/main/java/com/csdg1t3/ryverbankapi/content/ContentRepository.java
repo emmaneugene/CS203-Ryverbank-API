@@ -2,15 +2,18 @@ package com.csdg1t3.ryverbankapi.content;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * Data access object
+ * Allows us to store content as persisten data through JPA.
+ * Methods do not have to by explicitly declared, supports save(), findBy() and delete()
  */
-public interface ContentRepository {
-    Long save(Content content);
-    int update(Content content);
-    int deleteByID(Long id);
+@Repository
+public interface ContentRepository extends JpaRepository<Content, Long>{
     List<Content> findAll();
-
-    Optional<Content> findByID(Long id);
+    Optional<Content> findById(Long id);
+    Content save(Content content);
+    void deleteById(Long id);
+       
 }
