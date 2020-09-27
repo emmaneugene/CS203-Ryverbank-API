@@ -2,13 +2,17 @@ package com.csdg1t3.ryverbankapi.transfer;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * Data access object
+ * Allows us to store transfers as pesistent data through JPA.
+ * Methods to not have to be explicitly declared, supports save(), findBy(), and delete() operations
  */
-public interface TransferRepository {
-    Long save(Transfer transfer);
+@Repository
+public interface TransferRepository extends JpaRepository<Transfer, Long>{
+    Transfer save(Transfer transfer);
     List<Transfer> findAll();
 
-    Optional<Transfer> findByID(Long id);
+    Optional<Transfer> findById(Long id);
 }
