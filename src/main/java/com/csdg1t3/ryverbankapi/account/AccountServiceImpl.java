@@ -35,15 +35,14 @@ public class AccountServiceImpl implements AccountService {
         if (result.isPresent()) {
             return null;
         } 
-
         return accounts.save(newAccount);
     }
 
     @Override
-    public Account updateAccount(Long id, Account newAccount) {
+    public Account updateAccount(Long id, Account account) {
         Optional<Account> result = accounts.findById(id);
         if (result.isPresent()) {
-            return accounts.save(newAccount);
+            return accounts.save(account);
         }
         return null;
     }
