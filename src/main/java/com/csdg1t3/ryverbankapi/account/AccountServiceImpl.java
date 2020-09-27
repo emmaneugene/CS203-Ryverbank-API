@@ -31,10 +31,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account addAccount(Account newAccount) {
-        Optional<Account> result = accounts.findById(newAccount.getId());
-        if (result.isPresent()) {
-            return null;
-        } 
         return accounts.save(newAccount);
     }
 

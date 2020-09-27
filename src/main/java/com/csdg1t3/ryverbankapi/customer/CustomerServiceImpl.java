@@ -31,10 +31,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer addCustomer(Customer newCustomer) {
-        Optional<Customer> result = customers.findById(newCustomer.getId());
-        if (result.isPresent()) {
-            return null;
-        }
         return customers.save(newCustomer);
     }
 
