@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller that manages HTTP GET/POST/PUT/DELETE requests by calling methods in CustomerService
+ */
 @RestController
 public class CustomerController {
     private CustomerService customerService;
 
-    public CustomerController(CustomerService cs){
+    public CustomerController(CustomerService cs) {
         this.customerService = cs;
     }
 
@@ -25,7 +28,7 @@ public class CustomerController {
      * @return list of all books
      */
     @GetMapping("/customers")
-    public List<Customer> getCustomers(){
+    public List<Customer> getCustomers() {
         return customerService.listCustomers();
     }
 
@@ -36,7 +39,7 @@ public class CustomerController {
      * @return customer with the given id
      */
     @GetMapping("/customers/{id}")
-    public Customer getCustomer(@PathVariable Long id){
+    public Customer getCustomer(@PathVariable Long id) {
         Customer customer = customerService.getCustomer(id);
 
         // Need to handle "customer not found" error using proper HTTP status code
@@ -53,7 +56,7 @@ public class CustomerController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/customers")
-    public Customer addCustomer(@RequestBody Customer customer){
+    public Customer addCustomer(@RequestBody Customer customer) {
         return customerService.addCustomer(customer);
     }
 
@@ -64,10 +67,11 @@ public class CustomerController {
      * @return the updated, or newly added book
      */
     @PutMapping("/customers/{id}")
-    public Customer updateCustomer(@PathVariable Long id, @RequestBody Customer newCustomerInfo){
-        Customer customer = customerService.updateCustomer(id, newCustomerInfo);
-        if(customer == null) throw new CustomerNotFoundException(id);
-        
+    public Customer updateCustomer(@PathVariable Long id, @RequestBody Customer newCustomer) {
+        Customer customer = customerService.updateCustomer(id, newCustomer);
+        if(customer == null) {
+            throw new CustomerNotFoundException(id);
+        }
         return customer;
     }
 
@@ -76,8 +80,12 @@ public class CustomerController {
      * If there is no customer with the given "id", throw a CustomerNotFoundException
      * @param id
      */
-    @DeleteMapping("/books/{id}")
-    public void deleteCustomer(@PathVariable Long id){
-        if(customerService.deleteCustomer(id) == 0) throw new CustomerNotFoundException(id);
+    @DeleteMapping("/customers/{id}")
+    public void deleteCustomer(@PathVariable Long id) {
+        try {
+            customerService.deleteCustomer(id);
+        } catch (Exception e) {
+            throw new CustomerNotFoundException(id);
+        }
     }
 }
