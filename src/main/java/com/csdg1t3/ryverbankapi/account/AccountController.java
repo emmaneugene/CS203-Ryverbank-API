@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * AccountController
+ * Controller that manages HTTP GET/POST/PUT/DELETE requests by calling methods in AccountService
  */
 @RestController
 public class AccountController {
@@ -40,9 +40,7 @@ public class AccountController {
         if (account == null) {
             throw new AccountNotFoundException(id);
         }
-
-        accountService.updateAccountBalance(id, newAccount.getBalance());
-        return accountService.updateAccountAvailableBalance(id, newAccount.getAvailableBalance());
+        return accountService.updateAccount(id, newAccount);
     }
 
     @DeleteMapping("/accounts/{id}")

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 /**
- * AccountServiceImpl
+ * Concrete class that implements AccountService
  */
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -26,7 +26,6 @@ public class AccountServiceImpl implements AccountService {
         if (result.isPresent()) {
             return result.get();
         }
-
         return null;
     }
 
@@ -41,28 +40,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updateAccountBalance(Long id, Double balance) {
+    public Account updateAccount(Long id, Account newAccount) {
         Optional<Account> result = accounts.findById(id);
         if (result.isPresent()) {
-            Account account = result.get();
-            account.setBalance(balance);
-            return accounts.save(account);
+            return accounts.save(newAccount);
         }
-
         return null;
     }
 
-    @Override
-    public Account updateAccountAvailableBalance(Long id, Double balance) {
-        Optional<Account> result = accounts.findById(id);
-        if (result.isPresent()) {
-            Account account = result.get();
-            account.setAvailableBalance(balance);
-            return accounts.save(account);
-        }
-
-        return null;
-    }
 
     @Override
     public void deleteAccount(Long id) {

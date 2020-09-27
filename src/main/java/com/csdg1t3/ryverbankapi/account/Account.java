@@ -7,7 +7,9 @@ import javax.validation.constraints.*;
 import com.csdg1t3.ryverbankapi.customer.*;
 
 /**
- * Account
+ * POJO that stores the details of a customer's bank account
+ * Account is linked to Customer in a many-to-one relationship, and each account must have a customer
+ * 
  */
 @Entity
 public class Account {
@@ -47,7 +49,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return String.format("Account[id=%d, customerId=%d, balance=%lf, availableBalance=%lf]", id, customer.getCustomerID(), balance, availableBalance);
+        return String.format("Account[id=%d, customerId=%d, balance=%lf, availableBalance=%lf]", id, customer.getId(), balance, availableBalance);
     }
     
 }

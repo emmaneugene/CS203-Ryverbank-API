@@ -2,13 +2,13 @@ package com.csdg1t3.ryverbankapi.account;
 
 import java.util.List;
 /**
- * AccountService
+ * Convenience interface for a service class allowing from AccountController to read and modify data
+ * from AccountRepository
  */
 public interface AccountService {
     List<Account> listAccounts();
     Account getAccount(Long id);
     Account addAccount(Account account);
-    Account updateAccountBalance(Long id, Double balance);
-    Account updateAccountAvailableBalance(Long id, Double balance);
+    Account updateAccount(Long id, Account account);
     void deleteAccount(Long id); 
 }
