@@ -1,17 +1,33 @@
 package com.csdg1t3.ryverbankapi.transfer;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import com.csdg1t3.ryverbankapi.account.*;
+
+/**
+ * POJO that stores the details of a bank transfer between two accounts.
+ * As such, the class has to store 2 Account classes, sender and receiver
+ */
+@Entity
 public class Transfer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long senderId;
-    private long receiverId;
+    @ManyToOne
+    @JoinColumn(name = "sender_id", nullable = false)
+    private Account sender;
+    @ManyToOne
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private Account receiver;
     private double amount;
 
-    // @ManyToOne
-    // @JoinColumn(name = "account_id", nullable = false)
-    public Transfer(long id, long senderId, long receiverId, double amount) {
+    public Transfer() {}
+
+    public Transfer(long id, Account sender, Account receiver, double amount) {
         this.id = id;
-        this.senderId = senderId;
-        this.receiverId = receiverId;
+        this.sender = sender;
+        this.receiver = receiver;
         this.amount = amount;
     }
 
@@ -19,12 +35,12 @@ public class Transfer {
         return id;
     }
 
-    public long getSenderId() {
-        return senderId;
+    public Account getSender() {
+        return sender;
     }
 
-    public long getReceiverId() {
-        return receiverId;
+    public Account getReceiver() {
+        return receiver;
     }
 
     public double getAmount() {
@@ -35,12 +51,12 @@ public class Transfer {
         this.id = id;
     }
 
-    public void setSenderId(long senderId) {
-        this.senderId = senderId;
+    public void setSender(Account sender) {
+        this.sender = sender;
     }
 
-    public void setReceiverId(long receiverId) {
-        this.receiverId = receiverId;
+    public void setReceiver(Account receiver) {
+        this.receiver = receiver;
     }
 
     public void setAmount(double amount) {

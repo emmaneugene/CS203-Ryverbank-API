@@ -1,67 +1,79 @@
 package com.csdg1t3.ryverbankapi.content;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+/**
+ * POJO that stores content shared on the online banking app
+ */
+@Entity
 public class Content {
-    private Long conID;
-    private String conTitle;
-    private String conSummary;
-    private String conBody;
-    private String conLink;
-    private Boolean conApproval;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+    private String title;
+    private String summary;
+    private String body;
+    private String link;
+    private Boolean approval;
 
-    public Content(Long conID, String conTitle, String conSummary, String conBody, String conLink, Boolean conApproval) {
-        this.conID = conID;
-        this.conTitle = conTitle;
-        this.conSummary = conSummary;
-        this.conBody = conBody;
-        this.conLink = conLink;
-        this.conApproval = conApproval;
+    public Content() {}
+
+    public Content(Long Id, String title, String summary, String body, String link,
+    Boolean approval) {
+        this.Id = Id;
+        this.title = title;
+        this.summary = summary;
+        this.body = body;
+        this.link = link;
+        this.approval = approval;
     }
 
-    public Long getContentID() {
-        return conID;
+    public Long getId() {
+        return Id;
     }
 
-    public String getContentTitle() {
-        return conTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public String getContentSummary() {
-        return conSummary;
+    public String getSummary() {
+        return summary;
     }
 
-    public String getContentBody() {
-        return conBody;
+    public String getBody() {
+        return body;
     }
 
-    public String getContentLink() {
-        return conLink;
+    public String getLink() {
+        return link;
     }
 
-    public Boolean getContentApproval() {
-        return conApproval;
+    public Boolean getApproval() {
+        return approval;
     }
 
-    public void setContentID(Long conID) {
-        this.conID = conID;
+    public void setId(Long Id) {
+        this.Id = Id;
     }
 
-    public void setContentTitle(String conTitle) {
-        this.conTitle = conTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setContentSummary(String conSummary) {
-        this.conSummary = conSummary;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
-    public void setContentBody(String conBody) {
-        this.conBody = conBody;
+    public void setBody(String body) {
+        this.body = body;
     }
 
-    public void setContentLink(String conLink) {
-        this.conLink = conLink;
+    public void setLink(String link) {
+        this.link = link;
     }
 
-    public void setContentApproval(Boolean conApproval) {
-        this.conApproval = conApproval;
+    public void setApproval(Boolean approval) {
+        this.approval = approval;
     }
 }

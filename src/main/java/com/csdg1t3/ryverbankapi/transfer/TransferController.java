@@ -3,11 +3,9 @@ package com.csdg1t3.ryverbankapi.transfer;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,9 +22,9 @@ public class TransferController {
      * List all transfer in the system
      * @return list of all transfer
      */
-    @GetMapping("/transfer")
-    public List<Transfer> getTransfer() {
-        return transferService.listTransfer();
+    @GetMapping("/transfers")
+    public List<Transfer> getTransfers() {
+        return transferService.listTransfers();
     }
 
     /**
@@ -35,7 +33,7 @@ public class TransferController {
      * @param id
      * @return transfer with the given id
      */
-    @GetMapping("/transfer/{id}")
+    @GetMapping("/transfers/{id}")
     public Transfer getTransfer(@PathVariable Long id) {
         Transfer transfer = transferService.getTransfer(id);
         
@@ -51,7 +49,7 @@ public class TransferController {
      * @return list of all transfer
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/transfer")
+    @PostMapping("/transfers")
     public Transfer addTransfer(@RequestBody Transfer transfer) {
         return transferService.addTransfer(transfer);
     }

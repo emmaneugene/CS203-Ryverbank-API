@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller that manages HTTP GET/POST/PUT/DELETE requests by calling methods in ContentService
+ */
 @RestController
 public class ContentController {
     private ContentService contentService;
@@ -40,7 +43,9 @@ public class ContentController {
         Content content = contentService.getContent(id);
         
         // Handle "content not found" error using appropriate http codes
-        if (content == null) throw new ContentNotFoundException(id);
+        if (content == null) {
+            throw new ContentNotFoundException(id);
+        } 
         return contentService.getContent(id);
     }
 
@@ -66,8 +71,9 @@ public class ContentController {
     public Content updateContent(@PathVariable Long id, @RequestBody Content newContentInfo) {
         Content content = contentService.updateContent(id, newContentInfo);
 
-        if (content == null) throw new ContentNotFoundException(id);
-
+        if (content == null) {
+            throw new ContentNotFoundException(id);
+        }
         return content;
     }
 
@@ -78,6 +84,10 @@ public class ContentController {
      */
     @DeleteMapping("/content/{id}")
     public void deleteContent(@PathVariable Long id) {
-        if (contentService.deleteContent(id) == 0) throw new ContentNotFoundException(id);
+        try {
+            contentService.deleteContent(id);
+        } catch (Exception e) {
+            throw new ContentNotFoundException(id);
+        }
     }
 }

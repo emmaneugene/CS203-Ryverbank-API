@@ -1,96 +1,117 @@
 package com.csdg1t3.ryverbankapi.customer;
 
+import java.util.List;
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.csdg1t3.ryverbankapi.account.*;
+
+/**
+ * POJO that stores the details of a given customer in the bank. 
+ * Customer is linked to Account in a one-to-many relationship. Each customer must have at least one
+ * account
+ */
 public class Customer {
-    private long custID;
-    private String custName;
-    private String custNric;
-    private int custPhoneNo;
-    private String custAddress;
-    private String custUsername;
-    private String custPassword;
-    private String custAuthorities;
-    private boolean custStatus;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String name;
+    private String nric;
+    private int phoneNo;
+    private String address;
+    private String username;
+    private String password;
+    private String authorities;
+    private boolean status;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Account> accounts;
 
-    public Customer(long custID, String custName, String custNric, int custPhoneNo, String custAddress,String custUsername, String custPassword,String custAuthorities, boolean custStatus){
-        this.custID = custID;
-        this.custName = custName;
-        this.custNric = custNric;
-        this.custPhoneNo = custPhoneNo;
-        this.custAddress = custAddress;
-        this.custUsername = custUsername;
-        this.custPassword = custPassword;
-        this.custAuthorities = custAuthorities;
-        this.custStatus = custStatus;
+    public Customer() {}
+
+    public Customer(long id, String name, String nric, int phoneNo, String address,String username, 
+    String password,String authorities, boolean status) {
+        this.id = id;
+        this.name = name;
+        this.nric = nric;
+        this.phoneNo = phoneNo;
+        this.address = address;
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+        this.status = status;
     }
 
-    public long getCustomerID(){
-        return custID;
+    public long getId() {
+        return id;
     }
 
-    public String getCustomerName(){
-        return custName;
+    public String getName() {
+        return name;
     }
 
-    public String getCustomerNric(){
-        return custNric;
+    public String getNric() {
+        return nric;
     }
 
-    public int getCustomerPhoneNo(){
-        return custPhoneNo;
+    public int getPhoneNo() {
+        return phoneNo;
     }
 
-    public String getCustomerAddress(){
-        return custAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public String getCustomerUsername(){
-        return custUsername;
+    public String getUsername() {
+        return username;
     }
 
-    public String getCustomerPassword(){
-        return custPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public String getCustomerAuthorities(){
-        return custAuthorities;
+    public String getAuthorities() {
+        return authorities;
     }
 
-    public boolean getCustomerStatus(){
-        return custStatus;
+    public boolean getStatus() {
+        return status;
     }
 
-    public void setCustomerID(long custID){
-        this.custID = custID;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setCustomerName(String custName){
-        this.custName = custName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setCustomerNric(String custNric){
-        this.custNric = custNric;
+    public void setNric(String nric) {
+        this.nric = nric;
     }
-    public void setCustomerPhoneNo(int custPhoneNo){
-        this.custPhoneNo = custPhoneNo;
-    }
-
-    public void setCustomerAddress(String custAddress){
-        this.custAddress =  custAddress;
+    public void setPhoneNo(int phoneNo) {
+        this.phoneNo = phoneNo;
     }
 
-    public void setCustomerUsername(String custUsername){
-        this.custUsername = custUsername;
+    public void setAddress(String address) {
+        this.address =  address;
     }
 
-    public void setCustomerPassword(String custPassword){
-        this.custPassword = custPassword;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setCustomerAuthorities(String custAuthorities){
-        this.custAuthorities = custAuthorities;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public void setCustomerStatus(boolean custStatus){
-        this.custStatus = custStatus;
+    public void setAuthorities(String authorities) {
+        this.authorities = authorities;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }
