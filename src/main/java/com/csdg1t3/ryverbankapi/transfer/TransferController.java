@@ -2,6 +2,10 @@ package com.csdg1t3.ryverbankapi.transfer;
 
 import java.util.List;
 
+import com.csdg1t3.ryverbankapi.account.Account;
+import com.csdg1t3.ryverbankapi.account.AccountService;
+import com.csdg1t3.ryverbankapi.account.AccountNotFoundException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,18 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TransferController {
     private TransferService transferService;
+    private AccountService accountService;
 
-    public TransferController (TransferService ts) {
+    public TransferController (TransferService ts, 
+                                AccountService as) {
         this.transferService = ts;
+        this.accountService = as;
     }
 
     /**
      * List all transfer in the system
      * @return list of all transfer
      */
-    @GetMapping("/transfers")
-    public List<Transfer> getTransfers() {
-        return transferService.listTransfers();
+    @GetMapping("/account/{account_id}/transfers")
+    public List<Transfer> getTransfers(@PathVariable (value = "account_id") Long accountId) {
+        Account account = accountService.getAccount(accountId);
+        if (account == null) {
+            throw new AccountNotFoundException(accountId);
+        }
+        return transferService.listTransfers(accountId);
     }
 
     /**
@@ -33,13 +44,14 @@ public class TransferController {
      * @param id
      * @return transfer with the given id
      */
-    @GetMapping("/transfers/{id}")
-    public Transfer getTransfer(@PathVariable Long id) {
-        Transfer transfer = transferService.getTransfer(id);
+    @GetMapping("/account/{account_id}/transfers/{transfer_id}")
+    public Transfer getTransfer(@PathVariable (value = "account_id") Long accountId, 
+                                @PathVariable (value = "transfer_id") Long transferId) {
+        Transfer transfer = transferService.getTransfer(transferId, accountId);
         
         // Handle "transfer not found" error using appropriate http codes
-        if (transfer == null) throw new TransferNotFoundException(id);
-        return transferService.getTransfer(id);
+        if (transfer == null) throw new TransferNotFoundException(transferId);
+        return transfer;
     }
 
     /**

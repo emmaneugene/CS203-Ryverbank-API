@@ -17,13 +17,20 @@ public class TransferServiceImpl implements TransferService{
     }
 
     @Override
-    public List<Transfer> listTransfers() {
-        return transfers.findAll();
+    public List<Transfer> listTransfers(Long accountId) {
+        List<Transfer> allTransfersForAccountId = transfers.findByReceiverId(accountId);
+        allTransfersForAccountId.addAll(transfers.findBySenderId(accountId));
+        return allTransfersForAccountId;
     }
 
     @Override
-    public Transfer getTransfer(Long id) {
-        Optional<Transfer> result = transfers.findById(id);
+    public Transfer getTransfer(Long transferId, Long accountId) {
+        Optional<Transfer> result = transfers.findByIdAndSenderId(transferId, accountId);
+        if (result.isPresent()) {
+            return result.get();
+        }
+
+        result = transfers.findByIdAndReceiverId(transferId, accountId);
         if (result.isPresent()) {
             return result.get();
         }
