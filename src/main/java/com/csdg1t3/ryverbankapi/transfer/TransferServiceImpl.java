@@ -5,12 +5,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.csdg1t3.ryverbankapi.account.Account;
+import com.csdg1t3.ryverbankapi.account.AccountRepository;
+
 /**
  * Concrete class that implements TransferService
  */
 @Service
 public class TransferServiceImpl implements TransferService{
     private TransferRepository transfers;
+    private AccountRepository accounts;
     
     public TransferServiceImpl(TransferRepository transfers) {
         this.transfers = transfers;
@@ -39,6 +43,21 @@ public class TransferServiceImpl implements TransferService{
 
     @Override
     public Transfer addTransfer(Transfer transfer) {
+        Account sender = transfer.getSender();
+        Account receiver = transfer.getReceiver();
+        double amount = transfer.getAmount();
+
+        if (sender.getAvailableBalance() < amount) {
+            throw new TransferNotAllowedException(transfer.getId());
+        }
+
+        sender.setAvailableBalance(sender.getAvailableBalance() - amount);
+        sender.setBalance(sender.getBalance() - amount);
+        receiver.setAvailableBalance(receiver.getAvailableBalance() + amount);
+        receiver.setBalance(receiver.getBalance() - amount);
+        accounts.save(sender);
+        accounts.save(receiver);
+        
         return transfers.save(transfer);
     }
 }

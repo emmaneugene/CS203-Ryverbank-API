@@ -13,6 +13,7 @@ import com.csdg1t3.ryverbankapi.account.*;
  * Customer is linked to Account in a one-to-many relationship. Each customer must have at least one
  * account
  */
+@Entity
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
