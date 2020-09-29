@@ -47,6 +47,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .headers().disable(); // Disable the security headers, as we do not return HTML in our service
     }
 
+<<<<<<< Updated upstream
+=======
+    /**
+     * @Bean annotation is used to declare a PasswordEncoder bean in the Spring application context. 
+     * Any calls to encoder() will then be intercepted to return the bean instance.
+     */
+>>>>>>> Stashed changes
     @Bean
     public BCryptPasswordEncoder encoder() {
         // auto-generate a random salt internally

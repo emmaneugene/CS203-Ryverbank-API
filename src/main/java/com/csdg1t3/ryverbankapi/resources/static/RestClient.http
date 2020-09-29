@@ -1,0 +1,75 @@
+GET http://localhost:8080/customer
+Accept: application/json
+
+###
+GET http://localhost:8080/customer/1
+
+###
+DELETE http://localhost:8080/customer/2
+
+
+###
+POST http://localhost:8080/customer
+Content-Type: application/json
+Authorization: Basic admin goodpassword
+
+{
+    "id": "1"
+    "name": "John Tan Xiao Ming"
+    "nric": "S6834702H"
+    "phoneNo": "93410569"
+    "address": "99 Bedok North Ave 4 #13-233 S460099"
+    "username": "johntxm"
+    "password": "john1isbest!"
+    "authorities": "USER"
+    "status": "active"
+}
+###
+POST http://localhost:8080/customer
+Content-Type: application/json
+
+{
+    "id": "1"
+    "name": "John Tan Xiao Ming"
+    "nric": "S6834702H"
+    "phoneNo": "93410569"
+    "address": "99 Bedok North Ave 4 #13-233 S460099"
+    "username": "johntxm"
+    "password": "johnpwsucks!1!"
+    "authorities": "USER"
+    "status": "active"
+}
+###
+PUT http://localhost:8080/customer/1
+Content-Type: application/json
+# Wrong username
+Authorization: Basic dt goodpassword
+
+{
+    "username": "jphntxm"
+}
+
+###
+GET http://localhost:8080/users
+
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+    "username": "donta",
+    "password": "goodpassword",
+    "authorities": "ADMIN"
+}
+
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+Authorization: Basic admin goodpassword
+
+{
+    "username": "gooduser",
+    "password": "goodpassword",
+    "authorities": "USER"
+}
+
