@@ -34,7 +34,7 @@ public class User implements UserDetails{
     // This defines what role the user is: admin or user
     private String authorities;
 
-    public User(){}
+    public User() {}
 
     public User(String username, String password, String authorities){
         this.username = username;
@@ -67,7 +67,7 @@ public class User implements UserDetails{
            Customer c = (Customer) this;
            return c.getStatus();
         }
-        return false;
+        return true;
     }
 
     @Override
