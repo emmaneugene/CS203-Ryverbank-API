@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import csdg1t3.ryverbankapi.Customer;
+import com.csdg1t3.ryverbankapi.customer.*;
 
 @Component
 public class RestTemplateClient {
@@ -23,7 +23,7 @@ public class RestTemplateClient {
                 .build();
     }
     /**
-     * Get a book with given id
+     * Get a customer with given id
      * 
      * @param URI
      * @param id
@@ -41,7 +41,7 @@ public class RestTemplateClient {
      * @param newCustomer
      * @return
      */
-    public Customer addBook(final String URI, final Book newCustomer) {
+    public Customer addCustomer(final String URI, final Customer newCustomer) {
         final Customer returned = template.postForObject(URI, newCustomer, Customer.class);
         
         return returned;
