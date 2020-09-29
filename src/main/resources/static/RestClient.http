@@ -14,7 +14,7 @@ Content-Type: application/json
 //Authorization: Basic admin goodpassword
 
 {
-    "id": "1",
+    "id": "4",
     "name": "John Tan Xiao Ming",
     "nric": "S6834702H",
     "phoneNo": "93410569",
