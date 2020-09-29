@@ -31,10 +31,10 @@ public class RyverbankApiApplication {
         BCryptPasswordEncoder encoder = ctx.getBean(BCryptPasswordEncoder.class);
         System.out.println("[Add user]: " + users.save(new User("admin", encoder.encode("goodpassword"), "ADMIN")).getUsername());
 
-        RestTemplateClient client = ctx.getBean(RestTemplateClient.class);
-        Customer cx = new Customer(3, "Carmmie Yip", "S9984627E", 93749560, "66 Lorong 4 Toa Payoh #01-317 S310066", "potatoes", "p0tatoes<3", "USER", true);
-        System.out.println("[Add customer]: " + client.addCustomer("http://localhost:8080/customers", cx));
+        // RestTemplateClient client = ctx.getBean(RestTemplateClient.class);
+        // Customer cx = new Customer(3, "Carmmie Yip", "S9984627E", 93749560, "66 Lorong 4 Toa Payoh #01-317 S310066", "potatoes", "p0tatoes<3", "USER", true);
+        // System.out.println("[Add customer]: " + client.addCustomer("http://localhost:8080/customers", cx));
 
-        System.out.println("[Get customer]: " + client.getCustomerEntity("http://localhost:8080/customers", 1L).getBody().getName());
+        // System.out.println("[Get customer]: " + client.getCustomerEntity("http://localhost:8080/customers", 1L).getBody().getName());
     }
 }
