@@ -30,7 +30,7 @@ public class User implements UserDetails{
     private String password;
 
     @NotNull(message = "Authorities should not be null")
-    // We define two roles/authorities: ROLE_USER or ROLE_ADMIN
+    // This defines what role the user is: admin or user
     private String authorities;
 
     public User(String username, String password, String authorities){
@@ -47,5 +47,20 @@ public class User implements UserDetails{
         return Arrays.asList(new SimpleGrantedAuthority(authorities));
     }
 
-    
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
