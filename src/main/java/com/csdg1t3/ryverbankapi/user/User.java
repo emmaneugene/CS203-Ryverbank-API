@@ -14,8 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import lombok.*;
-
+@Entity
 public class User implements UserDetails{
     private static final long serialVersionUID = 1L;
 
@@ -39,6 +38,17 @@ public class User implements UserDetails{
         this.authorities = authorities;
     }
 
+    public String getUsername(){
+        return username;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
+    }
 
     /* Return a collection of authorities (roles) granted to the user.
     */

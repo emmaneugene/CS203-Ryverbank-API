@@ -17,8 +17,9 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
-    @JoinColumn(name = "cust_id", nullable = false)
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
     private Double balance;
     private Double availableBalance;

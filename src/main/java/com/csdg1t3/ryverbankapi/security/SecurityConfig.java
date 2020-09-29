@@ -33,15 +33,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .httpBasic()
             .and()
         .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/content", "/stock", "/trade", "/transfer", "/account", "/customer").hasAnyRole("ADMIN", "USER") // Anyone can view
-            .antMatchers(HttpMethod.POST, "/content", "/stock", "/trade", "/account", "/customer").hasRole("ADMIN")
+          
             .antMatchers(HttpMethod.POST, "/transfer").hasAnyRole("ADMIN", "USER")
-            .antMatchers(HttpMethod.PUT, "/content", "/stock", "/trade", "/account", "/customer").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/transfer").hasAnyRole("ADMIN", "USER")
-            .antMatchers(HttpMethod.DELETE, "/content", "/stock", "/trade", "/transfer", "/account", "/customer").hasRole("ADMIN")
+            // .antMatchers(HttpMethod.DELETE, "/content", "/stock", "/trade", "/transfer", "/account", "/customer").hasRole("ADMIN")
+            // .antMatchers(HttpMethod.GET, "/content", "/stock", "/trade", "/transfer", "/account", "/customer").hasAnyRole("ADMIN", "USER") // Anyone can view
+            //.antMatchers(HttpMethod.POST, "/content", "/stock", "/trade", "/account", "/customer").hasRole("ADMIN")
+            //.antMatchers(HttpMethod.PUT, "/content", "/stock", "/trade", "/account", "/customer").hasRole("ADMIN")
+
             .and()
         .csrf().disable() // CSRF protection is needed only for browser based attacks
         .formLogin().disable()
         .headers().disable(); // Disable the security headers, as we do not return HTML in our service
+    }
+
+    @Bean
+    public BCryptPasswordEncoder encoder() {
+        // auto-generate a random salt internally
+        return new BCryptPasswordEncoder();
     }
 }
