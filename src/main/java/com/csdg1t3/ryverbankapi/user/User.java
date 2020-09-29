@@ -14,6 +14,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.csdg1t3.ryverbankapi.customer.*;
+
 @Entity
 public class User implements UserDetails{
     private static final long serialVersionUID = 1L;
@@ -31,6 +33,8 @@ public class User implements UserDetails{
     @NotNull(message = "Authorities should not be null")
     // This defines what role the user is: admin or user
     private String authorities;
+
+    public User(){}
 
     public User(String username, String password, String authorities){
         this.username = username;
@@ -59,9 +63,13 @@ public class User implements UserDetails{
 
     @Override
     public boolean isAccountNonExpired() {
-       // if()
-        return true;
+        if( this instanceof Customer){
+           Customer c = (Customer) this;
+           return c.getStatus();
+        }
+        return false;
     }
+
     @Override
     public boolean isAccountNonLocked() {
         return true;

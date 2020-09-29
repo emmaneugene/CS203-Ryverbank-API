@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.csdg1t3.ryverbankapi.user.*;
 /**
  * Controller that manages HTTP GET/POST/PUT/DELETE requests by calling methods in CustomerService
  */

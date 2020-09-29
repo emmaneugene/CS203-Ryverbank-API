@@ -1,17 +1,17 @@
-GET http://localhost:8080/customer
+GET http://localhost:8080/customers
 Accept: application/json
 
 ###
-GET http://localhost:8080/customer/1
+GET http://localhost:8080/customers/1
 
 ###
-DELETE http://localhost:8080/customer/2
+DELETE http://localhost:8080/customers/2
 
 
 ###
-POST http://localhost:8080/customer
+POST http://localhost:8080/customers
 Content-Type: application/json
-Authorization: Basic admin goodpassword
+//Authorization: Basic admin goodpassword
 
 {
     "id": "1",
@@ -22,10 +22,10 @@ Authorization: Basic admin goodpassword
     "username": "johntxm",
     "password": "john1isbest!",
     "authorities": "USER",
-    "status": "active"
+    "status": "true"
 }
 ###
-POST http://localhost:8080/customer
+POST http://localhost:8080/customers
 Content-Type: application/json
 
 {
@@ -37,10 +37,10 @@ Content-Type: application/json
     "username": "johntxm",
     "password": "johnpwsucks!1!",
     "authorities": "USER",
-    "status": "active"
+    "status": "true"
 }
 ###
-PUT http://localhost:8080/customer/1
+PUT http://localhost:8080/customers/1
 Content-Type: application/json
 # Wrong username
 Authorization: Basic dt goodpassword
