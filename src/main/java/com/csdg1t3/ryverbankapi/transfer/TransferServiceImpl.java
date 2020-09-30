@@ -16,8 +16,9 @@ public class TransferServiceImpl implements TransferService{
     private TransferRepository transfers;
     private AccountRepository accounts;
     
-    public TransferServiceImpl(TransferRepository transfers) {
+    public TransferServiceImpl(TransferRepository transfers, AccountRepository accounts) {
         this.transfers = transfers;
+        this.accounts = accounts;
     }
 
     @Override

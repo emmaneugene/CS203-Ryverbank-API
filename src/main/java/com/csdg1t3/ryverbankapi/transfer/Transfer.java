@@ -2,6 +2,7 @@ package com.csdg1t3.ryverbankapi.transfer;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.csdg1t3.ryverbankapi.account.*;
 
@@ -16,18 +17,24 @@ public class Transfer {
     private long id;
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
+    @JsonIgnore
     private Account sender;
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
+    @JsonIgnore
     private Account receiver;
-    private double amount;
+    private Long from;
+    private Long to;
+    private Double amount;
 
     public Transfer() {}
 
-    public Transfer(long id, Account sender, Account receiver, double amount) {
+    public Transfer(long id, Account sender, Account receiver, Long from, Long to, Double amount) {
         this.id = id;
         this.sender = sender;
         this.receiver = receiver;
+        this.from = from;
+        this.to = to;
         this.amount = amount;
     }
 
@@ -43,11 +50,19 @@ public class Transfer {
         return receiver;
     }
 
-    public double getAmount() {
+    public Long getFrom() {
+        return from;
+    }
+
+    public Long getTo() {
+        return to;
+    }
+
+    public Double getAmount() {
         return amount;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -59,7 +74,15 @@ public class Transfer {
         this.receiver = receiver;
     }
 
-    public void setAmount(double amount) {
+    public void setFrom(Long from) {
+        this.from = from;
+    }
+
+    public void setTo(Long to) {
+        this.to = to;
+    }
+
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
