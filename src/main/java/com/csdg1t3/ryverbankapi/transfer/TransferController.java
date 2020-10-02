@@ -63,6 +63,18 @@ public class TransferController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/transfers")
     public Transfer addTransfer(@RequestBody Transfer transfer) {
+        Account senderAccount = accountService.getAccount(transfer.getFrom());
+        if (senderAccount == null) {
+            throw new AccountNotFoundException(transfer.getFrom());
+        }
+        transfer.setSender(senderAccount);
+
+        Account receiverAccount = accountService.getAccount(transfer.getTo());
+        if (receiverAccount == null) {
+            throw new AccountNotFoundException(transfer.getTo());
+        }
+        transfer.setReceiver(receiverAccount);
+
         return transferService.addTransfer(transfer);
     }
 }

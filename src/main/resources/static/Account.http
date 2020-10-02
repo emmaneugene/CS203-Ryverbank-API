@@ -1,0 +1,45 @@
+# Account
+GET http://localhost:8080/accounts
+
+###
+
+GET http://localhost:8080/accounts/1
+
+###
+
+POST http://localhost:8080/accounts
+Content-Type: application/json
+
+{
+    "customerId": 1,
+    "balance": 10000,
+    "availableBalance": 5000
+}
+
+###
+
+POST http://localhost:8080/accounts
+Content-Type: application/json
+
+{
+    "customerId": 2,
+    "balance": 200,
+    "availableBalance": 200
+}
+
+###
+
+PUT http://localhost:8080/accounts/1
+Content-Type: application/json
+
+{
+    "customerId": 1,
+    "balance": 20000,
+    "availableBalance": 5000
+}
+
+###
+
+DELETE http://localhost:8080/accounts/3
+
+###

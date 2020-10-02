@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class TransferNotFoundException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    TransferNotFoundException(Long id) {
-        super("Unable to find transfer " + id);
+    public TransferNotFoundException(Long id) {
+        super("Could not find transfer " + id);
     }
 }

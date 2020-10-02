@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class TransferNotAllowedException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    TransferNotAllowedException(Long id) {
+    public TransferNotAllowedException(Long id) {
         super("Unable to find transfer due to lack of funds " + id);
     }
 }

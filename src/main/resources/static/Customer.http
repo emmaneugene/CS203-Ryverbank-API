@@ -1,0 +1,58 @@
+# Customer 
+
+GET http://localhost:8080/customers
+
+###
+GET http://localhost:8080/customers/1
+
+###
+POST http://localhost:8080/customers
+Content-Type: application/json
+
+{
+    "name": "Tony Stark",
+    "nric": "S1234567A",
+    "phoneNo": 91234567,
+    "address": "Malibu",
+    "username": "tstark",
+    "password": "gooduser",
+    "authorities": "ROLE_USER",
+    "status": true
+}
+
+###
+
+POST http://localhost:8080/customers
+Content-Type: application/json
+
+{
+    "name": "John Cena",
+    "nric": "S7654321B",
+    "phoneNo": 98897007,
+    "address": "WWE hall of fame",
+    "username": "cantseeme",
+    "password": "password",
+    "authorities": "ROLE_USER",
+    "status": true
+}
+
+###
+
+PUT http://localhost:8080/customers/2
+Content-Type: application/json
+
+{
+    "name": "Charlize Theron",
+    "nric": "S2424567C",
+    "phoneNo": 90087654,
+    "address": "Singapore Management University",
+    "username": "theronlyone",
+    "password": "donttryguessingthis",
+    "authorities": "ROLE_USER",
+    "status": true
+}
+###
+
+DELETE http://localhost:8080/customers/3
+
+###
