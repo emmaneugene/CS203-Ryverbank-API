@@ -1,6 +1,6 @@
 # Customer 
-
 GET http://localhost:8080/customers
+Authorization: Basic admin goodpassword
 
 ###
 GET http://localhost:8080/customers/1

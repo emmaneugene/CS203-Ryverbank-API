@@ -35,12 +35,13 @@ public class Account {
     private Long customerId;
 
     @NotNull(message = "balance should not be null")
-    @Size(min = 50000, max = 1000000000, message = "initial balance must be more than 50000")
+   // @Size(min = 50000, max = 1000000000, message = "initial balance must be more than 50000")
     private Double balance;
 
     @NotNull(message = "balance should not be null")
-    @Size(min = 50000, max = 1000000000, message = "initial available balance must be more than 50000")
+   // @Size(min = 50000, max = 1000000000, message = "initial available balance must be more than 50000")
     private Double availableBalance;
+   
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Transfer> sentTransfers;
@@ -58,6 +59,9 @@ public class Account {
         }
         this.cust = customer;
         this.customerId = customerId;
+        if(balance < 5000 || availableBalance < 5000 || balance != availableBalance){
+            throw new AccountNotValidException("Initial account balance must be more than 50000 and initial balance must match available balance");
+        }
         this.balance = balance;
         this.availableBalance = availableBalance;
         this.sentTransfers = sentTransfers;

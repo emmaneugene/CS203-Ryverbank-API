@@ -20,22 +20,22 @@ Authorization: Basic admin goodpassword
     "address": "99 Bedok North Ave 4 #13-233 S460099",
     "username": "johntxm",
     "password": "john1isbest!",
-    "authorities": "MANAGER,USER",
+    "authorities": "ROLE_MANAGER,ROLE_USER",
     "status": "true"
 }
 ###
 POST http://localhost:8080/customers
 Content-Type: application/json
+Authorization: Basic admin goodpassword
 
 {
-    "id": "1",
     "name": "John Tan Xiao Ming",
     "nric": "S6834702H",
     "phoneNo": "93410569",
     "address": "99 Bedok North Ave 4 #13-233 S460099",
     "username": "johntxm",
     "password": "johnpwsucks!1!",
-    "authorities": "USER",
+    "authorities": "ROLE_USER",
     "status": "true"
 }
 ###
