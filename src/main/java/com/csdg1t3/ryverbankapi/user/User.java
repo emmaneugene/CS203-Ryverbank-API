@@ -59,7 +59,7 @@ public class User implements UserDetails {
     @NotNull(message = "status should not be null")
     private boolean status;
     
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Account> accounts;
 
@@ -85,8 +85,8 @@ public class User implements UserDetails {
 
         //check if username is unique 
         // if(true){
-        //     throw new usernameNotValidException();
-        // }
+        //     throw new UserNotValidException();
+        // } -- shld check in control or smth, not here 
         this.username = username;
         this.password = password;
 

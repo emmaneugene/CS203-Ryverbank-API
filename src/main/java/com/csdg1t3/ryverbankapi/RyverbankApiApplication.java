@@ -31,9 +31,9 @@ public class RyverbankApiApplication {
 
         RestTemplateClient client = ctx.getBean(RestTemplateClient.class);
         User cx = new User(4, "Carmmie Yip", "S9984627E", 93749560, "66 Lorong 4 Toa Payoh #01-317 S310066", "potatoes", encoder.encode("p0tatoes<3"),  "ROLE_USER,ROLE_MANAGER", true);
-        System.out.println("[Add customer, manager]: " + client.addCustomer("http://localhost:8080/customers", cx));
+        System.out.println("[Add customer, manager]: " + client.addUser("http://localhost:8080/customers", cx));
 
-        System.out.println("[Get customer]: " + client.getCustomerEntity("http://localhost:8080/customers", 1L).getBody().getUsername());
+        System.out.println("[Get customer]: " + client.getUserEntity("http://localhost:8080/customers", 1L).getBody().getUsername());
 
     }
 }

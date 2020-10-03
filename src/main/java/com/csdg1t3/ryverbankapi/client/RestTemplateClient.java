@@ -23,36 +23,40 @@ public class RestTemplateClient {
                 .build();
     }
     /**
-     * Get a customer with given id
+     * Get a user with given id
      * 
      * @param URI
      * @param id
      * @return
      */
-    public User getCustomer(final String URI, final Long id) {
-        final User customer = template.getForObject(URI + "/" + id, User.class);
-        return customer;
+    public User getUser(final String URI, final Long id) {
+        final User user = template.getForObject(URI + "/" + id, User.class);
+        return user;
     }
 
     /**
-     * Add a new customer
+     * Add a new user
      * 
      * @param URI
-     * @param newCustomer
+     * @param newUser
      * @return
      */
-    public User addCustomer(final String URI, final User newCustomer) {
-        final User returned = template.postForObject(URI, newCustomer, User.class);
-        return returned;
+    public User addUser(final String URI, final User newUser) {
+       System.out.println("IM HERE ");
+    
+        System.out.println( template.postForObject(URI, newUser, User.class));
+
+        // final User returned = template.postForObject(URI, newUser, User.class);
+        return newUser;
     }
 
     /**
-     * Get a customer, but return a HTTP response entity.
+     * Get a user, but return a HTTP response entity.
      * @param URI
      * @param id
      * @return
      */
-    public ResponseEntity<User> getCustomerEntity(final String URI, final Long id){
+    public ResponseEntity<User> getUserEntity(final String URI, final Long id){
         System.out.println("String URI " + URI + " id " + id );
         return template.getForEntity(URI + "/{id}", User.class, Long.toString(id));
     }

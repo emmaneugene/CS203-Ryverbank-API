@@ -1,6 +1,5 @@
 GET http://localhost:8080/customers
-Authorization: Basic johntxm john1isbest!
-
+Authorization: Basic admin goodpassword
 
 ###
 GET http://localhost:8080/customers/1
@@ -8,7 +7,6 @@ GET http://localhost:8080/customers/1
 ###
 DELETE http://localhost:8080/customers/4
 Authorization: Basic admin goodpassword
-
 
 ###
 POST http://localhost:8080/customers
@@ -22,7 +20,7 @@ Authorization: Basic admin goodpassword
     "address": "99 Bedok North Ave 4 #13-233 S460099",
     "username": "johntxm",
     "password": "john1isbest!",
-    "authorities": "ROLE_USER,ROLE_MANAGER",
+    "authorities": "MANAGER,USER",
     "status": "true"
 }
 ###
@@ -48,19 +46,6 @@ Authorization: Basic dt goodpassword
 
 {
     "username": "jphntxm"
-}
-
-###
-GET http://localhost:8080/users
-
-###
-POST http://localhost:8080/users
-Content-Type: application/json
-
-{
-    "username": "potatoes",
-    "password": "goodpassword",
-    "authorities": "ADMIN"
 }
 
 ###

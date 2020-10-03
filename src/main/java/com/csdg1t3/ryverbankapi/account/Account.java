@@ -27,9 +27,9 @@ public class Account {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "cust_id", nullable = false)
     @JsonIgnore
-    private User customer;
+    private User cust;
 
     @NotNull(message = "customer should not be null")
     private Long customerId;
@@ -56,7 +56,7 @@ public class Account {
         if(!customer.getStringAuthorities().contains("ROLE_USER")){
             throw new UserNotValidException("Only customers can set up accounts");
         }
-        this.customer = customer;
+        this.cust = customer;
         this.customerId = customerId;
         this.balance = balance;
         this.availableBalance = availableBalance;
@@ -66,7 +66,7 @@ public class Account {
 
     public Long getId() { return id; }
 
-    public User getCustomer() { return customer; }
+    public User getCustomer() { return cust; }
 
     public Long getCustomerId() { return customerId; }
 
@@ -87,7 +87,7 @@ public class Account {
     }
 
     public void setCustomer(User customer) {
-        this.customer = customer;
+        this.cust = customer;
     }
 
     public void setCustomerId(Long customerId) {
@@ -95,7 +95,7 @@ public class Account {
     }
     @Override
     public String toString() {
-        return String.format("Account[id=%d, customerId=%d, balance=%lf, availableBalance=%lf]", id, customer.getId(), balance, availableBalance);
+        return String.format("Account[id=%d, customerId=%d, balance=%lf, availableBalance=%lf]", id, cust.getId(), balance, availableBalance);
     }
     
 }
