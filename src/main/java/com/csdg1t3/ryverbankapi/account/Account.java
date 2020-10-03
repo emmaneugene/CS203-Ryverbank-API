@@ -44,15 +44,15 @@ public class Account {
    
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Transfer> sentTransfers;
+    private List<Transfer> sentTransfers = new ArrayList<Transfer>();
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Transfer> receivedTransfers;
+    private List<Transfer> receivedTransfers = new ArrayList<Transfer>();
 
     public Account() {}
 
     public Account(Long id, User customer, Long customerId, Double balance, 
-    Double availableBalance, List<Transfer> sentTransfers, List<Transfer> receivedTransfers) {
+    Double availableBalance) {
         this.id = id;
         if(!customer.getStringAuthorities().contains("ROLE_USER")){
             throw new UserNotValidException("Only customers can set up accounts");
