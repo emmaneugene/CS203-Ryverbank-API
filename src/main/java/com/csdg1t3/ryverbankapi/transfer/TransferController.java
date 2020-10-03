@@ -29,7 +29,7 @@ public class TransferController {
      * List all transfer in the system
      * @return list of all transfer
      */
-    @GetMapping("/accounts/{account_id}/transfers")
+    @GetMapping("/accounts/{account_id}/transactions")
     public List<Transfer> getTransfers(@PathVariable (value = "account_id") Long accountId) {
         Account account = accountService.getAccount(accountId);
         if (account == null) {
@@ -44,7 +44,7 @@ public class TransferController {
      * @param id
      * @return transfer with the given id
      */
-    @GetMapping("/accounts/{account_id}/transfers/{transfer_id}")
+    @GetMapping("/accounts/{account_id}/transactions/{transfer_id}")
     public Transfer getTransfer(@PathVariable (value = "account_id") Long accountId, 
                                 @PathVariable (value = "transfer_id") Long transferId) {
         Transfer transfer = transferService.getTransfer(transferId, accountId);
@@ -61,7 +61,7 @@ public class TransferController {
      * @return list of all transfer
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/transfers")
+    @PostMapping("/transactions")
     public Transfer addTransfer(@RequestBody Transfer transfer) {
         Account senderAccount = accountService.getAccount(transfer.getFrom());
         if (senderAccount == null) {
