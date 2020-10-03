@@ -1,13 +1,13 @@
 # Transfer
 
-GET http://localhost:8080/accounts/1/transfers
+GET http://localhost:8080/accounts/1/transactions
 
 ###
 
-GET http://localhost:8080/accounts/1/transfers/1
+GET http://localhost:8080/accounts/1/transactions/1
 
 ###
-POST http://localhost:8080/transfers
+POST http://localhost:8080/transactions
 Content-Type: application/json
 
 {
