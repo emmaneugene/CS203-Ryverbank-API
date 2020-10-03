@@ -11,7 +11,7 @@ import com.csdg1t3.ryverbankapi.user.UserNotFoundException;
 import javax.validation.Valid;
 
 import java.util.List;
-import com.csdg1t3.ryverbankapi.customer.*;
+import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.transfer.*;
 
 /**
