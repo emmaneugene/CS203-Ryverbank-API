@@ -1,27 +1,28 @@
 GET http://localhost:8080/customers
-Accept: application/json
+Authorization: Basic johntxm john1isbest!
+
 
 ###
 GET http://localhost:8080/customers/1
 
 ###
-DELETE http://localhost:8080/customers/2
+DELETE http://localhost:8080/customers/4
+Authorization: Basic admin goodpassword
 
 
 ###
 POST http://localhost:8080/customers
 Content-Type: application/json
-//Authorization: Basic admin goodpassword
+Authorization: Basic admin goodpassword
 
 {
-    "id": "4",
     "name": "John Tan Xiao Ming",
     "nric": "S6834702H",
     "phoneNo": "93410569",
     "address": "99 Bedok North Ave 4 #13-233 S460099",
     "username": "johntxm",
     "password": "john1isbest!",
-    "authorities": "USER",
+    "authorities": "ROLE_USER,ROLE_MANAGER",
     "status": "true"
 }
 ###
@@ -63,7 +64,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/users
+POST http://localhost:8080/customers
 Content-Type: application/json
 Authorization: Basic admin goodpassword
 
@@ -72,3 +73,7 @@ Authorization: Basic admin goodpassword
     "password": "goodpassword",
     "authorities": "USER"
 }
+
+DELETE http://localhost:8080/customers/4
+Authorization: Basic admin goodpassword
+

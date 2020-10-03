@@ -1,6 +1,7 @@
 package com.csdg1t3.ryverbankapi.account;
 
 import java.util.List;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,12 +40,12 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/accounts")
-    public Account addBook(@RequestBody Account newAccount) {
+    public Account addAccount(@Valid @RequestBody Account newAccount) {
         return accountService.addAccount(newAccount);
     }
     
     @PutMapping("/accounts/{id}")
-    public Account updateAccount(@PathVariable Long id, @RequestBody Account newAccount) {
+    public Account updateAccount(@PathVariable Long id, @Valid @RequestBody Account newAccount) {
         Account account = accountService.getAccount(id);
 
         if (account == null) {

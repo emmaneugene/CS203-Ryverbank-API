@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.csdg1t3.ryverbankapi.user.*;
+
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -33,9 +35,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .httpBasic()
             .and()
         .authorizeRequests()
-          
-            .antMatchers(HttpMethod.POST, "/transfer").hasAnyRole("ADMIN", "USER")
-            .antMatchers(HttpMethod.PUT, "/transfer").hasAnyRole("ADMIN", "USER")
+            .antMatchers(HttpMethod.GET, "/customers", "/accounts").hasRole("MANAGER")
+            .antMatchers(HttpMethod.GET, "/customers/**", "/accounts/**").hasAnyRole("MANAGER", "USER")
+            .antMatchers(HttpMethod.PUT, "/customers/**", "/accounts/**").hasRole("MANAGER")
+            .antMatchers(HttpMethod.DELETE, "/customers/**","/accounts/**").hasRole("MANAGER")
+            .antMatchers(HttpMethod.POST, "/customers/**","/accounts/**").hasRole("MANAGER")
             // .antMatchers(HttpMethod.DELETE, "/content", "/stock", "/trade", "/transfer", "/account", "/customer").hasRole("ADMIN")
             // .antMatchers(HttpMethod.GET, "/content", "/stock", "/trade", "/transfer", "/account", "/customer").hasAnyRole("ADMIN", "USER") // Anyone can view
             //.antMatchers(HttpMethod.POST, "/content", "/stock", "/trade", "/account", "/customer").hasRole("ADMIN")

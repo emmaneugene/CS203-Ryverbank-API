@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.csdg1t3.ryverbankapi.customer.*;
+import com.csdg1t3.ryverbankapi.user.*;
 
 @Component
 public class RestTemplateClient {
@@ -29,8 +29,8 @@ public class RestTemplateClient {
      * @param id
      * @return
      */
-    public Customer getCustomer(final String URI, final Long id) {
-        final Customer customer = template.getForObject(URI + "/" + id, Customer.class);
+    public User getCustomer(final String URI, final Long id) {
+        final User customer = template.getForObject(URI + "/" + id, User.class);
         return customer;
     }
 
@@ -41,9 +41,8 @@ public class RestTemplateClient {
      * @param newCustomer
      * @return
      */
-    public Customer addCustomer(final String URI, final Customer newCustomer) {
-        final Customer returned = template.postForObject(URI, newCustomer, Customer.class);
-        
+    public User addCustomer(final String URI, final User newCustomer) {
+        final User returned = template.postForObject(URI, newCustomer, User.class);
         return returned;
     }
 
@@ -53,8 +52,9 @@ public class RestTemplateClient {
      * @param id
      * @return
      */
-    public ResponseEntity<Customer> getCustomerEntity(final String URI, final Long id){
-        return template.getForEntity(URI + "/{id}", Customer.class, Long.toString(id));
+    public ResponseEntity<User> getCustomerEntity(final String URI, final Long id){
+        System.out.println("String URI " + URI + " id " + id );
+        return template.getForEntity(URI + "/{id}", User.class, Long.toString(id));
     }
     
 }

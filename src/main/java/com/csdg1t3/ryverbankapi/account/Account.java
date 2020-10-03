@@ -4,7 +4,11 @@ package com.csdg1t3.ryverbankapi.account;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import com.csdg1t3.ryverbankapi.customer.*;
+import com.csdg1t3.ryverbankapi.user.*;
+import com.csdg1t3.ryverbankapi.user.UserNotFoundException;
+
+import javax.validation.Valid;
+
 
 /**
  * POJO that stores the details of a customer's bank account
@@ -20,14 +24,24 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @NotNull(message = "customer should not be null")
+    private User customer;
+
+    @NotNull(message = "balance should not be null")
+    @Size(min = 50000, max = 1000000000, message = "initial balance must be more than 50000")
     private Double balance;
+
+    @NotNull(message = "balance should not be null")
+    @Size(min = 50000, max = 1000000000, message = "initial available balance must be more than 50000")
     private Double availableBalance;
 
     public Account() {}
 
-    public Account(Long id, Customer customer, Double balance, Double availableBalance) {
+    public Account(Long id, User customer, Double balance, Double availableBalance) {
         this.id = id;
+        if(!customer.getStringAuthorities().contains("ROLE_USER")){
+            throw new UserNotValidException("Only customers can set up accounts");
+        }
         this.customer = customer;
         this.balance = balance;
         this.availableBalance = availableBalance;
@@ -35,7 +49,7 @@ public class Account {
 
     public Long getId() { return id; }
 
-    public Customer getCustomer() { return customer; }
+    public User getCustomer() { return customer; }
 
     public Double getBalance() { return balance; }
 
