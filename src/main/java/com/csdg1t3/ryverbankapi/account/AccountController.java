@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.csdg1t3.ryverbankapi.user.*;
 
 /**
@@ -34,6 +35,7 @@ public class AccountController {
         return accountService.listAccounts();
     }
 
+  // @PreAuthorize("isAuthenticated()")  
     @GetMapping("/accounts/{id}")
     public Account getAccount(@PathVariable Long id) {
         Account account = accountService.getAccount(id);

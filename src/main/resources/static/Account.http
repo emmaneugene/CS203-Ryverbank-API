@@ -4,12 +4,13 @@ Authorization: Basic admin goodpassword
 ###
 
 GET http://localhost:8080/accounts/1
-
+Authorization: Basic admin goodpassword
 ###
 
 POST http://localhost:8080/accounts
 Content-Type: application/json
 Authorization: Basic admin goodpassword
+
 {
     "customerId": 3,
     "balance": 10000,
