@@ -12,7 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransferRepository extends JpaRepository<Transfer, Long>{
     Transfer save(Transfer transfer);
-    List<Transfer> findAll();
-
-    Optional<Transfer> findById(Long id);
+    List<Transfer> findBySenderId(Long senderId);
+    List<Transfer> findByReceiverId(Long receiverId);
+    // List<Transfer> findAll();
+    
+    Optional<Transfer> findByIdAndSenderId(Long id, Long senderId);
+    Optional<Transfer> findByIdAndReceiverId(Long id, Long receiverId);
 }
