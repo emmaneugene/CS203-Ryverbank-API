@@ -55,7 +55,7 @@ public class TransferServiceImpl implements TransferService{
         sender.setAvailableBalance(sender.getAvailableBalance() - amount);
         sender.setBalance(sender.getBalance() - amount);
         receiver.setAvailableBalance(receiver.getAvailableBalance() + amount);
-        receiver.setBalance(receiver.getBalance() - amount);
+        receiver.setBalance(receiver.getBalance() + amount);
         accounts.save(sender);
         accounts.save(receiver);
         

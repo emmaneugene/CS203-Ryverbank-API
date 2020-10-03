@@ -23,18 +23,18 @@ public class Transfer {
     @JoinColumn(name = "receiver_id", nullable = false)
     @JsonIgnore
     private Account receiver;
-    private Long from;
-    private Long to;
+    private Long accFrom;
+    private Long accTo;
     private Double amount;
 
     public Transfer() {}
 
-    public Transfer(long id, Account sender, Account receiver, Long from, Long to, Double amount) {
+    public Transfer(long id, Account sender, Account receiver, Long accFrom, Long accTo, Double amount) {
         this.id = id;
         this.sender = sender;
         this.receiver = receiver;
-        this.from = from;
-        this.to = to;
+        this.accFrom = accFrom;
+        this.accTo = accTo;
         this.amount = amount;
     }
 
@@ -51,11 +51,11 @@ public class Transfer {
     }
 
     public Long getFrom() {
-        return from;
+        return accFrom;
     }
 
     public Long getTo() {
-        return to;
+        return accTo;
     }
 
     public Double getAmount() {
@@ -74,12 +74,12 @@ public class Transfer {
         this.receiver = receiver;
     }
 
-    public void setFrom(Long from) {
-        this.from = from;
+    public void setFrom(Long accFrom) {
+        this.accFrom = accFrom;
     }
 
-    public void setTo(Long to) {
-        this.to = to;
+    public void setTo(Long accTo) {
+        this.accTo = accTo;
     }
 
     public void setAmount(Double amount) {

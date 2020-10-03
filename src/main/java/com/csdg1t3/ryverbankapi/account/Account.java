@@ -5,7 +5,9 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.List;
 import com.csdg1t3.ryverbankapi.customer.*;
+import com.csdg1t3.ryverbankapi.transfer.*;
 
 /**
  * POJO that stores the details of a customer's bank account
@@ -25,15 +27,24 @@ public class Account {
     private Long customerId;
     private Double balance;
     private Double availableBalance;
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Transfer> sentTransfers;
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Transfer> receivedTransfers;
 
     public Account() {}
 
-    public Account(Long id, Customer customer, Long customerId,Double balance, Double availableBalance) {
+    public Account(Long id, Customer customer, Long customerId, Double balance, 
+    Double availableBalance, List<Transfer> sentTransfers, List<Transfer> receivedTransfers) {
         this.id = id;
         this.customer = customer;
         this.customerId = customerId;
         this.balance = balance;
         this.availableBalance = availableBalance;
+        this.sentTransfers = sentTransfers;
+        this.receivedTransfers = receivedTransfers;
     }
 
     public Long getId() { return id; }
