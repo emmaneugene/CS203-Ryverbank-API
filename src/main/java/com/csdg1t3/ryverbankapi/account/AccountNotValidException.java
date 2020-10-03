@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Exception thrown when an account is invalid. This also returns a HTTP response 
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class AccountNotValidException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

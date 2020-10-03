@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.csdg1t3.ryverbankapi.user.*;
 
@@ -34,6 +35,7 @@ public class AccountController {
         return accountService.listAccounts();
     }
 
+    @PreAuthorize("#id == authentication.principal.id")
     @GetMapping("/accounts/{id}")
     public Account getAccount(@PathVariable Long id) {
         Account account = accountService.getAccount(id);
@@ -46,6 +48,10 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/accounts")
     public Account addAccount(@Valid @RequestBody Account account) {
+        if(account.getBalance() < 5000 || account.getAvailableBalance() < 5000
+                || account.getBalance() != account.getAvailableBalance()){
+            throw new AccountNotValidException("Initial account balance must be more than 50000 and initial balance must match available balance");
+        }
         Optional<User> result = customerRepo.findById(account.getCustomerId());
         if (result.isPresent()) {
             account.setCustomer(result.get());

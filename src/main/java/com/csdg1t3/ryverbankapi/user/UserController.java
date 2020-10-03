@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PostAuthorize;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.validation.Valid;
@@ -59,7 +61,8 @@ public class UserController {
      * @param id
      * @return customer with the given id
      */
-    @GetMapping("/customers/{id}")
+    @PostAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER')")
+     @GetMapping("/customers/{id}")
     public User getCustomer(@PathVariable Long id) {
         User customer = userService.getUser(id);
 
