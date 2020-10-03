@@ -10,7 +10,8 @@ import com.csdg1t3.ryverbankapi.user.UserNotFoundException;
 
 import javax.validation.Valid;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.transfer.*;
 
@@ -35,11 +36,9 @@ public class Account {
     private Long customerId;
 
     @NotNull(message = "balance should not be null")
-   // @Size(min = 50000, max = 1000000000, message = "initial balance must be more than 50000")
     private Double balance;
 
     @NotNull(message = "balance should not be null")
-   // @Size(min = 50000, max = 1000000000, message = "initial available balance must be more than 50000")
     private Double availableBalance;
    
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
@@ -54,11 +53,23 @@ public class Account {
     public Account(Long id, User customer, Long customerId, Double balance, 
     Double availableBalance) {
         this.id = id;
+
         if(!customer.getStringAuthorities().contains("ROLE_USER")){
             throw new UserNotValidException("Only customers can set up accounts");
         }
         this.cust = customer;
+
+        if(cust.getId() != customerId){
+            throw new UserNotFoundException("Customer ID is invalid");
+        }
         this.customerId = customerId;
+<<<<<<< HEAD
+=======
+
+        if(balance < 5000 || availableBalance < 5000 || balance != availableBalance){
+            throw new AccountNotValidException("Initial account balance must be more than 50000 and initial balance must match available balance");
+        }
+>>>>>>> 508ef53a4d8fcbc6db6db1edeb2f3e569bb76aa3
         this.balance = balance;
         this.availableBalance = availableBalance;
     }
