@@ -63,10 +63,6 @@ public class Account {
             throw new UserNotFoundException("Customer ID is invalid");
         }
         this.customerId = customerId;
-
-        if(balance < 5000 || availableBalance < 5000 || balance != availableBalance){
-            throw new AccountNotValidException("Initial account balance must be more than 50000 and initial balance must match available balance");
-        }
         this.balance = balance;
         this.availableBalance = availableBalance;
     }
