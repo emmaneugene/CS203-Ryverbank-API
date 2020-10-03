@@ -54,12 +54,41 @@ public class UserServiceImpl implements UserService {
     // }
 
     @Override
-    public User updateUser(Long id, User user) {
+    public User updateUser(Long id, User newUser, String authority) {
         Optional<User> result = users.findById(id);
-        if (result.isPresent()) {
-            return users.save(user);
+        User userAtId = getUser(id);
+        // if (userAtId == null || !result.isPresent() || userAtId.getId() != newUser.getId() || !userAtId.getStringAuthorities().contains("ROLE_USER")){
+        //     throw new UserNotFoundException(id);
+        // }
+
+        if(newUser.getUsername() != userAtId.getUsername()){
+            throw new UserNotValidException("Update of username is not supported.");
         }
-        return null;
+
+        if(newUser.getNric() != userAtId.getNric()){
+            throw new UserNotValidException("Update of nric is not supported.");
+        }
+
+        if(newUser.getAddress() != userAtId.getAddress()){
+            throw new UserNotValidException("Update of address is not supported.");
+        }
+
+        if(newUser.getName() != userAtId.getName()){
+            throw new UserNotValidException("Update of name is not supported.");
+        }
+
+        if(newUser.getAddress() != userAtId.getAddress()){
+            throw new UserNotValidException("Update of address is not supported.");
+        }
+
+        if(newUser.getAuthorities() != userAtId.getAuthorities()){
+            throw new UserNotValidException("Update of authorities is not supported.");
+        }
+        
+        if(newUser.getStatus() != userAtId.getStatus() && !authority.equals("ROLE_MANAGER")){
+            throw new UserNotValidException("Update of status by customers is not supported.");
+        }
+        return users.save(newUser);
     }
 
     // @Override

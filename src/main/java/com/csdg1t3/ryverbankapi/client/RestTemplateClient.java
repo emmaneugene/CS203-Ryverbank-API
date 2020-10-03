@@ -60,5 +60,11 @@ public class RestTemplateClient {
         System.out.println("String URI " + URI + " id " + id );
         return template.getForEntity(URI + "/{id}", User.class, Long.toString(id));
     }
+
+    // public String updateUser(final String URI, User newUser){
+    //     String toReturn = URI + " " + newUser;
+    //     template.put(URI, newUser);
+    //     return toReturn;
+    // }
     
 }

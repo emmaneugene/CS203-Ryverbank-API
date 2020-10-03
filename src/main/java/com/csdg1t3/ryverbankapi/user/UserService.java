@@ -10,7 +10,7 @@ public interface UserService {
     List<User> listUsers(String authority);
     User getUser(Long id);
     User addUser(User user);
-    User updateUser(Long id, User user);
+    User updateUser(Long id, User user,String authority);
     void deleteUser(Long id);
 
     // User addCustomer(User customer);

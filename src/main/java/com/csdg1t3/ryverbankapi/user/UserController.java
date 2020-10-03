@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PostAuthorize;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import javax.validation.Valid;
 
 
@@ -126,16 +130,7 @@ public class UserController {
      * @return
      */
     public User updateUser(Long id, User newUser, String authority) {
-        User userAtId = userService.getUser(id);
-        if (userAtId == null || !userAtId.getStringAuthorities().contains(authority) ){
-            throw new UserNotFoundException(id);
-        }
-
-        User user = userService.updateUser(id, newUser);
-        if(user == null) {
-            throw new UserNotFoundException(id);
-        }
-        return user;
+    return userService.updateUser(id,newUser, authority); 
     }
 
     /**
@@ -144,11 +139,21 @@ public class UserController {
      * @param newCustomer
      * @return the updated, or newly added customer
      */
-    @PutMapping("/customers/{id}")
-    public User updateCustomer(@PathVariable Long id, @Valid @RequestBody User newCustomer) {
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER')")
+    //@PutMapping("/customers/{id}")
+    @RequestMapping(value = "/customers/{id}" , method = RequestMethod.PUT, headers = "updateCustomerInfo")
+    public User updateCustomerInfo(@PathVariable Long id, @Valid @RequestBody User newCustomer) {
         return updateUser(id,newCustomer,"ROLE_USER");
     }
 
+    // @PreAuthorize("hasRole('ROLE_MANAGER') ")
+    // // @PutMapping("/customers/{id}")
+    // @RequestMapping(value = "/customers/{id}" ,method = RequestMethod.PUT, headers = "updateCustomerStatus")
+    // public User updateCustomerStatus(@PathVariable Long id, @Valid @RequestBody User newCustomer) {
+    //     return updateUser(id,newCustomer,"ROLE_MANAGER");
+    // }
+
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER') ")
     @PutMapping("/analyst/{id}")
     public User updateAnalyst(@PathVariable Long id, @Valid @RequestBody User newAnalyst) {
         return updateUser(id,newAnalyst,"ROLE_ANALYST");
@@ -195,7 +200,7 @@ public class UserController {
             }
         }
         userAtId.setAuthorities(newAuthorities);
-        userService.updateUser(id, userAtId);
+        userService.updateUser(id, userAtId,"ROLE_MANAGER");
     }
 
 }
