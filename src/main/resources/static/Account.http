@@ -1,6 +1,6 @@
 # Account
 GET http://localhost:8080/accounts
-Authorization: Basic admin goodpassword
+Authorization: Basic manager_1 01_manager_01
 ###
 
 GET http://localhost:8080/accounts/1
@@ -9,24 +9,23 @@ Authorization: Basic admin goodpassword
 
 POST http://localhost:8080/accounts
 Content-Type: application/json
-Authorization: Basic admin goodpassword
+Authorization: Basic manager_1 01_manager_01
 
 {
     "customerId": 3,
-    "balance": 10000,
-    "availableBalance": 10000
+    "balance": 100000,
+    "availableBalance": 100001
 }
 
 ###
 
 POST http://localhost:8080/accounts
 Content-Type: application/json
-Authorization: Basic admin goodpassword
-
+Authorization: Basic manager_1 01_manager_01
 {
     "customerId": 2,
-    "balance": 200,
-    "availableBalance": 200
+    "balance": 100000000,
+    "availableBalance": 100000000
 }
 
 ###

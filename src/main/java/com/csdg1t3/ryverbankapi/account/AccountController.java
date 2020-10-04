@@ -49,9 +49,8 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/accounts")
     public Account addAccount(@Valid @RequestBody Account account) {
-        if(account.getBalance() < 5000 || account.getAvailableBalance() < 5000
-                || account.getBalance() != account.getAvailableBalance()){
-            throw new AccountNotValidException("Initial account balance must be more than 50000 and initial balance must match available balance");
+        if(account.getBalance() < 5000.0 || account.getBalance().compareTo(account.getAvailableBalance()) != 0){
+            throw new AccountNotValidException("Initial account balance must be more than 5000 and initial balance must match available balance");
         }
         Optional<User> result = customerRepo.findById(account.getCustomerId());
         if (result.isPresent()) {

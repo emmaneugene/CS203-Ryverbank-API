@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.csdg1t3.ryverbankapi.account.*;
 import com.csdg1t3.ryverbankapi.user.*;
@@ -59,7 +60,7 @@ public class User implements UserDetails {
     @NotNull(message = "status should not be null")
     private boolean status;
     
-    @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL /*, orphanRemoval = true*/)
     @JsonIgnore
     private List<Account> accounts;
 
@@ -68,6 +69,7 @@ public class User implements UserDetails {
 
     public User(long id, String name, String nric, int phoneNo, String address,String username, 
     String password,String authorities, boolean status) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.id = id;
         this.name = name;
         // nric not valid
@@ -88,7 +90,7 @@ public class User implements UserDetails {
         //     throw new UserNotValidException();
         // } -- shld check in control or smth, not here 
         this.username = username;
-        this.password = password;
+        this.password = encoder.encode(password);
 
         //check if authorities are valid 
         // if(true){
@@ -173,7 +175,8 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        this.password = encoder.encode(password);
     }
 
     public void setAuthorities(String authorities) {
