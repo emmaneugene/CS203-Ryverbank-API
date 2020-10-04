@@ -49,7 +49,7 @@ public class TransferServiceImpl implements TransferService{
         double amount = transfer.getAmount();
 
         if (sender.getAvailableBalance() < amount) {
-            throw new TransferNotAllowedException(transfer.getId());
+            throw new TransferNotValidException("Could not process due to insufficient funds");
         }
 
         sender.setAvailableBalance(sender.getAvailableBalance() - amount);

@@ -47,7 +47,8 @@ public class AccountController {
     public List<Account> getAccounts(@PathVariable Long id) {
         User userAtId = userService.getUser(id);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(!userAtId.getUsername().equals(auth.getPrincipal())){
+        String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
+        if(!userAtId.getUsername().equals(username)){
             throw new AccountNotValidException("User cannot view other user's account");
         }
         return accountService.listAccountsForUser(id);
@@ -63,7 +64,6 @@ public class AccountController {
         return account;
     }
 
-    @PreAuthorize("#id == authentication.principal.id")
     @GetMapping("customer/{id}/accounts/{account_id}")
     public Account getAccount(@PathVariable Long id, @PathVariable Long account_id) {
         Account account = accountService.getAccount(account_id);
@@ -71,6 +71,12 @@ public class AccountController {
             throw new AccountNotFoundException(account_id);
         }
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
+        if(!account.getCustomer().getUsername().equals(username)){
+            throw new AccountNotValidException("User cannot view other user's account");
+        }
+        
         if (account.getCustomerId() == id) {
             return account;
         } else {
@@ -92,7 +98,7 @@ public class AccountController {
         throw new UserNotFoundException(account.getCustomerId());
     }
 
-        @PutMapping("/accounts/{id}")
+    @PutMapping("/accounts/{id}")
     public Account updateAccount(@PathVariable Long id, @Valid @RequestBody Account account) {
         account.setId(id);
         Account result = accountService.getAccount(id);

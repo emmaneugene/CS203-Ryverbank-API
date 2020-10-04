@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 public class TransferController {
@@ -45,14 +47,22 @@ public class TransferController {
      * @param id
      * @return transfer with the given id
      */
-    @PreAuthorize("#id == authentication.principal.id")
     @GetMapping("/accounts/{account_id}/transactions/{transfer_id}")
     public Transfer getTransfer(@PathVariable (value = "account_id") Long accountId, 
                                 @PathVariable (value = "transfer_id") Long transferId) {
         Transfer transfer = transferService.getTransfer(transferId, accountId);
-        
         // Handle "transfer not found" error using appropriate http codes
         if (transfer == null) throw new TransferNotFoundException(transferId);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
+        // System.out.println(username);
+        // System.out.println(transfer.getReceiver().getCustomer().getUsername());
+        // System.out.println(transfer.getSender().getCustomer().getUsername());
+        if (!transfer.getReceiver().getCustomer().getUsername().equals(username)
+                || !transfer.getSender().getCustomer().getUsername().equals(username)) {
+            throw new TransferNotValidException("Accounts can only see own transfers");
+        }
         return transfer;
     }
 
