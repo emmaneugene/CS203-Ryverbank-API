@@ -5,8 +5,14 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.csdg1t3.ryverbankapi.user.*;
+import com.csdg1t3.ryverbankapi.user.UserNotFoundException;
+
+import javax.validation.Valid;
+
 import java.util.List;
-import com.csdg1t3.ryverbankapi.customer.*;
+import java.util.ArrayList;
+import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.transfer.*;
 
 /**
@@ -20,36 +26,50 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "cust_id", nullable = false)
     @JsonIgnore
-    private Customer customer;
+    private User cust;
+
+    @NotNull(message = "customer should not be null")
     private Long customerId;
+
+    @NotNull(message = "balance should not be null")
     private Double balance;
+
+    @NotNull(message = "balance should not be null")
     private Double availableBalance;
+   
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Transfer> sentTransfers;
+    private List<Transfer> sentTransfers = new ArrayList<Transfer>();
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Transfer> receivedTransfers;
+    private List<Transfer> receivedTransfers = new ArrayList<Transfer>();
 
     public Account() {}
 
-    public Account(Long id, Customer customer, Long customerId, Double balance, 
-    Double availableBalance, List<Transfer> sentTransfers, List<Transfer> receivedTransfers) {
+    public Account(Long id, User customer, Long customerId, Double balance, 
+    Double availableBalance) {
         this.id = id;
-        this.customer = customer;
+
+        if(!customer.getStringAuthorities().contains("ROLE_USER")){
+            throw new UserNotValidException("Only customers can set up accounts");
+        }
+        this.cust = customer;
+
+        if(cust.getId() != customerId){
+            throw new UserNotFoundException("Customer ID is invalid");
+        }
         this.customerId = customerId;
         this.balance = balance;
         this.availableBalance = availableBalance;
-        this.sentTransfers = sentTransfers;
-        this.receivedTransfers = receivedTransfers;
     }
 
     public Long getId() { return id; }
 
-    public Customer getCustomer() { return customer; }
+    public User getCustomer() { return cust; }
 
     public Long getCustomerId() { return customerId; }
 
@@ -69,8 +89,8 @@ public class Account {
         this.availableBalance = availableBalance;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomer(User customer) {
+        this.cust = customer;
     }
 
     public void setCustomerId(Long customerId) {
@@ -78,7 +98,7 @@ public class Account {
     }
     @Override
     public String toString() {
-        return String.format("Account[id=%d, customerId=%d, balance=%lf, availableBalance=%lf]", id, customer.getId(), balance, availableBalance);
+        return String.format("Account[id=%d, customerId=%d, balance=%lf, availableBalance=%lf]", id, cust.getId(), balance, availableBalance);
     }
     
 }

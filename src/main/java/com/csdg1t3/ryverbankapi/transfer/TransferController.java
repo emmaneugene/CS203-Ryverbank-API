@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 public class TransferController {
@@ -44,6 +45,7 @@ public class TransferController {
      * @param id
      * @return transfer with the given id
      */
+    @PreAuthorize("#id == authentication.principal.id")
     @GetMapping("/accounts/{account_id}/transactions/{transfer_id}")
     public Transfer getTransfer(@PathVariable (value = "account_id") Long accountId, 
                                 @PathVariable (value = "transfer_id") Long transferId) {
