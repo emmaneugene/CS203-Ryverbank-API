@@ -1021,3 +1021,6 @@ Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/Users/Nik
 	at org.h2.mvstore.FileStore.open(FileStore.java:172)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:381)
 	... 46 more
+2020-10-04 21:43:13 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ACCOUNT" not found; SQL statement:
+select user0_.id as id1_3_1_, user0_.address as address2_3_1_, user0_.authorities as authorit3_3_1_, user0_.name as name4_3_1_, user0_.nric as nric5_3_1_, user0_.password as password6_3_1_, user0_.phone_no as phone_no7_3_1_, user0_.status as status8_3_1_, user0_.username as username9_3_1_, accounts1_.cust_id as cust_id5_0_3_, accounts1_.id as id1_0_3_, accounts1_.id as id1_0_0_, accounts1_.available_balance as availabl2_0_0_, accounts1_.balance as balance3_0_0_, accounts1_.cust_id as cust_id5_0_0_, accounts1_.customer_id as customer4_0_0_ from user user0_ left outer join account accounts1_ on user0_.id=accounts1_.cust_id where user0_.id=? [42102-200]

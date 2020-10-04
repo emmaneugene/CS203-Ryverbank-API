@@ -1,5 +1,5 @@
 GET http://localhost:8080/customers
-Authorization: Basic manager_1 01_manager_1
+Authorization: Basic manager_1 01_manager_01
 
 ###
 GET http://localhost:8080/customers/1
@@ -20,7 +20,7 @@ Authorization: Basic manager_1 01_manager_01
     "address": "99 Bedok North Ave 4 #13-233 S460099",
     "username": "johntxm",
     "password": "john1isbest!",
-    "authorities": "ROLE_MANAGER,ROLE_USER",
+    "authorities": "ROLE_USER",
     "status": true
 }
 ###

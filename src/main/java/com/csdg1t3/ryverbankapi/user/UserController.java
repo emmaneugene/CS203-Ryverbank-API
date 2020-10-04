@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -65,10 +67,14 @@ public class UserController {
      * @param id
      * @return customer with the given id
      */
-    @PostAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER')")
+    // @PostAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER')")
      @GetMapping("/customers/{id}")
     public User getCustomer(@PathVariable Long id) {
         User customer = userService.getUser(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(!customer.getUsername().equals(auth.getPrincipal())){
+            throw new UserNotValidException("Customer cannot see other customers");
+        }
 
         // Need to handle "customer not found" error using proper HTTP status code
         // In this case it should be HTTP 404
