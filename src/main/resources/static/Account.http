@@ -1,6 +1,6 @@
 # Account
 GET http://localhost:8080/accounts
-Authorization: Basic spiderman mrstark,Idontfeels0good
+Authorization: Basic manager_1 01_manager_01
 ###
 
 GET http://localhost:8080/customer/2/accounts
