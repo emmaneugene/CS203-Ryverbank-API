@@ -57,9 +57,9 @@ public class UserServiceImpl implements UserService {
     public User updateUser(Long id, User newUser, String authority) {
         Optional<User> result = users.findById(id);
         User userAtId = getUser(id);
-        // if (userAtId == null || !result.isPresent() || userAtId.getId() != newUser.getId() || !userAtId.getStringAuthorities().contains("ROLE_USER")){
-        //     throw new UserNotFoundException(id);
-        // }
+        if (userAtId == null || !result.isPresent() || userAtId.getId() != newUser.getId() || !userAtId.getStringAuthorities().contains("ROLE_USER")){
+            throw new UserNotFoundException(id);
+        }
 
         if(!newUser.getUsername().equals(userAtId.getUsername())){
             throw new UserNotValidException("Update of username is not supported.");
@@ -67,10 +67,6 @@ public class UserServiceImpl implements UserService {
 
         if(!newUser.getNric().equals(userAtId.getNric())){
             throw new UserNotValidException("Update of nric is not supported.");
-        }
-
-        if(!newUser.getAddress().equals(userAtId.getAddress())){
-            throw new UserNotValidException("Update of address is not supported.");
         }
 
         if(!newUser.getName().equals(userAtId.getName())){
