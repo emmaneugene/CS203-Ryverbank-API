@@ -56,9 +56,6 @@ public class TransferController {
 
         Authentication auth = Security.getContext().getAuthentication();
         String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
-        // System.out.println(username);
-        // System.out.println(transfer.getReceiver().getCustomer().getUsername());
-        // System.out.println(transfer.getSender().getCustomer().getUsername());
         if (!transfer.getReceiver().getCustomer().getUsername().equals(username)
                 || !transfer.getSender().getCustomer().getUsername().equals(username)) {
             throw new TransferNotValidException("Accounts can only see own transfers");

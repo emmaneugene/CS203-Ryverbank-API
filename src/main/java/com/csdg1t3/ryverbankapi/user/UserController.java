@@ -72,7 +72,8 @@ public class UserController {
     public User getCustomer(@PathVariable Long id) {
         User customer = userService.getUser(id);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(!customer.getUsername().equals(auth.getPrincipal())){
+        String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
+        if(!customer.getUsername().equals(username)){
             throw new UserNotValidException("Customer cannot see other customers");
         }
 
@@ -145,10 +146,25 @@ public class UserController {
      * @param newCustomer
      * @return the updated, or newly added customer
      */
-    @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER')")
+    // @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER')")
     @PutMapping("/customers/{id}")
     // @RequestMapping(value = "/customers/{id}" , method = RequestMethod.PUT, headers = "updateCustomerInfo")
     public User updateCustomerInfo(@PathVariable Long id, @Valid @RequestBody User newCustomer) {
+        User customer = userService.getUser(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
+        String userrole = auth.getPrincipal().toString().substring(auth.getPrincipal().toString().indexOf("["));
+        String password = auth.getPrincipal().toString().substring(auth.getPrincipal().toString().indexOf("$"), auth.getPrincipal().toString().lastIndexOf(" "));
+        System.out.println(auth.getPrincipal().toString());
+        System.out.println(password);
+        if(!customer.getUsername().equals(username) && !userrole.equals("[ROLE_MANAGER]")){
+            throw new UserNotValidException("Customer cannot update other customers");
+        }
+
+        if(!customer.getPassword().equals(password) && !userrole.equals("[ROLE_MANAGER]")) {
+            throw new UserNotValidException("Password is wrong");
+        }
+
         return updateUser(id,newCustomer,"ROLE_USER");
     }
 
@@ -159,9 +175,16 @@ public class UserController {
     //     return updateUser(id,newCustomer,"ROLE_MANAGER");
     // }
 
-    @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER') ")
+    // @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER') ")
     @PutMapping("/analyst/{id}")
     public User updateAnalyst(@PathVariable Long id, @Valid @RequestBody User newAnalyst) {
+        User analyst = userService.getUser(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
+        if(!analyst.getUsername().equals(username)){
+            throw new UserNotValidException("Cannot update other analyst");
+        }
+        
         return updateUser(id,newAnalyst,"ROLE_ANALYST");
     }
 
