@@ -13,8 +13,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+// import jdk.jfr.internal.Cutoff;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 
 import com.csdg1t3.ryverbankapi.user.*;
 
@@ -24,11 +29,13 @@ import com.csdg1t3.ryverbankapi.user.*;
 @RestController
 public class AccountController {
     private AccountService accountService;
+    private UserService userService;
     private UserRepository customerRepo;
 
-    public AccountController(AccountService accountService, UserRepository customerRepo) {
+    public AccountController(AccountService accountService, UserRepository customerRepo, UserService userService) {
         this.accountService = accountService;
         this.customerRepo = customerRepo;
+        this.userService = userService;
     }
 
     @GetMapping("/accounts")
@@ -36,9 +43,13 @@ public class AccountController {
         return accountService.listAccounts();
     }
 
-    @PreAuthorize("#id == authentication.principal.id")
     @GetMapping("customer/{id}/accounts")
     public List<Account> getAccounts(@PathVariable Long id) {
+        User userAtId = userService.getUser(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(!userAtId.getUsername().equals(auth.getPrincipal())){
+            throw new AccountNotValidException("User cannot view other user's account");
+        }
         return accountService.listAccountsForUser(id);
     }
 
