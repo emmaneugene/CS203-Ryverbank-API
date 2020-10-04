@@ -140,8 +140,8 @@ public class UserController {
      * @return the updated, or newly added customer
      */
     @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER')")
-    //@PutMapping("/customers/{id}")
-    @RequestMapping(value = "/customers/{id}" , method = RequestMethod.PUT, headers = "updateCustomerInfo")
+    @PutMapping("/customers/{id}")
+    // @RequestMapping(value = "/customers/{id}" , method = RequestMethod.PUT, headers = "updateCustomerInfo")
     public User updateCustomerInfo(@PathVariable Long id, @Valid @RequestBody User newCustomer) {
         return updateUser(id,newCustomer,"ROLE_USER");
     }

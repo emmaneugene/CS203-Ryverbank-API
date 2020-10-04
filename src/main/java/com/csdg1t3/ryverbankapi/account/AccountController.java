@@ -1,6 +1,6 @@
 package com.csdg1t3.ryverbankapi.account;
 
-import java.util.List;
+import java.util.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
-
+import org.springframework.security.access.prepost.PostAuthorize;
 
 import com.csdg1t3.ryverbankapi.user.*;
 
@@ -37,6 +37,12 @@ public class AccountController {
     }
 
     @PreAuthorize("#id == authentication.principal.id")
+    @GetMapping("customer/{id}/accounts")
+    public List<Account> getAccounts(@PathVariable Long id) {
+        return accountService.listAccountsForUser(id);
+    }
+
+    // @PreAuthorize("#id == authentication.principal.id")
     @GetMapping("/accounts/{id}")
     public Account getAccount(@PathVariable Long id) {
         Account account = accountService.getAccount(id);
@@ -46,12 +52,26 @@ public class AccountController {
         return account;
     }
 
+    @PreAuthorize("#id == authentication.principal.id")
+    @GetMapping("customer/{id}/accounts/{account_id}")
+    public Account getAccount(@PathVariable Long id, @PathVariable Long account_id) {
+        Account account = accountService.getAccount(account_id);
+        if (account == null) {
+            throw new AccountNotFoundException(account_id);
+        }
+
+        if (account.getCustomerId() == id) {
+            return account;
+        } else {
+            throw new AccountNotFoundException(account_id);
+        }
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/accounts")
     public Account addAccount(@Valid @RequestBody Account account) {
-        if(account.getBalance() < 5000 || account.getAvailableBalance() < 5000
-                || account.getBalance() != account.getAvailableBalance()){
-            throw new AccountNotValidException("Initial account balance must be more than 50000 and initial balance must match available balance");
+        if(account.getBalance() < 5000.0 || account.getBalance().compareTo(account.getAvailableBalance()) != 0){
+            throw new AccountNotValidException("Initial account balance must be more than 5000 and initial balance must match available balance");
         }
         Optional<User> result = customerRepo.findById(account.getCustomerId());
         if (result.isPresent()) {

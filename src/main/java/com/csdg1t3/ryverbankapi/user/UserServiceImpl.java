@@ -57,31 +57,23 @@ public class UserServiceImpl implements UserService {
     public User updateUser(Long id, User newUser, String authority) {
         Optional<User> result = users.findById(id);
         User userAtId = getUser(id);
-        // if (userAtId == null || !result.isPresent() || userAtId.getId() != newUser.getId() || !userAtId.getStringAuthorities().contains("ROLE_USER")){
-        //     throw new UserNotFoundException(id);
-        // }
+        if (userAtId == null || !result.isPresent() || userAtId.getId() != newUser.getId() || !userAtId.getStringAuthorities().contains("ROLE_USER")){
+            throw new UserNotFoundException(id);
+        }
 
-        if(newUser.getUsername() != userAtId.getUsername()){
+        if(!newUser.getUsername().equals(userAtId.getUsername())){
             throw new UserNotValidException("Update of username is not supported.");
         }
 
-        if(newUser.getNric() != userAtId.getNric()){
+        if(!newUser.getNric().equals(userAtId.getNric())){
             throw new UserNotValidException("Update of nric is not supported.");
         }
 
-        if(newUser.getAddress() != userAtId.getAddress()){
-            throw new UserNotValidException("Update of address is not supported.");
-        }
-
-        if(newUser.getName() != userAtId.getName()){
+        if(!newUser.getName().equals(userAtId.getName())){
             throw new UserNotValidException("Update of name is not supported.");
         }
 
-        if(newUser.getAddress() != userAtId.getAddress()){
-            throw new UserNotValidException("Update of address is not supported.");
-        }
-
-        if(newUser.getAuthorities() != userAtId.getAuthorities()){
+        if(!newUser.getAuthorities().equals(userAtId.getAuthorities())){
             throw new UserNotValidException("Update of authorities is not supported.");
         }
         
