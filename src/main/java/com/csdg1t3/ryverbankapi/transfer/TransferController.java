@@ -54,7 +54,7 @@ public class TransferController {
         // Handle "transfer not found" error using appropriate http codes
         if (transfer == null) throw new TransferNotFoundException(transferId);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = Security.getContext().getAuthentication();
         String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
         // System.out.println(username);
         // System.out.println(transfer.getReceiver().getCustomer().getUsername());
