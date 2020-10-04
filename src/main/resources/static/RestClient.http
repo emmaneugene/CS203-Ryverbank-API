@@ -1,5 +1,5 @@
 GET http://localhost:8080/customers
-Authorization: Basic manager_1 01_manager_01
+Authorization: Basic manager_1 01_manager_1
 
 ###
 GET http://localhost:8080/customers/1

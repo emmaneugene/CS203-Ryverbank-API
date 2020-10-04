@@ -20,6 +20,14 @@ public class AccountServiceImpl implements AccountService {
         return accounts.findAll();
     }
 
+    public List<Account> listAccountsForUser(Long id) {
+        Optional<List<Account>> result = accounts.findAllByCustomerId(id);
+        if (result.isPresent()) {
+            return result.get();
+        }
+        return null;    
+    }
+
     @Override
     public Account getAccount(Long id) {
         Optional<Account> result = accounts.findById(id);

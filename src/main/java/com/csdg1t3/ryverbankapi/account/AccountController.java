@@ -1,6 +1,6 @@
 package com.csdg1t3.ryverbankapi.account;
 
-import java.util.List;
+import java.util.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
-
+import org.springframework.security.access.prepost.PostAuthorize;
 
 import com.csdg1t3.ryverbankapi.user.*;
 
@@ -37,6 +37,12 @@ public class AccountController {
     }
 
     @PreAuthorize("#id == authentication.principal.id")
+    @GetMapping("customer/{id}/accounts")
+    public List<Account> getAccounts(@PathVariable Long id) {
+        return accountService.listAccountsForUser(id);
+    }
+
+    // @PreAuthorize("#id == authentication.principal.id")
     @GetMapping("/accounts/{id}")
     public Account getAccount(@PathVariable Long id) {
         Account account = accountService.getAccount(id);
@@ -44,6 +50,21 @@ public class AccountController {
             throw new AccountNotFoundException(id);
         }
         return account;
+    }
+
+    @PreAuthorize("#id == authentication.principal.id")
+    @GetMapping("customer/{id}/accounts/{account_id}")
+    public Account getAccount(@PathVariable Long id, @PathVariable Long account_id) {
+        Account account = accountService.getAccount(account_id);
+        if (account == null) {
+            throw new AccountNotFoundException(account_id);
+        }
+
+        if (account.getCustomerId() == id) {
+            return account;
+        } else {
+            throw new AccountNotFoundException(account_id);
+        }
     }
 
     @ResponseStatus(HttpStatus.CREATED)

@@ -1,10 +1,22 @@
 # Account
 GET http://localhost:8080/accounts
-Authorization: Basic manager_1 01_manager_01
+Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
-GET http://localhost:8080/accounts/1
-Authorization: Basic admin goodpassword
+GET http://localhost:8080/customer/2/accounts
+Authorization: Basic spiderman mrstark,Idontfeels0good
+###
+
+POST http://localhost:8080/accounts
+Content-Type: application/json
+Authorization: Basic manager_1 01_manager_01
+
+{
+    "customerId": 3,
+    "balance": 100001,
+    "availableBalance": 100001
+}
+
 ###
 
 POST http://localhost:8080/accounts
@@ -14,18 +26,7 @@ Authorization: Basic manager_1 01_manager_01
 {
     "customerId": 3,
     "balance": 100000,
-    "availableBalance": 100001
-}
-
-###
-
-POST http://localhost:8080/accounts
-Content-Type: application/json
-Authorization: Basic manager_1 01_manager_01
-{
-    "customerId": 2,
-    "balance": 100000000,
-    "availableBalance": 100000000
+    "availableBalance": 100000
 }
 
 ###
