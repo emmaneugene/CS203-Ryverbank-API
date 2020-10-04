@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     public User updateUser(Long id, User newUser, String authority) {
         Optional<User> result = users.findById(id);
         User userAtId = getUser(id);
-        if (userAtId == null || !result.isPresent() || userAtId.getId() != newUser.getId() || !userAtId.getStringAuthorities().contains("ROLE_USER")){
+        if (userAtId == null){
             throw new UserNotFoundException(id);
         }
 

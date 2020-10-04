@@ -1,9 +1,9 @@
 # Account
 GET http://localhost:8080/accounts
-Authorization: Basic spiderman mrstark,Idontfeels0good
+Authorization: Basic manager_1 01_manager_01
 ###
 
-GET http://localhost:8080/customer/2/accounts
+GET http://localhost:8080/customer/3/accounts
 Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
@@ -12,7 +12,7 @@ Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
 {
-    "customerId": 3,
+    "customerId": 1,
     "balance": 100001,
     "availableBalance": 100001
 }
