@@ -64,12 +64,15 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Account> accounts;
 
+    @Transient
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     public User() {
     }
 
     public User(long id, String name, String nric, int phoneNo, String address,String username, 
     String password,String authorities, boolean status) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.id = id;
         this.name = name;
         // nric not valid
@@ -175,7 +178,7 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.password = encoder.encode(password);
     }
 
