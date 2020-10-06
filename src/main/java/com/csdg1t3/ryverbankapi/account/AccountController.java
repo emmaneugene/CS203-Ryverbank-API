@@ -93,6 +93,10 @@ public class AccountController {
         Optional<User> result = customerRepo.findById(account.getCustomerId());
         if (result.isPresent()) {
             account.setCustomer(result.get());
+            if (account.getCustomer().getStringAuthorities().contains("ROLE_MANAGER") 
+                    || account.getCustomer().getStringAuthorities().contains("ROLE_ANALYST")) {
+                throw new AccountNotValidException("Manager and Analyst cannot create account");
+            }
             return accountService.addAccount(account);
         }
         throw new UserNotFoundException(account.getCustomerId());
