@@ -23,25 +23,26 @@ import com.csdg1t3.ryverbankapi.user.*;
  * account
  */
 @Entity
-
 public class User implements UserDetails {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull(message = "name should not be null")
+    @NotNull(message = "Name should not be null")
     @Size(min = 5, max = 150, message = "name should be between 5 and 150 characters")
     private String name;
 
-    @NotNull(message = "nric should not be null")
-    @Size(min = 9, max = 9, message = "Nric should be exactly 9 characters")
+    @NotNull(message = "Nric should not be null")
+    @Size(min = 9, max = 9, message = "nric should be exactly 9 characters")
     private String nric;
 
     // @NotEmpty(message = "phone no should not be null")
     //@Length(min = 8, max = 8, message = "phone No should be exactly 8 characters")
     private int phoneNo;
 
-    @NotNull(message = "address should not be null")
+    @NotNull(message = "Address should not be null")
     @Size(min = 5, max = 200, message = "address should be between 5 and 200 characters")
     private String address;
 
@@ -49,15 +50,15 @@ public class User implements UserDetails {
     @Size(min = 5, max = 20, message = "Username should be between 5 and 20 characters")
     private String username;
 
-    @NotNull(message = "password should not be null")
+    @NotNull(message = "Password should not be null")
     @Size(min = 8, max =100, message = "password should be at least 8 characters")
     private String password;
 
-    @NotNull(message = "authorities should not be null")
+    @NotNull(message = "Authorities should not be null")
     private String authorities;
 
     // can be null if manager or analyst 
-    @NotNull(message = "status should not be null")
+    @NotNull(message = "Status should not be null")
     private boolean status;
     
     @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL /*, orphanRemoval = true*/)
@@ -191,19 +192,24 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return status;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
+
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
