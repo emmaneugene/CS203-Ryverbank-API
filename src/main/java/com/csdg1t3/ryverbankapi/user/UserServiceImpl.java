@@ -16,8 +16,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override 
-    public List<User> listUsers(String authortities){
-        return users.findAllByAuthorities(authortities);
+    public List<User> listUsers(String authorities){
+        return users.findAllByAuthorities(authorities);
     }
     
     // @Override

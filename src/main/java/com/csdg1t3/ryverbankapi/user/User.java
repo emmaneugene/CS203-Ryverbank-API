@@ -1,6 +1,7 @@
 package com.csdg1t3.ryverbankapi.user;
 
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,10 +12,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.csdg1t3.ryverbankapi.account.*;
-import com.csdg1t3.ryverbankapi.user.*;
+
 
 
 /**
@@ -25,6 +25,8 @@ import com.csdg1t3.ryverbankapi.user.*;
 @Entity
 
 public class User implements UserDetails {
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -37,8 +39,8 @@ public class User implements UserDetails {
     @Size(min = 9, max = 9, message = "Nric should be exactly 9 characters")
     private String nric;
 
-    // @NotEmpty(message = "phone no should not be null")
-    //@Length(min = 8, max = 8, message = "phone No should be exactly 8 characters")
+    @NotNull(message = "phone no should not be null")
+    @Size(min = 8, max = 8, message = "Phone number should be exactly 8 characters")
     private int phoneNo;
 
     @NotNull(message = "address should not be null")
@@ -53,11 +55,10 @@ public class User implements UserDetails {
     @Size(min = 8, max =100, message = "password should be at least 8 characters")
     private String password;
 
-    @NotNull(message = "authorities should not be null")
-    private String authorities;
+    @NotNull(message = "Authorities should not be null")
+    private String[] authorities;
 
     // can be null if manager or analyst 
-    @NotNull(message = "status should not be null")
     private boolean status;
     
     @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL /*, orphanRemoval = true*/)
@@ -68,37 +69,16 @@ public class User implements UserDetails {
     }
 
     public User(long id, String name, String nric, int phoneNo, String address,String username, 
-    String password,String authorities, boolean status) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    String password,String[] authorities, boolean status) {
+        // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.id = id;
         this.name = name;
-        // nric not valid
-        // if(true){
-        //     throw new NricNotValidException();
-        // }
         this.nric = nric;
-
-        // check for phone valid 
-        // if(true){
-        //     throw new phoneNoNotValidException();
-        // }
         this.phoneNo = phoneNo;
         this.address = address;
-
-        //check if username is unique 
-        // if(true){
-        //     throw new UserNotValidException();
-        // } -- shld check in control or smth, not here 
         this.username = username;
-        this.password = encoder.encode(password);
-
-        //check if authorities are valid 
-        // if(true){
-        //     throw new authoritiesNotValidException();
-        // }
+        this.password = password;
         this.authorities = authorities;
-
-
         this.status = status;
     }
 
@@ -130,7 +110,7 @@ public class User implements UserDetails {
         return password;
     }
 
-    public String getStringAuthorities() {
+    public String[] getStringAuthorities() {
         return authorities;
     }
 
@@ -138,8 +118,11 @@ public class User implements UserDetails {
     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //String au = Arrays.toString(authorities);
-        return Arrays.asList(new SimpleGrantedAuthority(authorities));
+        List<SimpleGrantedAuthority> result = new ArrayList<>();
+        for (String authority : authorities) {
+            result.add(new SimpleGrantedAuthority(authority));
+        }
+        return result;
     }
 
     
@@ -148,7 +131,7 @@ public class User implements UserDetails {
     }
 
     public String toString(){
-        return "" + getUsername() + " " + getPassword() +" " + getAuthorities();
+        return username + " " + password + " " + getStringAuthorities();
     }
 
     public void setId(long id) {
@@ -175,11 +158,10 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        this.password = encoder.encode(password);
+        this.password = password;
     }
 
-    public void setAuthorities(String authorities) {
+    public void setAuthorities(String[] authorities) {
         this.authorities = authorities;
     }
 

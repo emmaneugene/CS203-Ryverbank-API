@@ -14,14 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import javax.validation.Valid;
 
 
@@ -38,8 +35,6 @@ public class UserController {
         this.userService = us;
         this.encoder = encoder;
     }
-
-    // get all methods 
 
     /**
      * List all customers in the system
@@ -67,19 +62,21 @@ public class UserController {
      * @param id
      * @return customer with the given id
      */
-    // @PostAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER')")
-     @GetMapping("/customers/{id}")
+    @GetMapping("/customers/{id}")
     public User getCustomer(@PathVariable Long id) {
         User customer = userService.getUser(id);
+        if (customer == null) 
+            throw new UserNotFoundException(id);
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
-        if(!customer.getUsername().equals(username)){
-            throw new UserNotValidException("Customer cannot see other customers");
+        String username = auth.getPrincipal()).getUsername();
+        if (!customer.getUsername().equals(username)) {
+            throw new UserNotValidException("You cannot view other customer accounts");
         }
 
-        // Need to handle "customer not found" error using proper HTTP status code
-        // In this case it should be HTTP 404
-        if(customer == null || !customer.getStringAuthorities().contains("ROLE_USER")) throw new UserNotFoundException(id);
+        if (!Arrays.asList(customer.getStringAuthorities()).contains("ROLE_USER"))
+            throw new UserNotValidException("Customer at " + id + "is not a user");
+        
         return userService.getUser(id);
     }
 
@@ -92,9 +89,8 @@ public class UserController {
     */
    public User addUser(User user, String authority) {
     // check if authority of user matches where it is supposed to be mapped to 
-    String authorities = user.getStringAuthorities();
+    List<String> authorities = Arrays.asList(user.getStringAuthorities());
     if(!authorities.contains(authority)){
-        // throw exception 
         throw new UserNotValidException("authorities of" + authority + " is wrong" );
     }
     
@@ -146,13 +142,15 @@ public class UserController {
      * @param newCustomer
      * @return the updated, or newly added customer
      */
-    // @PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_MANAGER')")
+    
     @PutMapping("/customers/{id}")
-    // @RequestMapping(value = "/customers/{id}" , method = RequestMethod.PUT, headers = "updateCustomerInfo")
     public User updateCustomerInfo(@PathVariable Long id, @Valid @RequestBody User newCustomer) {
         User customer = userService.getUser(id);
+        if (customer == null) 
+            throw new UserNotFoundException(id);
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
+        String username = auth.getPrincipal().toString(); // substring(0, auth.getPrincipal().toString().indexOf(" "))
         String userrole = auth.getPrincipal().toString().substring(auth.getPrincipal().toString().indexOf("["));
         String password = auth.getPrincipal().toString().substring(auth.getPrincipal().toString().indexOf("$"), auth.getPrincipal().toString().lastIndexOf(" "));
         System.out.println(auth.getPrincipal().toString());
@@ -201,7 +199,7 @@ public class UserController {
 
     @DeleteMapping("analyst/{id}")
     public void deleteAnalyst(@PathVariable Long id) {
-        deleteUser(id, "ROLE_Analyst");
+        deleteUser(id, "ROLE_ANALYST");
     }
 
     public void deleteUser(Long id, String authority){

@@ -9,6 +9,22 @@ Authorization: Basic iamironman i<3carmen
 ###
 POST http://localhost:8080/customers
 Content-Type: application/json
+Authorization: Basic manager_1 01_manager_01
+
+{
+    "name": "John Tan Xiao Ming",
+    "nric": "S6834702H",
+    "phoneNo": 93410569,
+    "address": "99 Bedok North Ave 4 #13-233 S460099",
+    "username": "johntxm",
+    "password": "johnpwsucks!1!",
+    "authorities": ["ROLE_USER"],
+    "status": true
+}
+###
+
+POST http://localhost:8080/customers
+Content-Type: application/json
 
 {
     "name": "Tony Stark",
@@ -17,7 +33,7 @@ Content-Type: application/json
     "address": "Malibu",
     "username": "tstark",
     "password": "gooduser",
-    "authorities": "ROLE_USER",
+    "authorities": ["ROLE_USER"],
     "status": true
 }
 
@@ -33,12 +49,23 @@ Content-Type: application/json
     "address": "WWE hall of fame",
     "username": "cantseeme",
     "password": "password",
-    "authorities": "ROLE_USER",
+    "authorities": ["ROLE_USER"],
     "status": true
 }
 
 ###
 
+POST http://localhost:8080/customers
+Content-Type: application/json
+Authorization: Basic admin goodpassword
+
+{
+    "username": "gooduser",
+    "password": "goodpassword",
+    "authorities": "USER"
+}
+
+###
 PUT http://localhost:8080/customers/2
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
@@ -50,7 +77,7 @@ Authorization: Basic manager_1 01_manager_01
     "address": "Singapore Management University",
     "username": "theronlyone",
     "password": "donttryguessingthis",
-    "authorities": "ROLE_USER",
+    "authorities": ["ROLE_USER"],
     "status": true
 }
 
@@ -67,11 +94,24 @@ Authorization: Basic manager_1 01_manager_01
     "address": "10880 Malibu Point, 90265",
     "username": "iamironman",
     "password": "i</3carmen",
-    "authorities": "ROLE_USER",
+    "authorities": ["ROLE_USER"],
     "status": true
 }
 ###
 
-DELETE http://localhost:8080/customers/3
+PUT http://localhost:8080/customers/1
+Content-Type: application/json
+# Wrong username
+Authorization: Basic dt goodpassword
 
+{
+    "username": "jphntxm"
+}
+
+DELETE http://localhost:8080/customers/3
+Authorization: Basic manager_1 01_manager_01
+###
+
+DELETE http://localhost:8080/customers/4
+Authorization: Basic admin goodpassword
 ###

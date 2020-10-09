@@ -59,7 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Bean
     public BCryptPasswordEncoder encoder() {
-        // auto-generate a random salt internally
         return new BCryptPasswordEncoder();
     }
 }
