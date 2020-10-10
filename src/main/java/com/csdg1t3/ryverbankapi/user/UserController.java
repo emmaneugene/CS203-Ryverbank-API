@@ -68,14 +68,14 @@ public class UserController {
         if (customer == null) 
             throw new UserNotFoundException(id);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getPrincipal()).getUsername();
-        if (!customer.getUsername().equals(username)) {
-            throw new UserNotValidException("You cannot view other customer accounts");
-        }
+        // Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        // String username = auth.getPrincipal()).getUsername();
+        // if (!customer.getUsername().equals(username)) {
+        //     throw new UserNotValidException("You cannot view other customer accounts");
+        // }
 
-        if (!Arrays.asList(customer.getStringAuthorities()).contains("ROLE_USER"))
-            throw new UserNotValidException("Customer at " + id + "is not a user");
+        // if (!Arrays.asList(customer.getStringAuthorities()).contains("ROLE_USER"))
+        //     throw new UserNotValidException("Customer at " + id + "is not a user");
         
         return userService.getUser(id);
     }
@@ -149,19 +149,19 @@ public class UserController {
         if (customer == null) 
             throw new UserNotFoundException(id);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getPrincipal().toString(); // substring(0, auth.getPrincipal().toString().indexOf(" "))
-        String userrole = auth.getPrincipal().toString().substring(auth.getPrincipal().toString().indexOf("["));
-        String password = auth.getPrincipal().toString().substring(auth.getPrincipal().toString().indexOf("$"), auth.getPrincipal().toString().lastIndexOf(" "));
-        System.out.println(auth.getPrincipal().toString());
-        System.out.println(password);
-        if(!customer.getUsername().equals(username) && !userrole.equals("[ROLE_MANAGER]")){
-            throw new UserNotValidException("Customer cannot update other customers");
-        }
+        // Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        // String username = auth.getPrincipal().toString(); // substring(0, auth.getPrincipal().toString().indexOf(" "))
+        // String userrole = auth.getPrincipal().toString().substring(auth.getPrincipal().toString().indexOf("["));
+        // String password = auth.getPrincipal().toString().substring(auth.getPrincipal().toString().indexOf("$"), auth.getPrincipal().toString().lastIndexOf(" "));
+        // System.out.println(auth.getPrincipal().toString());
+        // System.out.println(password);
+        // if(!customer.getUsername().equals(username) && !userrole.equals("[ROLE_MANAGER]")){
+        //     throw new UserNotValidException("Customer cannot update other customers");
+        // }
 
-        if(!customer.getPassword().equals(password) && !userrole.equals("[ROLE_MANAGER]")) {
-            throw new UserNotValidException("Password is wrong");
-        }
+        // if(!customer.getPassword().equals(password) && !userrole.equals("[ROLE_MANAGER]")) {
+        //     throw new UserNotValidException("Password is wrong");
+        // }
 
         return updateUser(id,newCustomer,"ROLE_USER");
     }
@@ -194,40 +194,44 @@ public class UserController {
      */
     @DeleteMapping("/customers/{id}")
     public void deleteCustomer(@PathVariable Long id) {
-        deleteUser(id, "ROLE_USER");
-    }
-
-    @DeleteMapping("analyst/{id}")
-    public void deleteAnalyst(@PathVariable Long id) {
-        deleteUser(id, "ROLE_ANALYST");
-    }
-
-    public void deleteUser(Long id, String authority){
-        User userAtId = userService.getUser(id);
-        if (userAtId == null ||!userAtId.getStringAuthorities().contains(authority)){
+        if (userService.getUser(id) == null) {
             throw new UserNotFoundException(id);
         }
 
-        if(userAtId.getAuthorities().size() == 1 ){
-            try {
-                userService.deleteUser(id);
-            } catch (Exception e) {
-                throw new UserNotFoundException(id);
-            }
-            return;
-        }
-
-        // user has 2 roles 
-        String newAuthorities = "";
-        String[] authorities = userAtId.getAuthorities().toArray(new String[0]);
-        // String[] authorities = userAtId.getAuthorities();
-        for(String role : authorities){
-            if(!role.equals(authority)){
-                newAuthorities += role;
-            }
-        }
-        userAtId.setAuthorities(newAuthorities);
-        userService.updateUser(id, userAtId,"ROLE_MANAGER");
+        userService.deleteUser(id);
     }
+
+    // @DeleteMapping("analyst/{id}")
+    // public void deleteAnalyst(@PathVariable Long id) {
+    //     deleteUser(id, "ROLE_ANALYST");
+    // }
+
+    // public void deleteUser(Long id, String authority){
+    //     User userAtId = userService.getUser(id);
+    //     if (userAtId == null){
+    //         throw new UserNotFoundException(id);
+    //     }
+
+    //     // if(userAtId.getAuthorities().size() == 1 ){
+    //     //     try {
+    //     //         userService.deleteUser(id);
+    //     //     } catch (Exception e) {
+    //     //         throw new UserNotFoundException(id);
+    //     //     }
+    //     //     return;
+    //     // }
+
+    //     // // user has 2 roles 
+    //     // String newAuthorities = "";
+    //     // String[] authorities = userAtId.getAuthorities().toArray(new String[0]);
+    //     // // String[] authorities = userAtId.getAuthorities();
+    //     // for(String role : authorities){
+    //     //     if(!role.equals(authority)){
+    //     //         newAuthorities += role;
+    //     //     }
+    //     // }
+    //     // userAtId.setAuthorities(newAuthorities);
+    //     userService.updateUser(id, userAtId,"ROLE_MANAGER");
+    // }
 
 }

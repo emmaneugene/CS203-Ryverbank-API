@@ -39,7 +39,7 @@ public class User implements UserDetails {
 
     @NotNull(message = "phone no should not be null")
     @Size(min = 8, max = 8, message = "Phone number should be exactly 8 characters")
-    private int phoneNo;
+    private String phoneNo;
 
     @NotNull(message = "Address should not be null")
     @Size(min = 5, max = 200, message = "address should be between 5 and 200 characters")
@@ -53,6 +53,7 @@ public class User implements UserDetails {
     @Size(min = 8, max =100, message = "password should be at least 8 characters")
     private String password;
 
+    
     @NotNull(message = "Authorities should not be null")
     private String authorities;
 
@@ -64,14 +65,11 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Account> accounts;
 
-    @Transient
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
     public User() {
     }
 
-    public User(long id, String name, String nric, int phoneNo, String address,String username, 
-    String password,String authorities, boolean status) {
+    public User(long id, String name, String nric, String phoneNo, String address, String username, 
+    String password, String authorities, boolean status) {
         // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.id = id;
         this.name = name;
@@ -96,7 +94,7 @@ public class User implements UserDetails {
         return nric;
     }
 
-    public int getPhoneNo() {
+    public String getPhoneNo() {
         return phoneNo;
     }
 
@@ -112,7 +110,7 @@ public class User implements UserDetails {
         return password;
     }
 
-    public String[] getStringAuthorities() {
+    public String getStringAuthorities() {
         return authorities;
     }
 
@@ -121,7 +119,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> result = new ArrayList<>();
-        for (String authority : authorities) {
+        for (String authority : authorities.split(",")) {
             result.add(new SimpleGrantedAuthority(authority));
         }
         return result;
@@ -133,7 +131,7 @@ public class User implements UserDetails {
     }
 
     public String toString(){
-        return username + " " + password + " " + getStringAuthorities();
+        return username + " " + password + " " + authorities;
     }
 
     public void setId(long id) {
@@ -147,7 +145,7 @@ public class User implements UserDetails {
     public void setNric(String nric) {
         this.nric = nric;
     }
-    public void setPhoneNo(int phoneNo) {
+    public void setPhoneNo(String phoneNo) {
         this.phoneNo = phoneNo;
     }
 
@@ -160,11 +158,10 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        this.password = encoder.encode(password);
+        this.password = password;
     }
 
-    public void setAuthorities(String[] authorities) {
+    public void setAuthorities(String authorities) {
         this.authorities = authorities;
     }
 

@@ -53,15 +53,7 @@ public class Account {
     public Account(Long id, User customer, Long customerId, Double balance, 
     Double availableBalance) {
         this.id = id;
-
-        if(!customer.getStringAuthorities().contains("ROLE_USER")){
-            throw new UserNotValidException("Only customers can set up accounts");
-        }
         this.cust = customer;
-
-        if(cust.getId() != customerId){
-            throw new UserNotFoundException("Customer ID is invalid");
-        }
         this.customerId = customerId;
         this.balance = balance;
         this.availableBalance = availableBalance;
