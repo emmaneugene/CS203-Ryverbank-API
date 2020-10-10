@@ -84,7 +84,8 @@ Authorization: Basic manager_1 01_manager_01
 ###
 PUT http://localhost:8080/customers/2
 Content-Type: application/json
-Authorization: Basic manager_1 01_manager_01
+// Authorization: Basic manager_1 01_manager_01
+Authorization: Basic iamironman i<3carmen
 
 {
     "id": 2,
