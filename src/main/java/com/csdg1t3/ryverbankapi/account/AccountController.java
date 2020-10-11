@@ -163,37 +163,4 @@ public class AccountController {
         return transferRepo.save(transfer);
     }
     
-    // @ResponseStatus(HttpStatus.OK)
-    // @GetMapping("customer/{id}/accounts")
-    // public List<Account> getAccounts(@PathVariable Long id) {
-    //     User userAtId = userService.getUser(id);
-    //     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    //     String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
-    //     if(!userAtId.getUsername().equals(username)){
-    //         throw new AccountNotValidException("User cannot view other user's account");
-    //     }
-    //     return accountService.listAccountsForUser(id);
-    // }
-
-    // @GetMapping("customer/{id}/accounts/{account_id}")
-    // public Account getAccount(@PathVariable Long id, @PathVariable Long account_id) {
-    //     Account account = accountService.getAccount(account_id);
-    //     if (account == null) {
-    //         throw new AccountNotFoundException(account_id);
-    //     }
-
-    //     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    //     String username = auth.getPrincipal().toString().substring(0, auth.getPrincipal().toString().indexOf(" "));
-    //     if(!account.getCustomer().getUsername().equals(username)){
-    //         throw new AccountNotValidException("User cannot view other user's account");
-    //     }
-        
-    //     if (account.getCustomerId() == id) {
-    //         return account;
-    //     } else {
-    //         throw new AccountNotFoundException(account_id);
-    //     }
-    // }
-
-    
 }
