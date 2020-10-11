@@ -11,20 +11,24 @@ public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+    @NotNull(message = "Title should not be null")
     private String title;
+    @NotNull(message = "Summary should not be null")
     private String summary;
-    private String body;
+    @NotNull(message = "Content should not be null")
+    private String content;
+    @NotNull(message = "Link should not be null")
     private String link;
     private Boolean approval;
 
     public Content() {}
 
-    public Content(Long Id, String title, String summary, String body, String link,
+    public Content(long Id, String title, String summary, String content, String link,
     Boolean approval) {
         this.Id = Id;
         this.title = title;
         this.summary = summary;
-        this.body = body;
+        this.content = content;
         this.link = link;
         this.approval = approval;
     }
@@ -41,8 +45,8 @@ public class Content {
         return summary;
     }
 
-    public String getBody() {
-        return body;
+    public String getContent() {
+        return content;
     }
 
     public String getLink() {
@@ -65,8 +69,8 @@ public class Content {
         this.summary = summary;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public void setLink(String link) {

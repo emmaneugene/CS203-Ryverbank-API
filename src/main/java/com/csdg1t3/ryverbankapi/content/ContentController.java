@@ -1,6 +1,6 @@
 package com.csdg1t3.ryverbankapi.content;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,24 +12,41 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+
+import javax.validation.Valid;
+
 /**
- * Controller that manages HTTP GET/POST/PUT/DELETE requests by calling methods in ContentService
+ * Controller that manages HTTP GET/POST/PUT/DELETE requests
  */
 @RestController
 public class ContentController {
-    private ContentService contentService;
+    private ContentRepository contentRepo;
 
-    public ContentController (ContentService cs) {
-        this.contentService = cs;
+    public ContentController (ContentRepository contentRepo) {
+        this.contentRepo = contentRepo;
     }
 
     /**
-     * List all content in the system
+     * List all content in the system. ROLE_MANAGER and ROLE_ANALYST can view all content,
+     * while ROLE_USER can only view approved content
      * @return list of all content
      */
-    @GetMapping("/content")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/contents")
     public List<Content> getContent() {
-        return contentService.listContent();
+        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal();
+        Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
+        if (uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")) || 
+            uAuthorities.contains(new SimpleGrantedAuthority("ROLE_ANALYST")))
+            return contentRepo.findAll();
+        
+        return contentRepo.findByApproval(true);
     }
 
     /**
@@ -38,56 +55,120 @@ public class ContentController {
      * @param id
      * @return content with the given id
      */
-    @GetMapping("/content/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/contents/{id}")
     public Content getContent(@PathVariable Long id) {
-        Content content = contentService.getContent(id);
+        Optional<Content> result = contentRepo.findById(id);
+        if (!result.isPresent()) {
+            throw new ContentNotFoundException(id);
+        }
+        Content content = result.get();
+
+        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal();
+        Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
+
+        if (uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")) || 
+        uAuthorities.contains(new SimpleGrantedAuthority("ROLE_ANALYST")))
+            return content;
         
-        // Handle "content not found" error using appropriate http codes
-        if (content == null) {
-            throw new ContentNotFoundException(id);
-        } 
-        return contentService.getContent(id);
+        if (content.getApproval())
+            return content;
+        
+        throw new ContentNotApprovedException(id);
     }
 
-    /**
-     * Add new content with POST request to "/content"
-     * Note the use of @RequestBody
-     * @param content
-     * @return list of all content
-     */
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/content")
-    public Content addContent(@RequestBody Content content) {
-        return contentService.addContent(content);
+    @PostMapping("/contents")
+    public Content createContent(@Valid @RequestBody Content content) {
+        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal();
+        Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
+
+        if (!uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")))
+            content.setApproval(false);
+        return contentRepo.save(content);
     }
 
-    /**
-     * If there isn't a content with given id, throw ContentNotFoundException
-     * @param id
-     * @param newContentInfo
-     * @return updated content
-     */
-    @PutMapping("/content/{id}")
-    public Content updateContent(@PathVariable Long id, @RequestBody Content newContentInfo) {
-        Content content = contentService.updateContent(id, newContentInfo);
-
-        if (content == null) {
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/contents/{id}")
+    public Content updateContent(@PathVariable Long id, @RequestBody Content newContent) {
+        Optional<Content> result = contentRepo.findById(id);
+        if (!result.isPresent()) {
             throw new ContentNotFoundException(id);
         }
-        return content;
+        Content content = result.get();
+
+        if (newContent.getTitle() != null)
+            content.setTitle(newContent.getTitle());
+        if (newContent.getSummary() != null)
+            content.setSummary(newContent.getSummary());
+        if (newContent.getContent() != null)
+            content.setContent(newContent.getContent());
+        if (newContent.getLink() != null)
+            content.setLink(newContent.getLink());
+        if (newContent.getApproval() != null)
+            content.setApproval(newContent.getApproval());
+
+        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal();
+        Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
+        if (!uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")))
+            content.setApproval(false);
+
+        return contentRepo.save(content);
     }
 
-    /**
-     * Remove content with the DELETE request to "/content/{id}"
-     * If there isn't a content with the given id, throw ContentNotFoundException
-     * @param id
-     */
-    @DeleteMapping("/content/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/contents/{id}")
     public void deleteContent(@PathVariable Long id) {
-        try {
-            contentService.deleteContent(id);
-        } catch (Exception e) {
+        Optional<Content> result = contentRepo.findById(id);
+        if (!result.isPresent()) {
             throw new ContentNotFoundException(id);
         }
+
+        contentRepo.deleteById(id);
     }
+
+    // /**
+    //  * Add new content with POST request to "/content"
+    //  * Note the use of @RequestBody
+    //  * @param content
+    //  * @return list of all content
+    //  */
+    // @ResponseStatus(HttpStatus.CREATED)
+    // @PostMapping("/content")
+    // public Content addContent(@RequestBody Content content) {
+    //     return contentRepo.addContent(content);
+    // }
+
+    // /**
+    //  * If there isn't a content with given id, throw ContentNotFoundException
+    //  * @param id
+    //  * @param newContentInfo
+    //  * @return updated content
+    //  */
+    // @PutMapping("/content/{id}")
+    // public Content updateContent(@PathVariable Long id, @RequestBody Content newContentInfo) {
+    //     Content content = contentRepo.updateContent(id, newContentInfo);
+
+    //     if (content == null) {
+    //         throw new ContentNotFoundException(id);
+    //     }
+    //     return content;
+    // }
+
+    // /**
+    //  * Remove content with the DELETE request to "/content/{id}"
+    //  * If there isn't a content with the given id, throw ContentNotFoundException
+    //  * @param id
+    //  */
+    // @DeleteMapping("/content/{id}")
+    // public void deleteContent(@PathVariable Long id) {
+    //     try {
+    //         contentRepo.deleteContent(id);
+    //     } catch (Exception e) {
+    //         throw new ContentNotFoundException(id);
+    //     }
+    // }
 }
