@@ -1,4 +1,4 @@
-package com.csdg1t3.ryverbankapi.transfer;
+package com.csdg1t3.ryverbankapi.account;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

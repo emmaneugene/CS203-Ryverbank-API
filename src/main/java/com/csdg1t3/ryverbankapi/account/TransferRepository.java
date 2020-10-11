@@ -1,4 +1,4 @@
-package com.csdg1t3.ryverbankapi.transfer;
+package com.csdg1t3.ryverbankapi.account;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +14,8 @@ public interface TransferRepository extends JpaRepository<Transfer, Long>{
     Transfer save(Transfer transfer);
     List<Transfer> findBySenderId(Long senderId);
     List<Transfer> findByReceiverId(Long receiverId);
-    // List<Transfer> findAll();
-    
+    List<Transfer> findBySenderIdOrReceiverId(Long senderId, Long receiverId);
+        
     Optional<Transfer> findByIdAndSenderId(Long id, Long senderId);
     Optional<Transfer> findByIdAndReceiverId(Long id, Long receiverId);
 }

@@ -1,10 +1,8 @@
-package com.csdg1t3.ryverbankapi.transfer;
+package com.csdg1t3.ryverbankapi.account;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import com.csdg1t3.ryverbankapi.account.*;
 
 /**
  * POJO that stores the details of a bank transfer between two accounts.

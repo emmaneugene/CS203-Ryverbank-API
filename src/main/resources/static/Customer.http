@@ -1,51 +1,42 @@
 # Customer 
 GET http://localhost:8080/customers
-Authorization: Basic manager_1 01_manager_01
-
 ###
+
+GET http://localhost:8080/customers
+Authorization: Basic manager_1 01_manager_01
+###
+
 GET http://localhost:8080/customers/3
 Authorization: Basic iamironman i<3carmen
-
 ###
-POST http://localhost:8080/customers
-Content-Type: application/json
 
-{
-    "name": "Tony Stark",
-    "nric": "S1234567A",
-    "phoneNo": 91234567,
-    "address": "Malibu",
-    "username": "tstark",
-    "password": "gooduser",
-    "authorities": "ROLE_USER",
-    "status": true
-}
-
+GET http://localhost:8080/customers/3
+Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
 POST http://localhost:8080/customers
-Content-Type: application/json
-
-{
-    "name": "John Cena",
-    "nric": "S7654321B",
-    "phoneNo": 98897007,
-    "address": "WWE hall of fame",
-    "username": "cantseeme",
-    "password": "password",
-    "authorities": "ROLE_USER",
-    "status": true
-}
-
-###
-
-PUT http://localhost:8080/customers/2
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
+
+{
+    "name": "John Tan Xiao Ming",
+    "nric": "S1234567D",
+    "phoneNo": 93410569,
+    "address": "99 Bedok North Ave 4 #13-233 S460099",
+    "username": "johntxm",
+    "password": "johnpwsucks!1!",
+    "authorities": "ROLE_USER",
+    "status": true
+}
+###
+
+POST http://localhost:8080/customers
+Content-Type: application/json
+Authorization: Basic iamironman i<3carmen
 
 {
     "name": "Charlize Theron",
-    "nric": "S2424567C",
+    "nric": "S1234567D",
     "phoneNo": 90087654,
     "address": "Singapore Management University",
     "username": "theronlyone",
@@ -53,26 +44,33 @@ Authorization: Basic manager_1 01_manager_01
     "authorities": "ROLE_USER",
     "status": true
 }
-
 ###
+
+# PUT request should only be able to modify phoneNo, password and address
 PUT http://localhost:8080/customers/2
 Content-Type: application/json
-// Authorization: Basic manager_1 01_manager_01
 Authorization: Basic iamironman i<3carmen
 
 {
     "id": 2,
-    "name": "Tony Stark",
-    "nric": "S8732269I",
-    "phoneNo": 91234567,
-    "address": "10880 Malibu Point, 90265",
-    "username": "iamironman",
+    "name": "Happy Stark",
+    "nric": "S1234567D",
+    "phoneNo": "90908765",
+    "address": "MCU Hall of fame",
+    "username": "iamnotironman",
     "password": "i</3carmen",
     "authorities": "ROLE_USER",
-    "status": true
+    "status": false
 }
 ###
 
-DELETE http://localhost:8080/customers/3
+# PUT request by manager should be able to change status as well
+PUT http://localhost:8080/customers/2
+Content-Type: application/json
+Authorization: Basic manager_1 01_manager_01
 
+{
+    "phoneNo": "91234567",
+    "status": false
+}
 ###

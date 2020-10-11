@@ -22,8 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-        throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
         .userDetailsService(userDetailsService)
         .passwordEncoder(encoder());
@@ -35,17 +34,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .httpBasic()
             .and()
         .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/customers", "/accounts").hasRole("MANAGER")
+            // customers 
             .antMatchers(HttpMethod.GET, "/customers/**", "/accounts/**").hasAnyRole("MANAGER", "USER")
-            .antMatchers(HttpMethod.PUT, "/accounts/**").hasRole("MANAGER")
-            .antMatchers(HttpMethod.PUT, "/customers/**", "/customers/*").hasAnyRole("MANAGER", "USER")
-            .antMatchers(HttpMethod.DELETE, "/customers/**","/accounts/**").hasRole("MANAGER")
-            .antMatchers(HttpMethod.POST, "/customers/**","/accounts/**").hasRole("MANAGER")
-            // .antMatchers(HttpMethod.DELETE, "/content", "/stock", "/trade", "/transfer", "/account", "/customer").hasRole("ADMIN")
-            // .antMatchers(HttpMethod.GET, "/content", "/stock", "/trade", "/transfer", "/account", "/customer").hasAnyRole("ADMIN", "USER") // Anyone can view
-            //.antMatchers(HttpMethod.POST, "/content", "/stock", "/trade", "/account", "/customer").hasRole("ADMIN")
-            //.antMatchers(HttpMethod.PUT, "/content", "/stock", "/trade", "/account", "/customer").hasRole("ADMIN")
-
+            .antMatchers(HttpMethod.POST, "/customers/**").hasRole("MANAGER")
+            .antMatchers(HttpMethod.PUT, "/customers/**").hasAnyRole("MANAGER", "USER")
+            // accounts 
+            .antMatchers(HttpMethod.GET, "/accounts/**").hasRole( "USER")
+            .antMatchers(HttpMethod.POST, "/accounts/*/transactions").hasRole("USER")
+            .antMatchers(HttpMethod.POST, "/accounts").hasRole("MANAGER")
+            // contents
+            .antMatchers(HttpMethod.GET, "/contents/*").hasAnyRole("USER", "MANAGER", "ANALYST")
+            .antMatchers(HttpMethod.POST, "/contents/*").hasAnyRole("MANAGER", "ANALYST")
+            .antMatchers(HttpMethod.PUT, "contents/*").hasAnyRole("MANAGER", "ANALYST")
+            .antMatchers(HttpMethod.DELETE, "contents/*").hasAnyRole("MANAGER", "ANALYST")
+            // stocks
+            // trades
+            // portfolio
+            
             .and()
         .csrf().disable() // CSRF protection is needed only for browser based attacks
         .formLogin().disable()
@@ -59,7 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Bean
     public BCryptPasswordEncoder encoder() {
-        // auto-generate a random salt internally
         return new BCryptPasswordEncoder();
     }
 }

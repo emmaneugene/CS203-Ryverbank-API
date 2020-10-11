@@ -18,13 +18,14 @@ public class RyverbankApiApplication {
 
         UserRepository users = ctx.getBean(UserRepository.class);
         BCryptPasswordEncoder encoder = ctx.getBean(BCryptPasswordEncoder.class);
-        User admin = new User(1, "admin", "S1234567G", 80756529, "Lalaland 10, Potato's Dream, 10200", "manager_1", "01_manager_01", "ROLE_MANAGER", true);
-        System.out.println("[Add manager]: " + users.save(admin));
-        User tstark = new User(2, "Tony Stark", "S8732269I", 80437586, "10880 Malibu Point, 90265", "iamironman", "i<3carmen", "ROLE_USER", true);
-        User tholland = new User(3, "Tom Holland", "S9847385E", 93580378, "20 Ingram Street", "spiderman", "mrstark,Idontfeels0good", "ROLE_USER", true);
 
-        System.out.println("[Add customer]: " + users.save(tstark).getName());
-        System.out.println("[Add customer]: " + users.save(tholland).getName());
+        User admin = new User(1, "admin", "S1234567G", "80756529", "Lalaland 10, Potato's Dream, 10200", "manager_1", encoder.encode("01_manager_01"), "ROLE_MANAGER", true);
+        User tstark = new User(2, "Tony Stark", "S8732269I", "80437586", "10880 Malibu Point, 90265", "iamironman", encoder.encode("i<3carmen"), "ROLE_USER", true);
+        User tholland = new User(3, "Tom Holland", "S9847385E", "93580378", "20 Ingram Street", "spiderman", encoder.encode("mrstark,Idontfeels0good"), "ROLE_USER", true);
+
+        System.out.println("[Add manager]: " + users.save(admin));
+        System.out.println("[Add customer]: " + users.save(tstark));
+        System.out.println("[Add customer]: " + users.save(tholland));
 
         // RestTemplateClient client = ctx.getBean(RestTemplateClient.class);
         // User cx = new User(4, "Carmmie Yip", "S9984627E", 93749560, "66 Lorong 4 Toa Payoh #01-317 S310066", "potatoes", encoder.encode("p0tatoes<3"),  "MANAGER", true);
