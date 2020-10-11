@@ -1,20 +1,41 @@
 # Transfer
 
-GET http://localhost:8080/transactions
-
-###
-GET http://localhost:8080/accounts/3/transactions
-
+# ROLE_USER can view their own transactions
+GET http://localhost:8080/accounts/1/transactions
+Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
-GET http://localhost:8080/accounts/4/transactions/4
-
-###
-POST http://localhost:8080/transactions
+# ROLE_USER can create transactions between accounts
+POST http://localhost:8080/accounts/1/transactions
 Content-Type: application/json
+Authorization: : Basic spiderman mrstark,Idontfeels0good
+
+{
+    "from": 1,
+    "to": 2,
+    "amount": 1000
+}
+###
+
+# 'From' must match ID shown in URL
+POST http://localhost:8080/accounts/1/transactions
+Content-Type: application/json
+Authorization: Basic spiderman mrstark,Idontfeels0good
 
 {
     "from": 2,
-    "to": 4,
+    "to": 1,
     "amount": 1000
 }
+###
+
+POST http://localhost:8080/accounts/3/transactions
+Content-Type: application/json
+Authorization: Basic iamironman i<3carmen
+
+{
+    "from": 3,
+    "to": 1,
+    "amount": 3000
+}
+###

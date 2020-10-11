@@ -1,18 +1,19 @@
 # Customer 
 GET http://localhost:8080/customers
 ###
+
 GET http://localhost:8080/customers
 Authorization: Basic manager_1 01_manager_01
 ###
 
 GET http://localhost:8080/customers/3
 Authorization: Basic iamironman i<3carmen
-
 ###
+
 GET http://localhost:8080/customers/3
 Authorization: Basic spiderman mrstark,Idontfeels0good
-
 ###
+
 POST http://localhost:8080/customers
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
@@ -43,8 +44,8 @@ Authorization: Basic iamironman i<3carmen
     "authorities": "ROLE_USER",
     "status": true
 }
-
 ###
+
 # PUT request should only be able to modify phoneNo, password and address
 PUT http://localhost:8080/customers/2
 Content-Type: application/json
@@ -62,6 +63,7 @@ Authorization: Basic iamironman i<3carmen
     "status": false
 }
 ###
+
 # PUT request by manager should be able to change status as well
 PUT http://localhost:8080/customers/2
 Content-Type: application/json
@@ -71,5 +73,4 @@ Authorization: Basic manager_1 01_manager_01
     "phoneNo": "91234567",
     "status": false
 }
-
 ###
