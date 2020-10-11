@@ -4,16 +4,11 @@ package com.csdg1t3.ryverbankapi.account;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import com.csdg1t3.ryverbankapi.user.*;
-import com.csdg1t3.ryverbankapi.user.UserNotFoundException;
-
 import javax.validation.Valid;
 
 import java.util.List;
 import java.util.ArrayList;
 import com.csdg1t3.ryverbankapi.user.*;
-import com.csdg1t3.ryverbankapi.transfer.*;
 
 /**
  * POJO that stores the details of a customer's bank account
@@ -44,6 +39,7 @@ public class Account {
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Transfer> sentTransfers = new ArrayList<Transfer>();
+    
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Transfer> receivedTransfers = new ArrayList<Transfer>();
@@ -61,6 +57,7 @@ public class Account {
 
     public Long getId() { return id; }
 
+    @JsonIgnore
     public User getCustomer() { return cust; }
 
     public Long getCustomerId() { return customerId; }
