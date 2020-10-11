@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      *  Note that the method takes only a username.
         The UserDetails interface has methods to get the password.
     */
-    public UserDetails loadUsersByID(Long id)  throws UserNotFoundException {
+    public UserDetails loadUsersByID(Long id) throws UserNotFoundException {
         return users.findById(id)
             .orElseThrow(() -> new UserNotFoundException("User '" + id + "' not found"));
     }
@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override 
     public UserDetails loadUserByUsername(String username) throws UserNotFoundException{
         return users.findByUsername(username)
-            .orElseThrow(() -> new UserNotFoundException("User '" + username + "' not found"));
+            .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
     }
     
 }

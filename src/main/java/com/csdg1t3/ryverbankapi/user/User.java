@@ -59,7 +59,7 @@ public class User implements UserDetails {
 
     // can be null if manager or analyst 
     @NotNull(message = "Status should not be null")
-    private boolean status;
+    private Boolean status;
     
     @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL /*, orphanRemoval = true*/)
     @JsonIgnore
@@ -69,7 +69,7 @@ public class User implements UserDetails {
     }
 
     public User(long id, String name, String nric, String phoneNo, String address, String username, 
-    String password, String authorities, boolean status) {
+    String password, String authorities, Boolean status) {
         // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.id = id;
         this.name = name;
@@ -126,7 +126,7 @@ public class User implements UserDetails {
     }
 
     
-    public boolean getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
@@ -165,7 +165,7 @@ public class User implements UserDetails {
         this.authorities = authorities;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
@@ -178,17 +178,17 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
-        return true;
+        return status;
     }
 
     @Override
     @JsonIgnore
     public boolean isCredentialsNonExpired() {
-        return true;
+        return status;
     }
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return true;
+        return status;
     }
 }
