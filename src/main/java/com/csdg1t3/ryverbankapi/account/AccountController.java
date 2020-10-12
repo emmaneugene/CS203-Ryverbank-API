@@ -16,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.Authentication;
 
-import javax.management.relation.RoleNotFoundException;
 import javax.validation.Valid;
 
 import com.csdg1t3.ryverbankapi.user.*;

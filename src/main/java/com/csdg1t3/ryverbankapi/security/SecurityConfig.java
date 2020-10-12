@@ -35,8 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
         .authorizeRequests()
             // customers 
-            .antMatchers(HttpMethod.GET, "/customers/**", "/accounts/**").hasAnyRole("MANAGER", "USER")
-            .antMatchers(HttpMethod.POST, "/customers/**").hasRole("MANAGER")
+            .antMatchers(HttpMethod.GET, "/customers/**").hasAnyRole("MANAGER", "USER")
+            .antMatchers(HttpMethod.POST, "/customers").hasRole("MANAGER")
             .antMatchers(HttpMethod.PUT, "/customers/**").hasAnyRole("MANAGER", "USER")
             // accounts 
             .antMatchers(HttpMethod.GET, "/accounts/**").hasRole( "USER")
@@ -44,9 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.POST, "/accounts").hasRole("MANAGER")
             // contents
             .antMatchers(HttpMethod.GET, "/contents/*").hasAnyRole("USER", "MANAGER", "ANALYST")
-            .antMatchers(HttpMethod.POST, "/contents/*").hasAnyRole("MANAGER", "ANALYST")
-            .antMatchers(HttpMethod.PUT, "contents/*").hasAnyRole("MANAGER", "ANALYST")
-            .antMatchers(HttpMethod.DELETE, "contents/*").hasAnyRole("MANAGER", "ANALYST")
+            .antMatchers(HttpMethod.POST, "/contents").hasAnyRole("MANAGER", "ANALYST")
+            .antMatchers(HttpMethod.PUT, "/contents/*").hasAnyRole("MANAGER", "ANALYST")
+            .antMatchers(HttpMethod.DELETE, "/contents/*").hasAnyRole("MANAGER", "ANALYST")
             // stocks
             // trades
             // portfolio
