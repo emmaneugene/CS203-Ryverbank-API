@@ -129,46 +129,4 @@ public class ContentController {
 
         contentRepo.deleteById(id);
     }
-
-    // /**
-    //  * Add new content with POST request to "/content"
-    //  * Note the use of @RequestBody
-    //  * @param content
-    //  * @return list of all content
-    //  */
-    // @ResponseStatus(HttpStatus.CREATED)
-    // @PostMapping("/content")
-    // public Content addContent(@RequestBody Content content) {
-    //     return contentRepo.addContent(content);
-    // }
-
-    // /**
-    //  * If there isn't a content with given id, throw ContentNotFoundException
-    //  * @param id
-    //  * @param newContentInfo
-    //  * @return updated content
-    //  */
-    // @PutMapping("/content/{id}")
-    // public Content updateContent(@PathVariable Long id, @RequestBody Content newContentInfo) {
-    //     Content content = contentRepo.updateContent(id, newContentInfo);
-
-    //     if (content == null) {
-    //         throw new ContentNotFoundException(id);
-    //     }
-    //     return content;
-    // }
-
-    // /**
-    //  * Remove content with the DELETE request to "/content/{id}"
-    //  * If there isn't a content with the given id, throw ContentNotFoundException
-    //  * @param id
-    //  */
-    // @DeleteMapping("/content/{id}")
-    // public void deleteContent(@PathVariable Long id) {
-    //     try {
-    //         contentRepo.deleteContent(id);
-    //     } catch (Exception e) {
-    //         throw new ContentNotFoundException(id);
-    //     }
-    // }
 }
