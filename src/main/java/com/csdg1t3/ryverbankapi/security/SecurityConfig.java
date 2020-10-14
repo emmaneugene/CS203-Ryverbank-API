@@ -35,11 +35,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
         .authorizeRequests()
             // customers 
-            .antMatchers(HttpMethod.GET, "/customers/**").hasAnyRole("MANAGER", "USER")
+            .antMatchers(HttpMethod.GET, "/customers").hasRole("MANAGER")
+            .antMatchers(HttpMethod.GET, "/customers/*").hasAnyRole("MANAGER", "USER")
             .antMatchers(HttpMethod.POST, "/customers").hasRole("MANAGER")
-            .antMatchers(HttpMethod.PUT, "/customers/**").hasAnyRole("MANAGER", "USER")
+            .antMatchers(HttpMethod.PUT, "/customers/*").hasAnyRole("MANAGER", "USER")
             // accounts 
-            .antMatchers(HttpMethod.GET, "/accounts/**").hasRole( "USER")
+            .antMatchers(HttpMethod.GET, "/accounts/*").hasRole( "USER")
             .antMatchers(HttpMethod.POST, "/accounts/*/transactions").hasRole("USER")
             .antMatchers(HttpMethod.POST, "/accounts").hasRole("MANAGER")
             // contents
@@ -61,7 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * @Bean annotation is used to declare a PasswordEncoder bean in the Spring application context. 
      * Any calls to encoder() will then be intercepted to return the bean instance.
      */
-    
     @Bean
     public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
