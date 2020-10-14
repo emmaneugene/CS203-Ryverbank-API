@@ -56,7 +56,7 @@ public class Validator {
            }
        }
        // First digit must be 9 or 8
-       if (phoneNo.charAt(0) != '9' && phoneNo.charAt(0) != '8') {
+       if (phoneNo.charAt(0) != '9' && phoneNo.charAt(0) != '8' && phoneNo.charAt(0) != '6') {
            return false;
        }
        return true;
