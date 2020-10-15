@@ -84,10 +84,10 @@ public class UserController {
             throw new UserNotValidException("Username already taken");
 
         if (!Validator.validateNRIC(user.getNric())) 
-            throw new RoleNotAuthorisedException("NRIC is invalid");
+            throw new UserNotValidException("NRIC is invalid");
 
         if (!Validator.validatePhoneno(user.getPhoneNo())) 
-            throw new RoleNotAuthorisedException("Phone number is invalid");
+            throw new UserNotValidException("Phone number is invalid");
 
         user.setPassword(encoder.encode(user.getPassword()));
         return userRepo.save(user);
@@ -117,6 +117,8 @@ public class UserController {
             throw new RoleNotAuthorisedException("You cannot update another customer's details");
         
         if (newUserInfo.getPhoneNo() != null)
+            if (!Validator.validatePhoneno(user.getPhoneNo())) 
+                throw new UserNotValidException("Phone number is invalid");
             user.setPhoneNo(newUserInfo.getPhoneNo());
         
         if (newUserInfo.getAddress() != null)

@@ -121,8 +121,10 @@ public class AccountController {
 
     /**
      * Only ROLE_USER can create a new transfer, as validated in security config
-     * This method needs to validate sender and receiver accounts and ensure that the sender has 
-     * sufficient funds for transfer
+     * This method needs to 
+     * 1. validate sender and receiver accounts
+     * 2. ensure that user sending the request owns the account
+     * 3. ensure that the sender has sufficient funds for transfer
      * @param accountId
      * @return
      */
@@ -140,6 +142,12 @@ public class AccountController {
         if (!sender.isPresent()) 
             throw new AccountNotFoundException(transfer.getFrom());
         Account senderAcc = sender.get();
+
+        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal();
+        User user = userRepo.findByUsername(uDetails.getUsername()).get();
+        if (senderAcc.getCustomerId() != user.getId())
+            throw new RoleNotAuthorisedException("You cannot transfer funds from another person's account");
 
         if (senderAcc.getAvailableBalance() < transfer.getAmount())
             throw new TransferNotValidException("Insufficient funds in account for transfer");
