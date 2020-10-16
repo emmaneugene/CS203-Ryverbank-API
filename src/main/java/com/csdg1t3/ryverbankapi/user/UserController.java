@@ -89,7 +89,7 @@ public class UserController {
      * 
      * This method is only authorised for ROLE_MANAGER, as configured in SecurityConfig
      * @param user
-     * @return 
+     * @return new customer
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/customers")
@@ -118,7 +118,7 @@ public class UserController {
      * ROLE_MANAGER - allowed to update information for all customers, including their status 
      * @param id
      * @param newUserInfo
-     * @return
+     * @return updated customer
     */
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/customers/{id}")
