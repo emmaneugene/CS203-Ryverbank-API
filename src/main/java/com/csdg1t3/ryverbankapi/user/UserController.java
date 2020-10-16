@@ -25,13 +25,12 @@ import javax.validation.Valid;
 
 
 /**
- * Controller that manages HTTP  requests
+ * Controller that manages HTTP requests and updates data within UserRepository
  */
 @RestController
 public class UserController {
     private UserRepository userRepo;
     private BCryptPasswordEncoder encoder;
-
 
     public UserController(UserRepository userRepo, BCryptPasswordEncoder encoder) {
         this.userRepo= userRepo;
@@ -39,7 +38,11 @@ public class UserController {
     }
 
     /**
+     * Retrieve all customers in the bank. The method returns ROLE_MANAGER and ROLE_ANALYST 
+     * accounts as well
      * 
+     * This method is only authorised for ROLE_MANAGER, as configured in SecurityConfig. 
+     * @return all customers
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/customers")
@@ -48,14 +51,19 @@ public class UserController {
     }
 
     /**
-     * Search for customer with the given id. If there is no customer with the given "id", throw 
+     * Search for customer with the given id. If there is no customer with the given "id", throws a
+     * UserNotFoundException
+     * 
+     * This method is authorised for the following roles: 
+     * ROLE_MANAGER - can view all customer accounts
+     * ROLE_USER - can only view their own account
      * @param id
      * @return customer with the given id
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/customers/{id}")
     public User getCustomer(@PathVariable Long id) {
-        Optional<User> result = userRepo.findById(id); // userService.getUser(id);
+        Optional<User> result = userRepo.findById(id);
         if (!result.isPresent())
             throw new UserNotFoundException(id);
 
@@ -72,7 +80,14 @@ public class UserController {
 
     
     /**
+     * Create a new customer in the bank. In addition to basic field validation, the controller 
+     * must verify additional fields:
+     * 1. Username must be unique
+     * 2. NRIC must be valid 
+     * 3. Phone number must be valid
+     * If any data is not valid, the method throws a UserNotValidException
      * 
+     * This method is only authorised for ROLE_MANAGER, as configured in SecurityConfig
      * @param user
      * @return 
      */
@@ -94,9 +109,13 @@ public class UserController {
     }
 
     /**
-     * Updates customer info using HTTP PUT request. Customers with ROLE_USER are authorised 
-     * to update their phone no, address and password. Customers with ROLE_MANAGER are further
-     * authorised to update customer status 
+     * Update customer information. The method only allows for phone no, address and password fields
+     * and status to be updated. Changes to any other fields are ignored.
+     * 
+     * This method is authorised for the following roles:
+     * ROLE_USER - only allowed to update their own information, and cannot
+     * change their status
+     * ROLE_MANAGER - allowed to update information for all customers, including their status 
      * @param id
      * @param newUserInfo
      * @return
@@ -104,7 +123,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/customers/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User newUserInfo) {
-        Optional<User> result = userRepo.findById(id); // userService.getUser(id);
+        Optional<User> result = userRepo.findById(id); 
         if (!result.isPresent())
             throw new UserNotFoundException(id);
 
