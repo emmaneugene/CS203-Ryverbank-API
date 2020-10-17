@@ -1,106 +1,134 @@
 package com.csdg1t3.ryverbankapi.trade;
-import java.util.Date;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
 
+@Entity
 public class Trade {
-    private long tradeID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
     private String action;
     private String symbol;
-    private long quantity;
-    private double bid;
-    private double ask;
-    private double avg_price;
-    private int filled_quantity;
-    private Date date;
-    private long account_id;
-    private long customer_id;
+    private Long quantity;
+    private Double bid;
+    private Double ask;
+    private Double avg_price;
+    private Long filledQuantity;
+    private long date;
+    private Long accountId;
+    private Long customerId;
     private String status;
 
-    public Trade(long tradeID, String action, String symbol, long quantity, double bid, double ask, double avg_price, int filled_quantity, Date date, long account_id, long customer_id, String status){
-        this.tradeID = tradeID;
+    public Trade(long Id, String action, String symbol, long quantity, double bid, double ask, double avg_price, long filledQuantity, long date, long accountId, long customerId, String status){
+        this.Id = Id;
         this.action = action;
         this.symbol = symbol;
         this.quantity = quantity;
         this.bid = bid;
         this.ask = ask;
         this.avg_price = avg_price;
-        this.filled_quantity = filled_quantity;
+        this.filledQuantity = filledQuantity;
         this.date = date;
-        this.account_id = account_id;
-        this.customer_id = customer_id;
+        this.accountId = accountId;
+        this.customerId = customerId;
         this.status = status;
     }
 
-    public long getTradeID(){
-        return tradeID;
+    public Long getTradeID() {
+        return Id;
     }
     
-    public String getAction(){
+    public String getAction() {
         return action;
     }
 
-    public long getQuantity(){
+    public Long getQuantity() {
         return quantity;
     }
 
-    public double getBid(){
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public Double getBid() {
         return bid;
     }
 
-    public double getAsk(){
+    public Double getAsk() {
         return ask;
     }
 
-    public double getAvg_price(){
+    public Double getAveragePrice() {
         return avg_price;
     }
 
-    public int getFilled_quantity(){
-        return filled_quantity;
+    public Long getFilledQuantity() {
+        return filledQuantity;
     }
 
-    public Date getDate(){
+    public long getDate() {
         return date;
     }
 
-    public String getStatus(){
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+    
+    public String getStatus() {
         return status;
     }
 
-    public void setTradeID(long tradeID){
-        this.tradeID = tradeID;
+    public void setTradeID(long Id) {
+        this.Id = Id;
     }
     
-    public void setAction(String action){
+    public void setAction(String action) {
         this.action = action;
     }
 
-    public void setQuantity(long quantity){
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public void setQuantity(long quantity) {
         this.quantity = quantity; 
     }
 
-    public void setBid(double bid){
+    public void setBid(double bid) {
         this.bid = bid;
     }
 
-    public void setAsk(double ask){
+    public void setAsk(double ask) {
         this.ask = ask;
     }
 
-    public void setAvg_price(double avg_price){
+    public void setAvg_price(double avg_price) {
         this.avg_price = avg_price;
     }
 
-    public void setFilled_quantity(int filled_quantity){
-        this.filled_quantity = filled_quantity;
+    public void setfilledQuantity(long filledQuantity) {
+        this.filledQuantity = filledQuantity;
     }
 
-    public void setDate(Date date){
+    public void setDate(long date) {
         this.date = date;
         
     }
 
-    public void setStatus(String status){
+    public void setAccountId(Long accountId) {
+        
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setStatus(String status) {
         this.status = status;
     }
 }

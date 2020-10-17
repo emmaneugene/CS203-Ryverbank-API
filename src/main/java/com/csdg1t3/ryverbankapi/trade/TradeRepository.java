@@ -1,18 +1,20 @@
 package com.csdg1t3.ryverbankapi.trade;
+
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * Data access object
  */
-public interface TradeRepository {
-    Long save(Trade trade);
-    int update(Trade trade);
-    int deleteById(Long id);
+@Repository
+public interface TradeRepository extends JpaRepository<Trade, Long>{
+    Trade save(Trade trade);
+    void deleteById(Long id);
     List<Trade> findAll();
-
-    // Using Optional - the return value of this method may contain a null value
     Optional<Trade> findById(Long id);
+    List<Trade> findByStatus(String status);
  
 }
 
