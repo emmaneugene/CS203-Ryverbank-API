@@ -6,7 +6,8 @@ import java.util.Optional;
 /**
  * Data access object
  */
-public interface StockRepository {
+@Repository
+public interface StockRepository extends JPARepository<Stock, Long>{
     Long save(Stock stock);
     int update(Stock stock);
     int deleteById(Long id);
