@@ -1,12 +1,32 @@
 package com.csdg1t3.ryverbankapi.trade;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.Valid;
+
+
+@Entity
 public class Stock {
+    @Id
     private String symbol;
+
+    @NotNull(message = "last price should not be null")
     private double last_price;
+
+    @NotNull(message = "bid volume should not be null")
     private int bid_volume;
+
+    @NotNull(message = "bid should not be null")
     private double bid;
+
+    @NotNull(message = "ask_volume should not be null")
     private int ask_volume;
+
+    @NotNull(message = "ask should not be null")
     private double ask; 
+
+    public Stock(){}
 
     public Stock(String symbol, double last_price, int bid_volume, double bid, int ask_volume, double ask){
         this.symbol = symbol;
@@ -63,6 +83,11 @@ public class Stock {
 
     public void setAsk(double ask){
         this.ask = ask;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Symbol[id=%s, Last Price=%f, Bid Volume=%d, Bid = %f, Ask Volume = %d, Ask=%f]", symbol, last_price, bid_volume, bid, ask_volume, ask);
     }
 
 }

@@ -47,6 +47,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/customers")
     public List<User> getCustomers() {
+        System.out.println("Running get customers");;
         return userRepo.findAll();
     }
 
