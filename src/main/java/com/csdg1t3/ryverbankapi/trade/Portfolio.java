@@ -17,14 +17,13 @@ public class Portfolio {
     @NotNull(message = "customer should not be null")
     private Long customerId;
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Asset> assets;
-
     @ManyToOne
     @JoinColumn(name = "cust_id", nullable = false)
     @JsonIgnore
     private User cust;
+
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
+    private List<Asset> assets;
 
     @NotNull (message = "unrealized_gain_loss should not be null")
     private double unrealized_gain_loss;
@@ -34,8 +33,8 @@ public class Portfolio {
 
     public Portfolio() {};
 
-    public Portfolio(Long id, User customer, List<Asset> assets, double unrealized_gain_loss, double total_gain_loss) {
-        this.customerId = id;
+    public Portfolio(Long customerId, User customer, List<Asset> assets, double unrealized_gain_loss, double total_gain_loss) {
+        this.customerId = customerId;
         this.cust = customer;
         this.assets = assets;
         this.unrealized_gain_loss = unrealized_gain_loss;
@@ -44,6 +43,7 @@ public class Portfolio {
 
     public Long getId() { return customerId; }
 
+    @JsonIgnore
     public User getCustomer() { return cust; }
 
     public List<Asset> getAssets() { return assets;}
@@ -64,7 +64,12 @@ public class Portfolio {
         this.assets = assets;
     }
 
-    public void setUnrealizedGainLoss(double unrealized_gain_loss) {
+    public void setUnrealizedGainLoss() {
+        double unrealized_gain_loss = 0;
+        for (Asset a : this.assets) {
+            unrealized_gain_loss += a.getGainLoss();
+        }
+
         this.unrealized_gain_loss = unrealized_gain_loss;
     }
 

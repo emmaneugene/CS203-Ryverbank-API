@@ -74,3 +74,7 @@ Authorization: Basic manager_1 01_manager_01
     "status": false
 }
 ###
+
+GET http://localhost:8080/portfolio
+Content-Type: application/json
+Authorization: Basic iamironman i<3carmen

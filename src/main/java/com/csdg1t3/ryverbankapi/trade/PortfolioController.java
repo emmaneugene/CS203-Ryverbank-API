@@ -43,14 +43,14 @@ public class PortfolioController {
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/portfolio")
-    public Portfolio getContent() {
+    public Portfolio getPortfolio() {
         UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
         .getPrincipal();
         
         User user = userRepo.findByUsername(uDetails.getUsername()).get();
         Optional<Portfolio> result = portfolioRepo.findByCustomerId(user.getId());
         if (!result.isPresent()) { 
-            return new Portfolio();
+            return new Portfolio(user.getId(), user, null, 0.0, 0.0);
         }
 
         Portfolio portfolio = result.get();
