@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findById(Long id);
     List<Account> findByCustomerId(Long id);
+
+    // Using Optional - the return value of this method may contain a null value
+    Optional<Account> findById(Long id);
 }

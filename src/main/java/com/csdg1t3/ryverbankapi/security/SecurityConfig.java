@@ -21,6 +21,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.userDetailsService = userSvc;
     }
 
+    /**
+     * Configure SecurityConfig with AuthenticationManagerBuilder
+     * @param auth The AuthenticationManagerBuilder to be used.
+     * @throws Exception
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -28,6 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .passwordEncoder(encoder());
     }
 
+    /**
+     * Defines which role is able to access specific URLs
+     * @param http The HTTP Security
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -59,8 +69,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * @Bean annotation is used to declare a PasswordEncoder bean in the Spring application context. 
-     * Any calls to encoder() will then be intercepted to return the bean instance.
+     * Calls to encoder will return the BCryptPasswordEncoder,
+     * which hashes what is given to it.
+     * 
+     * For our use case, it would be used to hash plaintext passwords.
      */
     @Bean
     public BCryptPasswordEncoder encoder() {
