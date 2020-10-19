@@ -5,6 +5,8 @@ import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.validation.Valid;
 
+import java.util.*;
+
 
 @Entity
 public class Stock {
@@ -25,6 +27,10 @@ public class Stock {
 
     @NotNull(message = "ask should not be null")
     private double ask; 
+
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Asset> asset;
 
     public Stock(){}
 

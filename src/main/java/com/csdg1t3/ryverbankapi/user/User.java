@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.csdg1t3.ryverbankapi.account.*;
+import com.csdg1t3.ryverbankapi.trade.*;
 
 
 
@@ -64,6 +65,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL /*, orphanRemoval = true*/)
     @JsonIgnore
     private List<Account> accounts;
+
+    @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL /*, orphanRemoval = true*/)
+    @JsonIgnore
+    private List<Asset> assets;
 
     public User() {
     }
