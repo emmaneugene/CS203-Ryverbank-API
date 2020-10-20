@@ -39,6 +39,10 @@ public class RyverbankApiApplication {
 
         StockRepository stocks = ctx.getBean(StockRepository.class);
         StockController stockController = new StockController(stocks);
+        List<Stock> stocksAdded = stockController.getStocks();
+        for(Stock s : stocksAdded){
+            System.out.println(s.toString());
+        }
         // RestTemplateClient client = ctx.getBean(RestTemplateClient.class);
         // User cx = new User(4, "Carmmie Yip", "S9984627E", 93749560, "66 Lorong 4 Toa Payoh #01-317 S310066", "potatoes", encoder.encode("p0tatoes<3"),  "MANAGER", true);
         // System.out.println("[Add customer, manager]: " + client.addUser("http://localhost:8080/customers", cx));

@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 
 import javax.validation.Valid;
 
+@RestController
 public class StockController {
     private StockRepository stockRepo;
 
@@ -64,6 +65,7 @@ public class StockController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/stocks")
     public List<Stock> getStocks() {
+        System.out.println("Im here");
         return stockRepo.findAll();
     }
 
@@ -73,7 +75,7 @@ public class StockController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/stocks/{symbol}")
     public Stock getStock(@PathVariable String symbol) {
-       
+        System.out.println("In get stocks");
         List<Stock> stocks = getStocks();
         
         for (Stock stock : stocks) {
