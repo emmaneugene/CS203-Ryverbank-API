@@ -1,0 +1,7 @@
+GET http://localhost:8080/stocks
+Authorization: Basic spiderman mrstark,Idontfeels0good
+###
+
+GET http://localhost:8080/stocks/A17U
+Authorization: Basic spiderman mrstark,Idontfeels0good
+###
