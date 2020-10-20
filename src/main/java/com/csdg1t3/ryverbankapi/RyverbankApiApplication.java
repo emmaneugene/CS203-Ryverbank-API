@@ -13,6 +13,8 @@ import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.security.*;
 import com.csdg1t3.ryverbankapi.trade.*;
 
+import java.io.File;
+
 @SpringBootApplication
 public class RyverbankApiApplication {
     public static void main(String[] args) {
@@ -36,13 +38,15 @@ public class RyverbankApiApplication {
 
         contents.save(new Content(1, "Title1", "Summary1", "Content1", "Link1", true));
         contents.save(new Content(2, "Title2", "Summary2", "Content2", "Link2", false));
+        
+        // Add stocks
+        StockController stockController = ctx.getBean(StockController.class);
+        stockController.createStocks(new File("data/stocks.txt"));
+        // List<Stock> stocksAdded = stockController.getStocks();
+        // for(Stock s : stocksAdded){
+        //     System.out.println(s.toString());
+        // }
 
-        StockRepository stocks = ctx.getBean(StockRepository.class);
-        StockController stockController = new StockController(stocks);
-        List<Stock> stocksAdded = stockController.getStocks();
-        for(Stock s : stocksAdded){
-            System.out.println(s.toString());
-        }
         // RestTemplateClient client = ctx.getBean(RestTemplateClient.class);
         // User cx = new User(4, "Carmmie Yip", "S9984627E", 93749560, "66 Lorong 4 Toa Payoh #01-317 S310066", "potatoes", encoder.encode("p0tatoes<3"),  "MANAGER", true);
         // System.out.println("[Add customer, manager]: " + client.addUser("http://localhost:8080/customers", cx));
