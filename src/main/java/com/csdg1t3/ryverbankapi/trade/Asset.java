@@ -54,14 +54,18 @@ public class Asset {
         this.current_price = current_price;
     }
 
+    @JsonIgnore
     public Long getId() { return id; }
 
+    @JsonIgnore
     public Stock getStock() { return stock;}
 
-    public String getSymbol() { return stock_symbol; }
-
+    public String getCode() { return stock_symbol; }
+    
+    @JsonIgnore
     public Portfolio getPortfolio() { return portfolio; }
 
+    @JsonIgnore
     public Long getPortfolio_id() {return portfolioId; }
 
     public int getQuantity() { return quantity; }
