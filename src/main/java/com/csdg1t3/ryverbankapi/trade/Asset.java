@@ -22,14 +22,14 @@ public class Asset {
     private Stock stock;
 
     @NotNull(message = "symbol should not be null")
-    private String stockSymbol;
+    private String stock_symbol;
 
     @ManyToOne
     @JoinColumn(name = "portfolio", nullable = false)
     @JsonIgnore
     private Portfolio portfolio;
 
-    @NotNull(message = "portfolioId should not be null")
+    @NotNull(message = "portfolio_id should not be null")
     @JsonIgnore
     private Long portfolioId;
 
@@ -37,38 +37,42 @@ public class Asset {
     @Positive(message = "quantity should be positive")
     private int quantity;
 
-    @NotNull(message = "avgPrice should not be null")
-    private double avgPrice;
+    @NotNull(message = "avg_price should not be null")
+    private double avg_price;
 
     @NotNull(message = "currentPrice should not be null")
-    private double currentPrice;
+    private double current_price;
 
     public Asset() {};
 
-    public Asset(Long id, Stock stock, String stockSymbol, int quantity, double avgPrice, double currentPrice) {
+    public Asset(Long id, Stock stock, String stock_symbol, int quantity, double avg_price, double current_price) {
         this.id = id;
         this.stock = stock;
-        this.stockSymbol = stockSymbol;
+        this.stock_symbol = stock_symbol;
         this.quantity = quantity;
-        this.avgPrice = avgPrice;
-        this.currentPrice = currentPrice;
+        this.avg_price = avg_price;
+        this.current_price = current_price;
     }
 
     public Long getId() { return id; }
 
     public Stock getStock() { return stock;}
 
-    public String getSymbol() { return stockSymbol; }
+    public String getSymbol() { return stock_symbol; }
+
+    public Portfolio getPortfolio() { return portfolio; }
+
+    public Long getPortfolio_id() {return portfolioId; }
 
     public int getQuantity() { return quantity; }
 
-    public double getAvgPrice() { return avgPrice; }
+    public double getAvg_price() { return avg_price; }
 
-    public double getCurrentPrice() { return currentPrice; }
+    public double getCurrent_price() { return current_price; }
 
-    public double getValue() { return currentPrice * quantity; }
+    public double getValue() { return current_price * quantity; }
 
-    public double getGainLoss() { return (currentPrice - avgPrice) * quantity; }
+    public double getGain_loss() { return (current_price - avg_price) * quantity; }
 
     public void setId(Long id) {
         this.id = id;
@@ -78,25 +82,34 @@ public class Asset {
         this.stock = stock;
     }
 
-    public void setSymbol(String stockSymbol) {
-        this.stockSymbol = stockSymbol;
+    public void setSymbol(String stock_symbol) {
+        this.stock_symbol = stock_symbol;
+    }
+
+    public void setPortfolio (Portfolio portfolio) {
+        this.portfolio = portfolio;
+    }
+
+    public void setPortfolio_id (Long portfolioId) {
+        this.portfolioId = portfolioId;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public void setAvgPrice(double avgPrice) {
-        this.avgPrice = avgPrice;
+    public void setAvg_price(double avg_price) {
+        this.avg_price = avg_price;
     }
 
-    public void setCurrentPrice(double currentPrice) {
-        this.currentPrice = currentPrice;
+    public void setCurrent_price(double current_price) {
+        this.current_price = current_price;
     }
 
     @Override
     public String toString() {
-        return String.format("Asset[symbol=%d, quantity=%d, avgPrice=%.2lf, currentPrice=%.2lf, value=%.2lf, gain_loss=%.2lf", this.stockSymbol, this.quantity, this.avgPrice, this.currentPrice, getValue(), getGainLoss());
+        return String.format("Asset[symbol=%d, quantity=%d, avg_price=%.2lf, currentPrice=%.2lf, value=%.2lf, gain_loss=%.2lf",
+        this.stock_symbol, this.quantity, this.avg_price, this.current_price, getValue(), getGain_loss());
     }
 
 }

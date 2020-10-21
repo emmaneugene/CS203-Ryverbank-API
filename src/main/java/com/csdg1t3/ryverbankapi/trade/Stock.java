@@ -12,7 +12,7 @@ import java.util.*;
 public class Stock {
     @Id
     private String symbol;
-
+    
     @NotNull(message = "last price should not be null")
     private double last_price;
 

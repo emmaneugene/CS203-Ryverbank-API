@@ -30,15 +30,22 @@ public class PortfolioController {
     private AssetRepository assetRepo;
     private PortfolioRepository portfolioRepo;
     private UserRepository userRepo;
+    private StockRepository stockRepo;
 
-    public PortfolioController (PortfolioRepository portfolioRepo, AssetRepository assetRepo, UserRepository userRepo) {
+    public PortfolioController (PortfolioRepository portfolioRepo, AssetRepository assetRepo, 
+    UserRepository userRepo, StockRepository stockRepo) {
         this.portfolioRepo = portfolioRepo;
         this.assetRepo = assetRepo;
         this.userRepo = userRepo;
+        this.stockRepo = stockRepo;
     }
 
     /**
-     * List the user's portfolio. Only ROLE_USER can access.
+     * Returns the user's portfolio. Each time this method is called, we must update the current
+     * price of all assets, and modify unrealised gain/loss as necessary
+     * 
+     * Only ROLE_USER can has the authority to perform this, as outlines in SecurityConfig
+     * 
      * @return the user's portfolio
      */
     @ResponseStatus(HttpStatus.OK)
@@ -48,19 +55,18 @@ public class PortfolioController {
         .getPrincipal();
         
         User user = userRepo.findByUsername(uDetails.getUsername()).get();
-        Optional<Portfolio> result = portfolioRepo.findByCustomerId(user.getId());
-        if (!result.isPresent()) { 
-            return new Portfolio(user.getId(), user, null, 0.0, 0.0);
+        Portfolio portfolio = portfolioRepo.findByCustomer_Id(user.getId()).get();
+
+        List<Asset> assets = assetRepo.findByPortfolioId(portfolio.getCustomer_id());
+        
+        for (Asset asset : assets) {
+            Stock stock = stockRepo.findBySymbol(asset.getSymbol()).get();
+            asset.setCurrent_price(stock.getBid());
+            assetRepo.save(asset);
         }
-
-        Portfolio portfolio = result.get();
-        List<Asset> assets = assetRepo.findByPortfolioId(portfolio.getCustomerId());
-
-        // TODO: Write a function to update current prices of assets
-        // for (Asset a : assets) {
-        //     a.setCurrentPrice();
-        // }
         portfolio.setAssets(assets);
+        portfolio.setUnrealized_gain_loss();
+
         return portfolio;
     }
 }
