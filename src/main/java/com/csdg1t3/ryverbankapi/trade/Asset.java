@@ -1,7 +1,6 @@
 package com.csdg1t3.ryverbankapi.trade;
 
 import javax.persistence.*;
-import javax.sound.sampled.Port;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.validation.Valid;
@@ -15,70 +14,47 @@ public class Asset {
     @Id
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long assetId;
-
-    @JsonIgnore
-    @NotNull(message = "customer should not be null")
-    private Long customerId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "symbol", nullable = false)
     @JsonIgnore
     private Stock stock;
 
-    @ManyToOne
-    @JoinColumn(name = "cust_id", nullable = false)
-    @JsonIgnore
-    private User cust;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    @JsonIgnore
-    private Portfolio portfolio;
-
     @NotNull(message = "symbol should not be null")
     private String stockSymbol;
 
+    @ManyToOne
+    @JoinColumn(name = "portfolio", nullable = false)
+    @JsonIgnore
+    private Portfolio portfolio;
+
+    @NotNull(message = "portfolioId should not be null")
+    @JsonIgnore
+    private Long portfolioId;
+
     @NotNull(message = "quantity should not be null")
-    @Positive(message = "quanity should be more than zero")
+    @Positive(message = "quantity should be positive")
     private int quantity;
 
-    @NotNull(message = "avg_price should not be null")
-    @JsonIgnore
-    private double avg_price;
+    @NotNull(message = "avgPrice should not be null")
+    private double avgPrice;
 
-    @NotNull(message = "current_price should not be null")
-    @JsonIgnore
-    private double current_price;
-
-    @NotNull(message = "value should not be null")
-    @JsonIgnore
-    private double value;
-
-    @NotNull(message = "gain_loss should not be null")
-    @JsonIgnore
-    private double gain_loss;
+    @NotNull(message = "currentPrice should not be null")
+    private double currentPrice;
 
     public Asset() {};
 
-    public Asset(Long assetId, Long customerId, User customer, Stock stock, String stockSymbol, int quantity, double avg_price, double current_price) {
-        this.assetId = assetId;
-        this.customerId = customerId;
-        this.cust = customer;
+    public Asset(Long id, Stock stock, String stockSymbol, int quantity, double avgPrice, double currentPrice) {
+        this.id = id;
         this.stock = stock;
         this.stockSymbol = stockSymbol;
         this.quantity = quantity;
-        this.avg_price = avg_price;
-        this.current_price = current_price;
-        this.value = getValue();
-        this.gain_loss = getGainLoss();
+        this.avgPrice = avgPrice;
+        this.currentPrice = currentPrice;
     }
 
-    public Long getAssetId() { return assetId; }
-
-    public Long getCustomerId() { return customerId; }
-
-    public User getCustomer() { return cust; }
+    public Long getId() { return id; }
 
     public Stock getStock() { return stock;}
 
@@ -86,22 +62,18 @@ public class Asset {
 
     public int getQuantity() { return quantity; }
 
-    public double getAvgPrice() { return avg_price; }
+    public double getAvgPrice() { return avgPrice; }
 
-    public double getCurrentPrice() { return stock.getAsk(); }
+    public double getCurrentPrice() { return currentPrice; }
 
-    public double getValue() { return value; }
+    public double getValue() { return currentPrice * quantity; }
 
-    public double getGainLoss() { return gain_loss; }
+    public double getGainLoss() { return (currentPrice - avgPrice) * quantity; }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setId(Long id) {
+        this.id = id;
     }
-
-    public void setCustomer(User customer) {
-        this.cust = customer;
-    }
-
+    
     public void setStock(Stock stock) {
         this.stock = stock;
     }
@@ -112,32 +84,19 @@ public class Asset {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-        setValue();
-        setGainLoss();
     }
 
-    public void setAvgPrice(double avg_price) {
-        this.avg_price = avg_price;
-        setGainLoss();
+    public void setAvgPrice(double avgPrice) {
+        this.avgPrice = avgPrice;
     }
 
-    public void setCurrentPrice() {
-        this.current_price = this.stock.getAsk();
-        setValue();
-        setGainLoss();
-    }
-
-    public void setValue() {
-        this.value = this.current_price * this.quantity;
-    }
-
-    public void setGainLoss() {
-        this.gain_loss = this.value - (this.quantity * this.avg_price);
+    public void setCurrentPrice(double currentPrice) {
+        this.currentPrice = currentPrice;
     }
 
     @Override
     public String toString() {
-        return String.format("Asset[symbol=%d, quantity=%d, avg_price=%.2lf, current_price=%.2lf, value=%.2lf, gain_loss=%.2lf", this.stockSymbol, this.quantity, this.avg_price, this.current_price, this.value, this.gain_loss);
+        return String.format("Asset[symbol=%d, quantity=%d, avgPrice=%.2lf, currentPrice=%.2lf, value=%.2lf, gain_loss=%.2lf", this.stockSymbol, this.quantity, this.avgPrice, this.currentPrice, getValue(), getGainLoss());
     }
 
 }

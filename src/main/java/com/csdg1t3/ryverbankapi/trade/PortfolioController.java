@@ -54,14 +54,12 @@ public class PortfolioController {
         }
 
         Portfolio portfolio = result.get();
-        List<Asset> assets = assetRepo.findByCustomerId(user.getId());
-        if (!assets.isEmpty()) {
-            return portfolio;
-        }
+        List<Asset> assets = assetRepo.findByPortfolioId(portfolio.getCustomerId());
 
-        for (Asset a : assets) {
-            a.setCurrentPrice();
-        }
+        // TODO: Write a function to update current prices of assets
+        // for (Asset a : assets) {
+        //     a.setCurrentPrice();
+        // }
         portfolio.setAssets(assets);
         return portfolio;
     }

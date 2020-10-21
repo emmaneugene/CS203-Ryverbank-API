@@ -14,13 +14,13 @@ import com.csdg1t3.ryverbankapi.trade.*;
 @Entity 
 public class Portfolio {
     @Id
-    @NotNull(message = "customer should not be null")
+    @NotNull(message = "customerId should not be null")
     private Long customerId;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "cust_id", nullable = false)
     @JsonIgnore
-    private User cust;
+    private User customer;
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<Asset> assets;
@@ -35,16 +35,16 @@ public class Portfolio {
 
     public Portfolio(Long customerId, User customer, List<Asset> assets, double unrealized_gain_loss, double total_gain_loss) {
         this.customerId = customerId;
-        this.cust = customer;
+        this.customer = customer;
         this.assets = assets;
         this.unrealized_gain_loss = unrealized_gain_loss;
         this.total_gain_loss = total_gain_loss;
     }
 
-    public Long getId() { return customerId; }
+    public Long getCustomerId() { return customerId; }
 
     @JsonIgnore
-    public User getCustomer() { return cust; }
+    public User getCustomer() { return customer; }
 
     public List<Asset> getAssets() { return assets;}
 
@@ -52,12 +52,12 @@ public class Portfolio {
 
     public double getTotalGainLoss() { return total_gain_loss; }
 
-    public void setId(Long id) {
-        this.customerId = id;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public void setCustomer(User customer) {
-        this.cust = customer;
+        this.customer = customer;
     }
 
     public void setAssets(List<Asset> assets) {
@@ -65,6 +65,11 @@ public class Portfolio {
     }
 
     public void setUnrealizedGainLoss() {
+        if (assets == null) {
+            this.unrealized_gain_loss = 0;
+            return;
+        }
+        
         double unrealized_gain_loss = 0;
         for (Asset a : this.assets) {
             unrealized_gain_loss += a.getGainLoss();

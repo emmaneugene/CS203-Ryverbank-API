@@ -66,16 +66,15 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Account> accounts;
 
-    @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL /*, orphanRemoval = true*/)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "portfolio_id")
     @JsonIgnore
-    private List<Asset> assets;
+    private Portfolio portfolio;
 
-    public User() {
-    }
+    public User() {}
 
     public User(long id, String name, String nric, String phoneNo, String address, String username, 
     String password, String authorities, Boolean status) {
-        // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.id = id;
         this.name = name;
         this.nric = nric;
