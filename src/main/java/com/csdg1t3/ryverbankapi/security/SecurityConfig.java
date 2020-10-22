@@ -51,9 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // stocks
             .antMatchers(HttpMethod.GET, "/stocks", "/stocks/*").hasRole("USER")
             // trades
-            .antMatchers(HttpMethod.GET, "/trades/*").hasRole("USER")
+            .antMatchers(HttpMethod.GET, "/trades", "/trades/*").hasRole("USER")
             .antMatchers(HttpMethod.POST, "/trades").hasRole("USER")
-            .antMatchers(HttpMethod.DELETE, "/trades/*").hasRole("USER")
+            .antMatchers(HttpMethod.PUT, "/trades/*").hasRole("USER")
             // portfolio
             .antMatchers(HttpMethod.GET, "/portfolio").hasRole("USER")
             
