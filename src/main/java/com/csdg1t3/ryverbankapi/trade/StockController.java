@@ -28,11 +28,11 @@ import javax.validation.Valid;
 @RestController
 public class StockController {
     private StockRepository stockRepo;
-    private TradeService tradeService;
+    private TradeRepository tradeRepo;
 
-    public StockController(StockRepository stockRepo, TradeService tradeService){
+    public StockController(StockRepository stockRepo, TradeRepository tradeRepo){
         this.stockRepo = stockRepo;
-        this.tradeService = tradeService;
+        this.tradeRepo = tradeRepo;
     }
 
     /**  
@@ -50,32 +50,35 @@ public class StockController {
                 String symbol = stockComponents[0];
                 Double last_Price = Double.parseDouble(stockComponents[1]);
 
-                int bid_Volume = 20000;
-                Double bid = last_Price - (random.nextDouble() % 0.2);
-                int ask_Volume = 20000;
-                Double ask =  last_Price + (random.nextDouble() % 0.2);
+                int volume = 20000;
+                Double bid = (last_Price * 100 - 1 - random.nextInt(20)) / 100;
+                Double ask =  (last_Price * 100 + 1 + random.nextInt(20)) / 100;
 
-                Trade marketBuy =  new Trade();
-                marketBuy.setSymbol(symbol);
+                Trade marketBuy = new Trade();
                 marketBuy.setAction("buy");
-                marketBuy.setQuantity(bid_Volume);
+                marketBuy.setSymbol(symbol);
+                marketBuy.setQuantity(volume);
                 marketBuy.setBid(bid);
+                marketBuy.setAvg_price(0);
                 marketBuy.setDate(System.currentTimeMillis()/1000);
-                marketBuy.setAccountId(Long.valueOf(0));
-                marketBuy.setAccountId(Long.valueOf(0));
+                marketBuy.setAccount_id(Long.valueOf(0));
+                marketBuy.setCustomer_id(Long.valueOf(0));
+                marketBuy.setStatus("open");
 
-                Trade marketSell =  new Trade();
-                marketSell.setSymbol(symbol);
+                Trade marketSell = new Trade();
                 marketSell.setAction("sell");
-                marketSell.setQuantity(ask_Volume);
+                marketSell.setSymbol(symbol);
+                marketSell.setQuantity(volume);
                 marketSell.setAsk(ask);
+                marketSell.setAvg_price(0);
                 marketSell.setDate(System.currentTimeMillis()/1000);
-                marketSell.setAccountId(Long.valueOf(0));
-                marketSell.setAccountId(Long.valueOf(0));
+                marketSell.setAccount_id(Long.valueOf(0));
+                marketSell.setCustomer_id(Long.valueOf(0));
+                marketSell.setStatus("open");
 
-                tradeService.createTrade(marketBuy);
-                tradeService.createTrade(marketSell);
-                stockRepo.save(new Stock(symbol, last_Price, bid_Volume, bid, ask_Volume, ask));
+                tradeRepo.save(marketBuy);
+                tradeRepo.save(marketSell);
+                stockRepo.save(new Stock(symbol, last_Price, volume, bid, volume, ask));
             }
             sc.close();
         }catch(FileNotFoundException e){

@@ -13,6 +13,6 @@ public interface StockRepository extends JpaRepository<Stock, String>{
     Stock save(Stock stock);
     void deleteBySymbol(String symbol);
     List<Stock> findAll();
-
     Optional<Stock> findBySymbol(String symbol);
+    boolean existsBySymbol(String symbol);
 }
