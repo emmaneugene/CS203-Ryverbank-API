@@ -21,17 +21,10 @@ public class Asset {
     @JsonIgnore
     private Stock stock;
 
-    @NotNull(message = "symbol should not be null")
-    private String stock_symbol;
-
     @ManyToOne
     @JoinColumn(name = "portfolio", nullable = false)
     @JsonIgnore
     private Portfolio portfolio;
-
-    @NotNull(message = "portfolio_id should not be null")
-    @JsonIgnore
-    private Long portfolioId;
 
     @NotNull(message = "quantity should not be null")
     @Positive(message = "quantity should be positive")
@@ -45,10 +38,9 @@ public class Asset {
 
     public Asset() {};
 
-    public Asset(Long id, Stock stock, String stock_symbol, int quantity, double avg_price, double current_price) {
+    public Asset(Long id, Stock stock, int quantity, double avg_price, double current_price) {
         this.id = id;
         this.stock = stock;
-        this.stock_symbol = stock_symbol;
         this.quantity = quantity;
         this.avg_price = avg_price;
         this.current_price = current_price;
@@ -60,13 +52,13 @@ public class Asset {
     @JsonIgnore
     public Stock getStock() { return stock;}
 
-    public String getCode() { return stock_symbol; }
+    public String getCode() { return stock.getSymbol(); }
     
     @JsonIgnore
     public Portfolio getPortfolio() { return portfolio; }
 
     @JsonIgnore
-    public Long getPortfolio_id() {return portfolioId; }
+    public Long getPortfolio_id() { return portfolio.getCustomer_id(); }
 
     public int getQuantity() { return quantity; }
 
@@ -86,16 +78,9 @@ public class Asset {
         this.stock = stock;
     }
 
-    public void setSymbol(String stock_symbol) {
-        this.stock_symbol = stock_symbol;
-    }
 
     public void setPortfolio (Portfolio portfolio) {
         this.portfolio = portfolio;
-    }
-
-    public void setPortfolio_id (Long portfolioId) {
-        this.portfolioId = portfolioId;
     }
 
     public void setQuantity(int quantity) {
@@ -113,7 +98,7 @@ public class Asset {
     @Override
     public String toString() {
         return String.format("Asset[symbol=%d, quantity=%d, avg_price=%.2lf, currentPrice=%.2lf, value=%.2lf, gain_loss=%.2lf",
-        this.stock_symbol, this.quantity, this.avg_price, this.current_price, getValue(), getGain_loss());
+        stock.getSymbol(), quantity, avg_price, current_price, getValue(), getGain_loss());
     }
 
 }

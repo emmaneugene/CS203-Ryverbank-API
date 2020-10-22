@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface AssetRepository extends JpaRepository<Asset, Long>{
     Asset save(Asset asset);
     List<Asset> findAll();
-    List<Asset> findByPortfolioId(Long id);
+    List<Asset> findByPortfolioCustomerId(Long id);
     void deleteById(Long id);
 }
