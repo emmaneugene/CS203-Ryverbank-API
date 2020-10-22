@@ -34,12 +34,12 @@ public class Portfolio {
     public Portfolio() {};
 
     public Portfolio(Long customer_id, User customer, List<Asset> assets, 
-    double unrealized_gain_loss, double totalGainLoss) {
+    double unrealized_gain_loss, double total_gain_loss) {
         this.customer_id = customer_id;
         this.customer = customer;
         this.assets = assets;
         this.unrealized_gain_loss = unrealized_gain_loss;
-        this.total_gain_loss = totalGainLoss;
+        this.total_gain_loss = total_gain_loss;
     }
 
     public Long getCustomer_id() { return customer_id; }
@@ -53,17 +53,11 @@ public class Portfolio {
 
     public double getTotal_gain_loss() { return total_gain_loss; }
 
-    public void setCustomer_id(Long customer_id) {
-        this.customer_id = customer_id;
-    }
+    public void setCustomer_id(Long customer_id) { this.customer_id = customer_id; }
 
-    public void setCustomer(User customer) {
-        this.customer = customer;
-    }
+    public void setCustomer(User customer) { this.customer = customer; }
 
-    public void setAssets(List<Asset> assets) {
-        this.assets = assets;
-    }
+    public void setAssets(List<Asset> assets) { this.assets = assets; }
 
     public void setUnrealized_gain_loss() {
         unrealized_gain_loss = 0;
@@ -75,8 +69,8 @@ public class Portfolio {
         }
     }
 
-    public void setTotal_gain_loss(double totalGainLoss) {
-        this.total_gain_loss = totalGainLoss;
+    public void setTotal_gain_loss(double total_gain_loss) {
+        this.total_gain_loss = total_gain_loss;
     }
 
     public String assetsToString() {

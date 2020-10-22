@@ -57,7 +57,7 @@ public class PortfolioController {
         User user = userRepo.findByUsername(uDetails.getUsername()).get();
         Portfolio portfolio = portfolioRepo.findByCustomerId(user.getId()).get();
 
-        List<Asset> assets = assetRepo.findByPortfolioId(portfolio.getCustomer_id());
+        List<Asset> assets = assetRepo.findByPortfolioCustomerId(portfolio.getCustomer_id());
         
         for (Asset asset : assets) {
             Stock stock = stockRepo.findBySymbol(asset.getCode()).get();

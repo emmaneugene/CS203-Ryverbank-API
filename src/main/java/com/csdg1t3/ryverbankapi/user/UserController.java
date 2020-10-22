@@ -115,14 +115,8 @@ public class UserController {
 
         User savedUser = userRepo.save(user);
 
-        if (user.getStringAuthorities().contains("ROLE_USER")) {
-            Portfolio portfolio = new Portfolio();
-            portfolio.setCustomerId(savedUser.getId());
-            portfolio.setCustomer(savedUser);
-            portfolio.setUnrealizedGainLoss();
-            portfolio.setTotalGainLoss(0);
-            portfolioRepo.save(portfolio);
-        }
+        if (user.getStringAuthorities().contains("ROLE_USER")) 
+            portfolioRepo.save(new Portfolio(savedUser.getId(), savedUser, null, 0, 0));
 
         return savedUser;
     }
