@@ -14,6 +14,8 @@ public interface TradeRepository extends JpaRepository<Trade, Long>{
     void deleteById(Long id);
     List<Trade> findAll();
     Optional<Trade> findById(Long id);
+    List<Trade> findByAccountId(Long id);
+    List<Trade> findByActionAndSymbolAndStatus(String action, String symbol, String status);
     List<Trade> findByStatus(String status);
  
 }

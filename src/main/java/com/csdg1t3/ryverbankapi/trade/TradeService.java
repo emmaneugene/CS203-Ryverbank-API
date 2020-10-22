@@ -1,13 +1,8 @@
 package com.csdg1t3.ryverbankapi.trade;
 
-
-
 import java.util.*;
 
 public interface TradeService {
-    List<Trade> listTrades();
-
-    Trade getTrade(Long Id);
 
     /**
      * Goes through all open or parially filled trades and changes the status to "expired" if any
@@ -37,7 +32,7 @@ public interface TradeService {
      * 
      * @return trade with lowest ask price
      */
-    Trade getLowestAskTrade();
+    Trade getLowestAskTradeForStock(String symbol);
 
     /**
      * Retrieves an open or partial-filled buy trade with the highest bid price.
@@ -45,11 +40,17 @@ public interface TradeService {
      * 
      * @return trade with highest bid price
      */
-    Trade getHighestBidTrade();
+    Trade getHighestBidTradeForStock(String symbol);
 
-    Trade createTrade(Trade trade);
+    void processTrade(Trade trade);
 
-    Trade updateTrade(Long Id, Trade trade);
+    void processBuy(Trade trade);
+
+    void processSell(Trade trade);
+
+    void processMarketBuy(Trade trade);
+
+    void processMarketSell(Trade trade);
 
     void cancelTrade(Long id);
 }

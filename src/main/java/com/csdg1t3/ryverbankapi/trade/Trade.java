@@ -3,132 +3,117 @@ package com.csdg1t3.ryverbankapi.trade;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
+import com.csdg1t3.ryverbankapi.account.*;
+import com.csdg1t3.ryverbankapi.user.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Trade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
+
+    @NotNull(message = "action should not be null")
     private String action;
+
+    @NotNull(message = "symbol should not be null")
     private String symbol;
-    private Long quantity;
+
+    @NotNull(message = "quantity should not be null")
+    @Positive(message = "quantity should be positive")
+    private int quantity;
+
     private Double bid;
+
     private Double ask;
+
     private Double avg_price;
-    private Long filledQuantity;
+
+    private int filled_quantity;
+
+    @NotNull(message = "date should not be null")
     private long date;
-    private Long accountId;
-    private Long customerId;
+
+    @NotNull(message = "account_id should not be null")
+    private Long account_id; 
+
+    @ManyToOne
+    @JoinColumn(name = "acc_id", nullable = true)
+    @JsonIgnore
+    private Account account;
+
+    @NotNull(message = "customer_id should not be null")
+    private Long customer_id;
+
+    @NotNull(message = "status should not be null")
     private String status;
 
-    public Trade(long Id, String action, String symbol, long quantity, double bid, double ask, double avg_price, long filledQuantity, long date, long accountId, long customerId, String status){
-        this.Id = Id;
+    public Trade() {}
+
+    public Trade(Long id, String action, String symbol, int quantity, Double bid, Double ask, double avg_price, int filled_quantity, long date, Account account, String status){
+        this.id = id;
         this.action = action;
         this.symbol = symbol;
         this.quantity = quantity;
         this.bid = bid;
         this.ask = ask;
         this.avg_price = avg_price;
-        this.filledQuantity = filledQuantity;
+        this.filled_quantity = filled_quantity;
         this.date = date;
-        this.accountId = accountId;
-        this.customerId = customerId;
+        this.account = account;
         this.status = status;
     }
 
-    public Long getTradeID() {
-        return Id;
-    }
+    public Long getId() { return id; }
     
-    public String getAction() {
-        return action;
-    }
+    public String getAction() { return action; }
 
-    public Long getQuantity() {
-        return quantity;
-    }
+    public String getSymbol() { return symbol; }
 
-    public String getSymbol() {
-        return symbol;
-    }
+    public int getQuantity() { return quantity; }
 
-    public Double getBid() {
-        return bid;
-    }
+    public Double getBid() { return bid; }
 
-    public Double getAsk() {
-        return ask;
-    }
+    public Double getAsk() { return ask; }
 
-    public Double getAveragePrice() {
-        return avg_price;
-    }
+    public Double getAvg_price() { return avg_price; }
 
-    public Long getFilledQuantity() {
-        return filledQuantity;
-    }
+    public int getFilled_quantity() { return filled_quantity; }
 
-    public long getDate() {
-        return date;
-    }
+    public long getDate() { return date; }
 
-    public Long getAccountId() {
-        return accountId;
-    }
+    public Long getAccount_id() { return account_id; }
 
-    public Long getCustomerId() {
-        return customerId;
-    }
+    @JsonIgnore
+    public Account getAccount() { return account; }
+
+    public Long getCustomer_id() { return customer_id; }
+
+    public String getStatus() { return status; }
+
+    public void setId(long id) { this.id = id; }
     
-    public String getStatus() {
-        return status;
-    }
+    public void setAction(String action) { this.action = action; }
 
-    public void setTradeID(long Id) {
-        this.Id = Id;
-    }
-    
-    public void setAction(String action) {
-        this.action = action;
-    }
+    public void setSymbol(String symbol) { this.symbol = symbol; }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
 
-    public void setQuantity(long quantity) {
-        this.quantity = quantity; 
-    }
+    public void setBid(Double bid) { this.bid = bid; }
 
-    public void setBid(double bid) {
-        this.bid = bid;
-    }
+    public void setAsk(Double ask) { this.ask = ask; }
 
-    public void setAsk(double ask) {
-        this.ask = ask;
-    }
+    public void setAvg_price(double avg_price) { this.avg_price = avg_price; }
 
-    public void setAvg_price(double avg_price) {
-        this.avg_price = avg_price;
-    }
+    public void setFilled_quantity(int filled_quantity) { this.filled_quantity = filled_quantity; }
 
-    public void setfilledQuantity(long filledQuantity) {
-        this.filledQuantity = filledQuantity;
-    }
+    public void setDate(long date) { this.date = date; }
 
-    public void setDate(long date) {
-        this.date = date;
-        
-    }
+    public void setAccount_id(Long account_id) { this.account_id = account_id; }
 
-    public void setAccountId(Long accountId) {
-        
-    }
+    public void setAccount(Account account) { this.account = account; }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
+    public void setCustomer_id(Long customer_id) { this.customer_id = customer_id; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setStatus(String status) { this.status = status; }
 }
