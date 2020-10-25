@@ -23,6 +23,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.Valid;
 
+import com.csdg1t3.ryverbankapi.trade.*;
+
 
 /**
  * Controller that manages HTTP requests and updates data within UserRepository
@@ -30,10 +32,13 @@ import javax.validation.Valid;
 @RestController
 public class UserController {
     private UserRepository userRepo;
+    private PortfolioRepository portfolioRepo;
     private BCryptPasswordEncoder encoder;
 
-    public UserController(UserRepository userRepo, BCryptPasswordEncoder encoder) {
+    public UserController(UserRepository userRepo, PortfolioRepository portfolioRepo, 
+    BCryptPasswordEncoder encoder) {
         this.userRepo= userRepo;
+        this.portfolioRepo = portfolioRepo;
         this.encoder = encoder;
     }
 
@@ -87,6 +92,8 @@ public class UserController {
      * 3. Phone number must be valid
      * If any data is not valid, the method throws a UserNotValidException
      * 
+     * This controller also creates an empty portfolio for the user if the user is ROLE_USER
+     * 
      * This method is only authorised for ROLE_MANAGER, as configured in SecurityConfig
      * @param user
      * @return new customer
@@ -105,7 +112,13 @@ public class UserController {
             throw new UserNotValidException("Phone number is invalid");
 
         user.setPassword(encoder.encode(user.getPassword()));
-        return userRepo.save(user);
+
+        User savedUser = userRepo.save(user);
+
+        if (user.getStringAuthorities().contains("ROLE_USER")) 
+            portfolioRepo.save(new Portfolio(savedUser.getId(), savedUser, null, 0, 0));
+
+        return savedUser;
     }
 
     /**

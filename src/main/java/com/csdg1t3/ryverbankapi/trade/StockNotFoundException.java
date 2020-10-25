@@ -1,4 +1,4 @@
-package com.csdg1t3.ryverbankapi.stock;
+package com.csdg1t3.ryverbankapi.trade;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,7 +10,7 @@ public class StockNotFoundException extends RuntimeException{
      */
     private static final long serialVersionUID = 1L;
 
-    StockNotFoundException(Long id) {
+    StockNotFoundException(String id) {
         super("Could not find stock " + id);
     }
     

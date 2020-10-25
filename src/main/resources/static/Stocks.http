@@ -1,0 +1,9 @@
+# View all stocks
+GET http://localhost:8080/stocks
+Authorization: Basic spiderman mrstark,Idontfeels0good
+###
+
+# View a single stock symbol
+GET http://localhost:8080/stocks/A17U
+Authorization: Basic spiderman mrstark,Idontfeels0good
+###

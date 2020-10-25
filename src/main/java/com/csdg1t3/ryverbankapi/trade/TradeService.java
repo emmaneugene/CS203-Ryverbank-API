@@ -1,29 +1,34 @@
 package com.csdg1t3.ryverbankapi.trade;
-import java.util.List;
+
+import java.util.*;
 
 public interface TradeService {
-    List<Trade> listTrades();
-    Trade getTrade(Long id);
 
-    /**
-     * Return the newly added Trade
-     */
-    Trade addTrade(Trade Trade);
+    void updateTradeExpiry();
 
-    /**
-     * Return the updated Trade
-     * @param id
-     * @param Trade
-     * @return
-     */
-    Trade updateTrade(Long id, Trade Trade);
+    List<Trade> listValidBuyTradesForStock(String symbol);
 
-    /**
-     * Return status of the delete
-     * If it's 1: the Trade has been removed
-     * If it's 0: the Trade does not exist
-     * @param id
-     * @return 
-     */
-    int deleteTrade(Long id);
+    List<Trade> listValidSellTradesForStock(String symbol);
+
+    Trade getLowestAskTradeForStock(String symbol);
+
+    Trade getHighestBidTradeForStock(String symbol);
+
+    Trade getEarliestMarketBuyForStock(String symbol);
+
+    Trade getEarliestMarketSellForStock(String symbol);
+
+    Trade makeTrade(Trade trade);
+
+    void processBuy(Trade trade);
+
+    void processSell(Trade trade);
+
+    void processMarketBuy(Trade trade);
+
+    void processMarketSell(Trade trade);
+
+    void fillTrades(Trade buy, Trade sell, Double price, int qty);
+
+    void processCancelTrade(Trade trade);
 }

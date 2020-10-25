@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.csdg1t3.ryverbankapi.account.*;
+import com.csdg1t3.ryverbankapi.trade.*;
 
 
 
@@ -53,7 +54,6 @@ public class User implements UserDetails {
     @Size(min = 8, max =100, message = "password should be at least 8 characters")
     private String password;
 
-    
     @NotNull(message = "Authorities should not be null")
     private String authorities;
 
@@ -65,12 +65,15 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Account> accounts;
 
-    public User() {
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "portfolio_id")
+    @JsonIgnore
+    private Portfolio portfolio;
+
+    public User() {}
 
     public User(long id, String name, String nric, String phoneNo, String address, String username, 
     String password, String authorities, Boolean status) {
-        // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.id = id;
         this.name = name;
         this.nric = nric;
@@ -82,37 +85,21 @@ public class User implements UserDetails {
         this.status = status;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public String getNric() {
-        return nric;
-    }
+    public String getNric() { return nric; }
 
-    public String getPhoneNo() {
-        return phoneNo;
-    }
+    public String getPhoneNo() { return phoneNo; }
 
-    public String getAddress() {
-        return address;
-    }
+    public String getAddress() { return address; }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() { return username; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() { return password; }
 
-    public String getStringAuthorities() {
-        return authorities;
-    }
+    public String getStringAuthorities() { return authorities; }
 
      /* Return a collection of authorities (roles) granted to the user.
     */
@@ -125,48 +112,36 @@ public class User implements UserDetails {
         return result;
     }
 
-    
-    public Boolean getStatus() {
-        return status;
-    }
+    public Boolean getStatus() { return status; }
 
-    public String toString(){
+    public List<Account> getAccounts() { return accounts; }
+
+    public Portfolio getPortfolio() { return portfolio; }
+
+    public void setId(Long id) { this.id = id; }
+
+    public void setName(String name) { this.name = name; }
+
+    public void setNric(String nric) { this.nric = nric; }
+
+    public void setPhoneNo(String phoneNo) { this.phoneNo = phoneNo; }
+
+    public void setAddress(String address) { this.address =  address; }
+
+    public void setUsername(String username) { this.username = username; }
+
+    public void setPassword(String password) { this.password = password; }
+
+    public void setAuthorities(String authorities) { this.authorities = authorities; }
+
+    public void setStatus(Boolean status) { this.status = status; }
+
+    public void setAccounts(List<Account> accounts) { this.accounts = accounts; }
+
+    public void setPortfolio(Portfolio portfolio) { this.portfolio = portfolio; }
+
+    public String toString() { 
         return username + " " + password + " " + authorities;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setNric(String nric) {
-        this.nric = nric;
-    }
-    public void setPhoneNo(String phoneNo) {
-        this.phoneNo = phoneNo;
-    }
-
-    public void setAddress(String address) {
-        this.address =  address;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setAuthorities(String authorities) {
-        this.authorities = authorities;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
     }
 
     @Override
