@@ -19,7 +19,6 @@ public class Validator {
         int nricDigits;
         try {
             nricDigits = Integer.parseInt(nric.substring(1,8));
-            System.out.println("nric digits: " + nricDigits);
         } catch (NumberFormatException e) {
             return false;
         }
@@ -33,7 +32,6 @@ public class Validator {
         }
         // Validate checksum
         int remainder = checksum % 11;
-        System.out.println(remainder);
         char[] outputs;
         if (nric.charAt(0) == 'S' || nric.charAt(0) == 'T') {
             outputs = new char[]{'J', 'Z', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'};

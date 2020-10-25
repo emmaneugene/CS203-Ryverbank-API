@@ -25,5 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     // Using Optional - the return value of this method may contain a null value
     Optional<User> findByAuthorities(String authorities);
+    boolean existsById(Long id);
  
 }

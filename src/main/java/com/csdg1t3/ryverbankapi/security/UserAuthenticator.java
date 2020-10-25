@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
@@ -19,22 +20,27 @@ import java.util.*;
 public class UserAuthenticator {
     private UserRepository userRepo;
 
+    private static final SimpleGrantedAuthority MANAGER = new SimpleGrantedAuthority("ROLE_MANAGER");
+    private static final SimpleGrantedAuthority USER = new SimpleGrantedAuthority("ROLE_USER");
+    private static final SimpleGrantedAuthority ANALYST = new SimpleGrantedAuthority("ROLE_ANALYST");
+
     public UserAuthenticator(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
 
-    public UserDetails getCurrentUserDetails() {
-        return (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public User getCurrentUser() {
+        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext()
+        .getAuthentication().getPrincipal(); 
+
+        return userRepo.findByUsername(uDetails.getUsername()).get();
     }
 
     public boolean idMatchesAuthenticatedUser(Long id) {
-        Optional<User> resultAtId = userRepo.findById(id);
-
-        if (!resultAtId.isPresent())
+        if (!userRepo.existsById(id))
             return false;
 
-        String usernameAtId = resultAtId.get().getUsername();
-        UserDetails uDetails = getCurrentUserDetails();
-        return uDetails.getUsername().equals(usernameAtId);
+        User userAtId = userRepo.findById(id).get();
+        User authenticatedUser = getCurrentUser();
+        return authenticatedUser.getId() == userAtId.getId();
     }
 }
