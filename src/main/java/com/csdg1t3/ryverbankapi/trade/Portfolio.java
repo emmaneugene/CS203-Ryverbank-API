@@ -14,6 +14,10 @@ import com.csdg1t3.ryverbankapi.trade.*;
 @Entity 
 public class Portfolio {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
+    private Long id;
+
     @NotNull(message = "customer_id should not be null")
     private Long customer_id;
 
@@ -25,22 +29,26 @@ public class Portfolio {
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<Asset> assets;
 
-    @NotNull (message = "unrealized_gain_loss should not be null")
+    @NotNull(message = "unrealized_gain_loss should not be null")
     private double unrealized_gain_loss;
 
-    @NotNull (message = "total_gain_loss should not be null")
+    @NotNull(message = "total_gain_loss should not be null")
     private double total_gain_loss;
 
     public Portfolio() {};
 
-    public Portfolio(Long customer_id, User customer, List<Asset> assets, 
+    public Portfolio(Long id, User customer, List<Asset> assets, 
     double unrealized_gain_loss, double total_gain_loss) {
-        this.customer_id = customer_id;
+        this.id = id;
+        this.customer_id = customer.getId();
         this.customer = customer;
         this.assets = assets;
         this.unrealized_gain_loss = unrealized_gain_loss;
         this.total_gain_loss = total_gain_loss;
     }
+
+    @JsonIgnore
+    public Long getId() { return id; }
 
     public Long getCustomer_id() { return customer_id; }
 
@@ -53,7 +61,7 @@ public class Portfolio {
 
     public double getTotal_gain_loss() { return total_gain_loss; }
 
-    public void setCustomer_id(Long customer_id) { this.customer_id = customer_id; }
+    public void setId(Long id) { this.id = id; }
 
     public void setCustomer(User customer) { this.customer = customer; }
 
@@ -86,7 +94,7 @@ public class Portfolio {
     @Override
     public String toString() {
         return String.format("Portfolio[customerId=%d, assets[\n%s\n], unrealized_gain_loss=%.2lf, total_gain_loss=%.2lf",
-        this.customer_id, assetsToString(), this.unrealized_gain_loss, this.total_gain_loss);
+        this.id, assetsToString(), this.unrealized_gain_loss, this.total_gain_loss);
     }
 
 }
