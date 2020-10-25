@@ -1,7 +1,6 @@
 package com.csdg1t3.ryverbankapi.trade;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,14 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.Authentication;
-
-import com.csdg1t3.ryverbankapi.account.Account;
-import com.csdg1t3.ryverbankapi.account.AccountRepository;
+import com.csdg1t3.ryverbankapi.user.*;
+import com.csdg1t3.ryverbankapi.account.*;
 import com.csdg1t3.ryverbankapi.security.UserAuthenticator;
 
 import java.util.*;
@@ -30,21 +23,23 @@ import java.util.*;
 public class TradeController {
     private TradeRepository tradeRepo;
     private TradeService tradeService;
-    private AccountRepository accountRepo;
     private StockRepository stockRepo;
+    private AccountRepository accountRepo;
+    private AssetRepository assetRepo;
     private UserAuthenticator uAuth;
 
     public TradeController (TradeRepository tradeRepo, TradeService tradeService, 
-    AccountRepository accountRepo, StockRepository stockRepo, UserAuthenticator uAuth) {
+    AccountRepository accountRepo, StockRepository stockRepo, AssetRepository assetRepo, UserAuthenticator uAuth) {
         this.tradeRepo = tradeRepo;
         this.tradeService = tradeService;
-        this.accountRepo = accountRepo;
         this.stockRepo = stockRepo;
+        this.accountRepo = accountRepo;
+        this.assetRepo = assetRepo;
         this.uAuth = uAuth;
     }
 
     /**
-     * Retrieves all trades
+     * Retrieves all trades that the authenticated user has made
      * 
      * This method is only authorised for ROLE_USER as configured in SecurityConfig
      * 
@@ -55,7 +50,8 @@ public class TradeController {
     @GetMapping("/trades")
     public List<Trade> getTrades() {
         tradeService.updateTradeExpiry();
-        return tradeRepo.findAll();
+
+        return tradeRepo.findByCustomerId(uAuth.getCurrentUser().getId());
     }
 
     /**
@@ -63,19 +59,23 @@ public class TradeController {
      * TradeNotFoundException.
      * 
      * This method is only authorised for ROLE_USER, as configured in SecurityConfig
-     * @param Id
+     * 
+     * @param id
      * @return trade that matches the ID specified
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/trades/{id}")
     public Trade getTrade(@PathVariable Long id) {
         tradeService.updateTradeExpiry();
-        Optional<Trade> result = tradeRepo.findById(id);
-        
-        if (!result.isPresent())
+
+        if (!tradeRepo.existsById(id))
             throw new TradeNotFoundException(id);
         
-        return result.get();
+        Trade trade = tradeRepo.findById(id).get();
+        if (!uAuth.idMatchesAuthenticatedUser(trade.getCustomer_id()))
+            throw new RoleNotAuthorisedException("You are not allowed to view another user's trades");
+        
+        return trade;
     }
 
     /**
@@ -86,12 +86,13 @@ public class TradeController {
      * 3. Verify that action is "buy" or "sell", and check bid or ask accordingly
      * 4. Verify that stock symbol is valid
      * 5. Verify that quantity is a multiple of 100
-     * 6. Populate the 'avg_price', 'filled_quantity', 'date' and 'status fields' 
+     * 6. Verify sufficient funds in account (buy) or sufficient assets (sell)
+     * 7. Populate the 'avg_price', 'filled_quantity', 'date' and 'status fields' 
      * 
-     * The method then saves the trade and passes it to to tradeService for further processing,
-     * if the trade can be filled/partially filled, the 
+     * The method then saves the trade and passes it to to tradeService for further processing.
      * 
      * This method is only authorised for ROLE_USER, as configured in SecurityConfig
+     * 
      * @param trade
      * @return successfully created trade
      */
@@ -101,49 +102,72 @@ public class TradeController {
         tradeService.updateTradeExpiry();
 
         if (!uAuth.idMatchesAuthenticatedUser(trade.getCustomer_id()))
-            throw new TradeNotValidException("you cannot post a trade for another user");
+            throw new TradeNotValidException("You cannot post a trade for another user");
         
         if (!accountRepo.existsById(trade.getAccount_id()))
-            throw new TradeNotValidException("account_id is invalid");
+            throw new TradeNotValidException("Account_id is invalid");
         
         Account acc = accountRepo.findById(trade.getAccount_id()).get();
+        User cust = uAuth.getCurrentUser();
         if (acc.getCustomerId() != trade.getCustomer_id())
-            throw new TradeNotValidException("trade must be made with your own account");
+            throw new TradeNotValidException("Trade must be made with your own account");
         trade.setAccount(acc);
+        trade.setCustomer(cust);
         
         switch (trade.getAction()) {
             case "buy":
                 if (trade.getBid() == null) 
-                    throw new TradeNotValidException("buy trade should include a bid value");
+                    throw new TradeNotValidException("Buy trade should include a bid value");
                 if (trade.getBid() < 0)
-                    throw new TradeNotValidException("buy trade bid should be non-negative");
+                    throw new TradeNotValidException("Buy trade bid should be non-negative");
                 trade.setAsk(null);
                 break;
             case "sell":
                 if (trade.getAsk() == null) 
-                    throw new TradeNotValidException("sell trade should include an ask value");
+                    throw new TradeNotValidException("Sell trade should include an ask value");
                 if (trade.getAsk() < 0)
-                    throw new TradeNotValidException("sell trade ask should be non-negative");
+                    throw new TradeNotValidException("Sell trade ask should be non-negative");
                 trade.setBid(null);
                 break;
             default:
-                throw new TradeNotValidException("trade action can only be 'buy' or 'sell'");
+                throw new TradeNotValidException("Trade action can only be 'buy' or 'sell'");
         }
 
         if (!stockRepo.existsBySymbol(trade.getSymbol()))
-            throw new TradeNotValidException("stock symbol is invalid");
+            throw new TradeNotValidException("Stock symbol is invalid");
 
         if (trade.getQuantity() % 100 != 0)
-            throw new TradeNotValidException("quantity must be a multiple of 100");
-        
+            throw new TradeNotValidException("Quantity must be a multiple of 100");
+
+        if (trade.getAction().equals("buy") && trade.getBid() > 0) {
+            Double avail = acc.getAvailableBalance();
+            Double needed = trade.getBid() * trade.getQuantity();
+            if (avail < needed)
+                throw new TradeNotValidException("Insufficient funds for trade");
+            
+            acc.setAvailableBalance(avail - needed);
+            accountRepo.save(acc);
+        } else if (trade.getAction().equals("sell")) {
+            Optional<Asset> result = assetRepo.findByPortfolioCustomerIdAndCode(
+                cust.getId(), trade.getSymbol());
+            if (!result.isPresent()) 
+                throw new TradeNotValidException("No assets of the required stock found");
+            
+            Asset asset = result.get();
+            int avail = asset.getAvailable_quantity();
+            int needed = trade.getQuantity();
+            if (avail < needed)
+                throw new TradeNotValidException("Insufficient quantity of assets for trade");
+            asset.setAvailable_quantity(avail - needed);
+            assetRepo.save(asset);
+        }
+
         trade.setAvg_price(0);
         trade.setFilled_quantity(0);
-        trade.setDate(System.currentTimeMillis()/1000);
+        trade.setDate(System.currentTimeMillis());
         trade.setStatus("open");
 
-        Trade savedTrade = tradeRepo.save(trade);
-        tradeService.processTrade(tradeRepo.save(trade));
-        return savedTrade;
+        return tradeService.makeTrade(tradeRepo.save(trade));
     } 
 
     /**
@@ -165,8 +189,7 @@ public class TradeController {
      */
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/trades/{id}")
-    public void cancelTrade(@PathVariable Long id, @RequestBody Trade tradeDetails) {
-        tradeService.updateTradeExpiry();
+    public Trade cancelTrade(@PathVariable Long id, @RequestBody Trade tradeDetails) {
         Trade trade = getTrade(id);
         
         if (!uAuth.idMatchesAuthenticatedUser(trade.getCustomer_id()))
@@ -178,6 +201,7 @@ public class TradeController {
         if (tradeDetails.getStatus() == null || !tradeDetails.getStatus().equals("cancelled"))
             throw new TradeNotValidException("Only trade cancellation is supported");
         
-        tradeService.cancelTrade(id);
+        tradeService.processCancelTrade(trade);
+        return trade;
     }
 }

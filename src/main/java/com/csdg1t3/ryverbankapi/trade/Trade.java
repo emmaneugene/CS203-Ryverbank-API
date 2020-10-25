@@ -45,12 +45,18 @@ public class Trade {
     @NotNull(message = "customer_id should not be null")
     private Long customer_id;
 
+    @ManyToOne
+    @JoinColumn(name = "cust_id", nullable = true)
+    @JsonIgnore
+    private User customer;
+
     @NotNull(message = "status should not be null")
     private String status;
 
     public Trade() {}
 
-    public Trade(Long id, String action, String symbol, int quantity, Double bid, Double ask, double avg_price, int filled_quantity, long date, Account account, String status){
+    public Trade(Long id, String action, String symbol, int quantity, Double bid, Double ask, 
+    double avg_price, int filled_quantity, long date, Account account, User customer, String status){
         this.id = id;
         this.action = action;
         this.symbol = symbol;
@@ -60,7 +66,10 @@ public class Trade {
         this.avg_price = avg_price;
         this.filled_quantity = filled_quantity;
         this.date = date;
+        this.account_id = account.getId();
         this.account = account;
+        this.customer_id = customer.getId();
+        this.customer = customer;
         this.status = status;
     }
 
@@ -89,7 +98,15 @@ public class Trade {
 
     public Long getCustomer_id() { return customer_id; }
 
+    public User getCustomer() { return customer; }
+
     public String getStatus() { return status; }
+
+    @JsonIgnore
+    public boolean isFilled() { return filled_quantity == quantity; }
+
+    @JsonIgnore
+    public int getRemaining_quantity() { return quantity - filled_quantity; }
 
     public void setId(long id) { this.id = id; }
     
@@ -114,6 +131,8 @@ public class Trade {
     public void setAccount(Account account) { this.account = account; }
 
     public void setCustomer_id(Long customer_id) { this.customer_id = customer_id; }
+
+    public void setCustomer(User customer) { this.customer = customer; }
 
     public void setStatus(String status) { this.status = status; }
 }
