@@ -14,11 +14,11 @@ public class Transfer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne
-    @JoinColumn(name = "sender_id", nullable = false)
+    @JoinColumn(name = "sender_id", nullable = true)
     @JsonIgnore
     private Account sender;
     @ManyToOne
-    @JoinColumn(name = "receiver_id", nullable = false)
+    @JoinColumn(name = "receiver_id", nullable = true)
     @JsonIgnore
     private Account receiver;
     private Long accFrom;

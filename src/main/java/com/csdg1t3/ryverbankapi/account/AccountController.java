@@ -169,5 +169,35 @@ public class AccountController {
 
         return transferRepo.save(transfer);
     }
+
+    /**
+     * Creates a trade transfer between two accounts. The method will also update the balances of
+     * both sender and receiver accounts as necessary
+     * 
+     * If the sender or receiver account is null, that account is associated with a market maker
+     * trade, and hence no account operations will occur
+     * 
+     * @param transfer
+     * @param sender
+     * @param receiver
+     * @return created transfer
+     */
+    public Transfer createTradeTransfer(Transfer transfer, Account sender, Account receiver) {
+        if (sender != null) {
+            if (Math.round(sender.getAvailableBalance() * 100) == Math.round(sender.getBalance() * 100))
+                sender.setAvailableBalance(sender.getAvailableBalance() - transfer.getAmount());
+        
+            sender.setBalance(sender.getBalance() - transfer.getAmount());
+            accountRepo.save(sender);
+        }
+        
+        if (receiver != null) {
+            receiver.setAvailableBalance(receiver.getAvailableBalance() + transfer.getAmount());
+            receiver.setBalance(receiver.getBalance() + transfer.getAmount());
+            accountRepo.save(receiver);
+        }
+
+        return transferRepo.save(transfer);
+    }
     
 }
