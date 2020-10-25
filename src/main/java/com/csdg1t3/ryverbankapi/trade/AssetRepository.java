@@ -14,5 +14,6 @@ public interface AssetRepository extends JpaRepository<Asset, Long>{
     Asset save(Asset asset);
     List<Asset> findAll();
     List<Asset> findByPortfolioCustomerId(Long id);
+    Optional<Asset> findByPortfolioCustomerIdAndCode(Long id, String symbol);
     void deleteById(Long id);
 }
