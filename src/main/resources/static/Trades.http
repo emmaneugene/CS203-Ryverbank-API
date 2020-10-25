@@ -1,0 +1,66 @@
+# View all trades
+GET http://localhost:8080/trades
+Authorization: Basic spiderman mrstark,Idontfeels0good
+###
+
+# View a single trade
+GET http://localhost:8080/trades/1
+Authorization: Basic spiderman mrstark,Idontfeels0good
+###
+
+# Make a trade
+POST http://localhost:8080/trades
+Content-Type: application/json
+Authorization: Basic spiderman mrstark,Idontfeels0good
+
+{
+    "action": "buy",
+    "symbol": "A17U",
+    "quantity": 500,
+    "bid": 3.23,
+    "account_id": 1,
+    "customer_id": 3
+}
+###
+
+# Cancel earlier buy trade
+PUT http://localhost:8080/trades/61
+Content-Type: application/json
+Authorization: Basic spiderman mrstark,Idontfeels0good
+
+{
+    "status": "cancelled"
+}
+###
+
+# Make a market buy trade
+POST http://localhost:8080/trades
+Content-Type: application/json
+Authorization: Basic spiderman mrstark,Idontfeels0good
+
+{
+    "action": "buy",
+    "symbol": "A17U",
+    "quantity": 500,
+    "bid": 0,
+    "account_id": 1,
+    "customer_id": 3
+}
+###
+
+# Make a market sell trade
+POST http://localhost:8080/trades
+Content-Type: application/json
+Authorization: Basic spiderman mrstark,Idontfeels0good
+
+{
+    "action": "sell",
+    "symbol": "A17U",
+    "quantity": 300,
+    "ask": 0,
+    "account_id": 1,
+    "customer_id": 3
+}
+###
+
+
