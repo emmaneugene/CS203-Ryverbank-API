@@ -33,18 +33,18 @@ public class Portfolio {
     private double unrealized_gain_loss;
 
     @NotNull(message = "total_gain_loss should not be null")
-    private double total_gain_loss;
+    private double realized_gain_loss;
 
     public Portfolio() {};
 
     public Portfolio(Long id, User customer, List<Asset> assets, 
-    double unrealized_gain_loss, double total_gain_loss) {
+    double unrealized_gain_loss, double realized_gain_loss) {
         this.id = id;
         this.customer_id = customer.getId();
         this.customer = customer;
         this.assets = assets;
         this.unrealized_gain_loss = unrealized_gain_loss;
-        this.total_gain_loss = total_gain_loss;
+        this.realized_gain_loss = realized_gain_loss;
     }
 
     @JsonIgnore
@@ -59,7 +59,10 @@ public class Portfolio {
 
     public double getUnrealized_gain_loss() { return unrealized_gain_loss; }
 
-    public double getTotal_gain_loss() { return total_gain_loss; }
+    @JsonIgnore
+    public double getRealized_gain_loss() { return realized_gain_loss; }
+
+    public double getTotal_gain_loss() { return realized_gain_loss + unrealized_gain_loss; }
 
     public void setId(Long id) { this.id = id; }
 
@@ -77,8 +80,8 @@ public class Portfolio {
         }
     }
 
-    public void setTotal_gain_loss(double total_gain_loss) {
-        this.total_gain_loss = total_gain_loss;
+    public void setRealized_gain_loss(double total_gain_loss) {
+        this.realized_gain_loss = total_gain_loss;
     }
 
     public String assetsToString() {
@@ -94,7 +97,7 @@ public class Portfolio {
     @Override
     public String toString() {
         return String.format("Portfolio[customerId=%d, assets[\n%s\n], unrealized_gain_loss=%.2lf, total_gain_loss=%.2lf",
-        this.id, assetsToString(), this.unrealized_gain_loss, this.total_gain_loss);
+        this.id, assetsToString(), this.unrealized_gain_loss, this.realized_gain_loss);
     }
 
 }

@@ -447,7 +447,7 @@ public class TradeServiceImpl implements TradeService {
         if (assetFound) {
             if (qty < 0) {
                 Double change = (price - toUpdate.getAvg_price()) * -qty;
-                portfolio.setTotal_gain_loss(portfolio.getTotal_gain_loss() + change);
+                portfolio.setRealized_gain_loss(portfolio.getRealized_gain_loss() + change);
             } else if (qty > 0) {
                 toUpdate.setAvg_price(
                     (toUpdate.getAvg_price() * toUpdate.getQuantity() + price * qty) / (toUpdate.getQuantity() + qty));
