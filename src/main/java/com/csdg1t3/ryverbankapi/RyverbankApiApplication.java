@@ -48,7 +48,7 @@ public class RyverbankApiApplication {
         contents.save(new Content(2, "Title2", "Summary2", "Content2", "Link2", false));
         
         // Add stocks and market maker trades
-        stockController.createStocks(new File("data/stocks.txt"));
+        stockController.createStocks();
         
 
         // RestTemplateClient client = ctx.getBean(RestTemplateClient.class);

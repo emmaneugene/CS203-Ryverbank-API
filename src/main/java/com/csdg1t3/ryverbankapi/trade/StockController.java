@@ -39,48 +39,45 @@ public class StockController {
      * This method should be called by the main method during application startup, with a file
      * containing a list stock symbols and last prices provided
      */
-    public void createStocks(File data){
+    public void createStocks(){
+        String[] symbols = {"A17U", "C61U", "C31", "C38U", "C09", "C52", "D01", "D05", "G13", "H78", 
+        "C07", "J36", "J37", "BN4", "N2IU", "ME8U", "M44U", "O39", "S58", "U96", "S68", "C6L", 
+        "Z74", "S63", "Y92", "U11", "U14", "V03", "F34", "BS6"};
+        Double[] lastPrices = {3.23, 1.65, 2.76, 1.91, 7.73, 1.46, 3.80, 21.39, 0.67, 3.76, 17.82, 
+            40.72, 19.77, 4.56, 1.92, 3.18, 2.07, 8.74, 3.03, 1.44, 9.20, 3.51, 2.17, 3.59, 0.58, 
+            19.60, 6.79, 20.79, 4.49, 0.97};
+        int volume = 20000;
         Random random = new Random();
-        try{
-            Scanner sc = new Scanner(data);
-            while(sc.hasNextLine()){              
-                String[] stockComponents = sc.nextLine().split(",");
-                String symbol = stockComponents[0];
-                Double last_Price = Double.parseDouble(stockComponents[1]);
 
-                int volume = 20000;
-                Double bid = (last_Price * 100 - 1 - random.nextInt(20)) / 100;
-                Double ask =  (last_Price * 100 + 1 + random.nextInt(20)) / 100;
+        for (int i = 0; i < symbols.length; i++) {
+            Double bid = (lastPrices[i] * 100 - 1 - random.nextInt(20)) / 100;
+            Double ask =  (lastPrices[i] * 100 + 1 + random.nextInt(20)) / 100;
 
-                Trade marketBuy = new Trade();
-                marketBuy.setAction("buy");
-                marketBuy.setSymbol(symbol);
-                marketBuy.setQuantity(volume);
-                marketBuy.setBid(bid);
-                marketBuy.setAvg_price(0);
-                marketBuy.setDate(System.currentTimeMillis());
-                marketBuy.setAccount_id(Long.valueOf(0));
-                marketBuy.setCustomer_id(Long.valueOf(0));
-                marketBuy.setStatus("open");
+            Trade marketBuy = new Trade();
+            marketBuy.setAction("buy");
+            marketBuy.setSymbol(symbols[i]);
+            marketBuy.setQuantity(volume);
+            marketBuy.setBid(bid);
+            marketBuy.setAvg_price(0);
+            marketBuy.setDate(System.currentTimeMillis());
+            marketBuy.setAccount_id(Long.valueOf(0));
+            marketBuy.setCustomer_id(Long.valueOf(0));
+            marketBuy.setStatus("open");
 
-                Trade marketSell = new Trade();
-                marketSell.setAction("sell");
-                marketSell.setSymbol(symbol);
-                marketSell.setQuantity(volume);
-                marketSell.setAsk(ask);
-                marketSell.setAvg_price(0);
-                marketSell.setDate(System.currentTimeMillis());
-                marketSell.setAccount_id(Long.valueOf(0));
-                marketSell.setCustomer_id(Long.valueOf(0));
-                marketSell.setStatus("open");
+            Trade marketSell = new Trade();
+            marketSell.setAction("sell");
+            marketSell.setSymbol(symbols[i]);
+            marketSell.setQuantity(volume);
+            marketSell.setAsk(ask);
+            marketSell.setAvg_price(0);
+            marketSell.setDate(System.currentTimeMillis());
+            marketSell.setAccount_id(Long.valueOf(0));
+            marketSell.setCustomer_id(Long.valueOf(0));
+            marketSell.setStatus("open");
 
-                tradeRepo.save(marketBuy);
-                tradeRepo.save(marketSell);
-                stockRepo.save(new Stock(symbol, last_Price, volume, bid, volume, ask));
-            }
-            sc.close();
-        }catch(FileNotFoundException e){
-            System.out.println("File not found");
+            tradeRepo.save(marketBuy);
+            tradeRepo.save(marketSell);
+            stockRepo.save(new Stock(symbols[i], lastPrices[i], volume, bid, volume, ask));
         }
         
     }
