@@ -70,8 +70,8 @@ public class Account {
 
     public void setBalance(Double balance) { this.balance = balance; }
 
-    public void setAvailable_balance(Double availableBalance) { 
-        this.available_balance = availableBalance;
+    public void setAvailable_balance(Double available_balance) { 
+        this.available_balance = available_balance;
     }
 
     public void setCustomer(User customer) { this.cust = customer; }
