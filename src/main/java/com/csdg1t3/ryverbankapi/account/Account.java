@@ -28,13 +28,13 @@ public class Account {
     private User cust;
 
     @NotNull(message = "customer should not be null")
-    private Long customerId;
+    private Long customer_id;
 
     @NotNull(message = "balance should not be null")
     private Double balance;
 
     @NotNull(message = "balance should not be null")
-    private Double availableBalance;
+    private Double available_balance;
    
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -46,13 +46,13 @@ public class Account {
 
     public Account() {}
 
-    public Account(Long id, User customer, Long customerId, Double balance, 
-    Double availableBalance) {
+    public Account(Long id, User customer, Long customer_id, Double balance, 
+    Double available_balance) {
         this.id = id;
         this.cust = customer;
-        this.customerId = customerId;
+        this.customer_id = customer_id;
         this.balance = balance;
-        this.availableBalance = availableBalance;
+        this.available_balance = available_balance;
     }
 
     public Long getId() { return id; }
@@ -60,34 +60,28 @@ public class Account {
     @JsonIgnore
     public User getCustomer() { return cust; }
 
-    public Long getCustomerId() { return customerId; }
+    public Long getCustomer_id() { return customer_id; }
 
     public Double getBalance() { return balance; }
 
-    public Double getAvailableBalance() { return availableBalance; }
+    public Double getAvailable_balance() { return available_balance; }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long id) { this.id = id; }
+
+    public void setBalance(Double balance) { this.balance = balance; }
+
+    public void setAvailable_balance(Double availableBalance) { 
+        this.available_balance = availableBalance;
     }
 
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
+    public void setCustomer(User customer) { this.cust = customer; }
 
-    public void setAvailableBalance(Double availableBalance) {
-        this.availableBalance = availableBalance;
-    }
+    public void setCustomerId(Long customer_id) { this.customer_id = customer_id; }
 
-    public void setCustomer(User customer) {
-        this.cust = customer;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
     @Override
     public String toString() {
-        return String.format("Account[id=%d, customerId=%d, balance=%lf, availableBalance=%lf]", id, cust.getId(), balance, availableBalance);
+        return String.format("Account[id=%d, customerId=%d, balance=%lf, availableBalance=%lf]", 
+        id, cust.getId(), balance, available_balance);
     }
     
 }

@@ -75,7 +75,7 @@ public class TradeServiceImpl implements TradeService {
     public void processExpiredTrade(Trade trade) {
         if (trade.getAction().equals("buy")) {
             Account acc = accountRepo.findById(trade.getAccount_id()).get();
-            acc.setAvailableBalance(acc.getBalance());
+            acc.setAvailable_balance(acc.getBalance());
             accountRepo.save(acc);
         } else if (trade.getAction().equals("sell")) {
             Asset asset = assetRepo.findByPortfolioCustomerIdAndCode(
@@ -303,7 +303,7 @@ public class TradeServiceImpl implements TradeService {
             int needed = sell.getRemaining_quantity();
 
             int qty_affordable = (int)Math.round(
-                marketBuy.getAccount().getAvailableBalance() / (sell.getAsk() * 100)
+                marketBuy.getAccount().getAvailable_balance() / (sell.getAsk() * 100)
                 ) * 100;
             int avail = Math.min(qty_affordable, marketBuy.getRemaining_quantity());
             int toFill =  Math.min(needed, avail);
@@ -325,13 +325,13 @@ public class TradeServiceImpl implements TradeService {
     public void processMarketBuy(Trade buy) {
         Account acc = buy.getAccount();
         Trade sell = getLowestAskTradeForStock(buy.getSymbol());
-        while (!buy.isFilled() && sell != null && acc.getAvailableBalance() >= sell.getAsk() * 100) {
+        while (!buy.isFilled() && sell != null && acc.getAvailable_balance() >= sell.getAsk() * 100) {
             int needed = buy.getRemaining_quantity();
             int avail = sell.getRemaining_quantity();
             int toFill = needed <= avail ? needed : avail;
 
-            if (acc.getAvailableBalance() < sell.getAsk() * toFill)
-                toFill = (int)Math.floor(acc.getAvailableBalance() / (sell.getAsk() * 100)) * 100;
+            if (acc.getAvailable_balance() < sell.getAsk() * toFill)
+                toFill = (int)Math.floor(acc.getAvailable_balance() / (sell.getAsk() * 100)) * 100;
 
             fillTrades(buy, sell, sell.getAsk(), toFill);
 
@@ -475,7 +475,7 @@ public class TradeServiceImpl implements TradeService {
     public void processCancelTrade(Trade trade) {
         if (trade.getAction().equals("buy")) {
             Account acc = accountRepo.findById(trade.getAccount_id()).get();
-            acc.setAvailableBalance(acc.getBalance());
+            acc.setAvailable_balance(acc.getBalance());
             accountRepo.save(acc);
         } else if (trade.getAction().equals("sell")) {
             Asset asset = assetRepo.findByPortfolioCustomerIdAndCode(

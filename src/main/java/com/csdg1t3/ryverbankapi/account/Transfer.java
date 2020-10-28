@@ -13,16 +13,21 @@ public class Transfer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = true)
     @JsonIgnore
     private Account sender;
+
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = true)
     @JsonIgnore
     private Account receiver;
+
     private Long accFrom;
+
     private Long accTo;
+
     private Double amount;
 
     public Transfer() {}
@@ -36,52 +41,29 @@ public class Transfer {
         this.amount = amount;
     }
 
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
 
-    public Account getSender() {
-        return sender;
-    }
+    @JsonIgnore
+    public Account getSender() { return sender; }
 
-    public Account getReceiver() {
-        return receiver;
-    }
+    @JsonIgnore
+    public Account getReceiver() { return receiver; }
 
-    public Long getFrom() {
-        return accFrom;
-    }
+    public Long getFrom() { return accFrom; }
 
-    public Long getTo() {
-        return accTo;
-    }
+    public Long getTo() { return accTo; }
 
-    public Double getAmount() {
-        return amount;
-    }
+    public Double getAmount() { return amount; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setSender(Account sender) {
-        this.sender = sender;
-    }
+    public void setSender(Account sender) { this.sender = sender; }
 
-    public void setReceiver(Account receiver) {
-        this.receiver = receiver;
-    }
+    public void setReceiver(Account receiver) { this.receiver = receiver; }
 
-    public void setFrom(Long accFrom) {
-        this.accFrom = accFrom;
-    }
+    public void setFrom(Long accFrom) { this.accFrom = accFrom; }
 
-    public void setTo(Long accTo) {
-        this.accTo = accTo;
-    }
+    public void setTo(Long accTo) { this.accTo = accTo; }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
+    public void setAmount(Double amount) { this.amount = amount; }
 }
