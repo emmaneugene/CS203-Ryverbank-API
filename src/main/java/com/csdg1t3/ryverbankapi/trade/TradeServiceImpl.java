@@ -31,7 +31,7 @@ public class TradeServiceImpl implements TradeService {
      * isExpired() method.
      * 
      * - Market maker tradse are the exception to this. Market trades will never expire, as their 
-     * purpose is to add liquidity.
+     *   purpose is to add liquidity.
      */
     public void updateTradeExpiry() {
         List<Trade> validTrades = tradeRepo.findByStatusIn(VALID_STATUSES);
@@ -92,7 +92,7 @@ public class TradeServiceImpl implements TradeService {
     /**
      * Retrieves all open or partial-filled buy trades
      * 
-     * @param symbol
+     * @param symbol The symbol of the stock which buy trades are to be retrieved.
      * @return a list of open or partial-filled buy trades
      */
     public List<Trade> listValidBuyTradesForStock(String symbol) {
@@ -103,7 +103,7 @@ public class TradeServiceImpl implements TradeService {
     /**
      * Retrieves all open or partial-filled sell trades
      * 
-     * @param symbol
+     * @param symbol The symbol of the stock which sell trades are to be retrieved.
      * @return a list of open or partial-filled sell trades
      */
     public List<Trade> listValidSellTradesForStock(String symbol) {
@@ -116,8 +116,8 @@ public class TradeServiceImpl implements TradeService {
      * - If multiple trades are found, returns the trade which was placed the earliest.
      * - If no trades are found, return null
      * 
-     * @param symbol
-     * @return trade with lowest ask price
+     * @param symbol The symbol of the stock which trade is to be retrieved.
+     * @return The trade with lowest ask price.
      */
     public Trade getLowestAskTradeForStock(String symbol) {
         List<Trade> validTrades = listValidSellTradesForStock(symbol);
@@ -144,8 +144,8 @@ public class TradeServiceImpl implements TradeService {
      * - If multiple trades are found, returns the trade which was placed the earliest
      * - If no trades are found, return null
      * 
-     * @param symbol
-     * @return trade with highest bid price
+     * @param symbol The symbol of the stock which trade is to be retrieved.
+     * @return The trade with highest bid price.
      */
     public Trade getHighestBidTradeForStock(String symbol) {
         List<Trade> validTrades = listValidBuyTradesForStock(symbol);
@@ -170,8 +170,8 @@ public class TradeServiceImpl implements TradeService {
     /**
      * Returns the earliest valid market buy for a given stock
      * 
-     * @param symbol
-     * @return earliest market buy
+     * @param symbol The symbol of the stock which buy trade is to be retrieved.
+     * @return The earliest market buy.
      */
     public Trade getEarliestMarketBuyForStock(String symbol) {
         List<Trade> trades = tradeRepo.findByActionAndSymbolAndBidAndStatusIn("buy", symbol, 
@@ -192,8 +192,8 @@ public class TradeServiceImpl implements TradeService {
     /**
      * Returns the earliest valid market sell for a given stock
      * 
-     * @param symbol
-     * @return earliest market sell
+     * @param symbol The symbol of the stock which sell trade is to be retrieved.
+     * @return The earliest market sell.
      */
     public Trade getEarliestMarketSellForStock(String symbol) {
         List<Trade> trades = tradeRepo.findByActionAndSymbolAndAskAndStatusIn("sell", symbol, 
@@ -216,8 +216,8 @@ public class TradeServiceImpl implements TradeService {
      * is a buy or sell, and whether it is made at market price, the method will call different 
      * processing functions.
      * 
-     * @param trade
-     * @return processed trade
+     * @param trade The trade to be made.
+     * @return The processed trade.
      */
     public Trade makeTrade(Trade trade) {
         updateTradeExpiry();
@@ -243,7 +243,7 @@ public class TradeServiceImpl implements TradeService {
      * It then matches with market
      * sell trades, if any.
      * 
-     * @param buy
+     * @param buy The buy trade to be made.
      */
     public void processBuy(Trade buy) {
         Trade sell = getLowestAskTradeForStock(buy.getSymbol());
@@ -281,7 +281,7 @@ public class TradeServiceImpl implements TradeService {
      * exceed what can the account can afford. We will thus take the minimum of the quantity to fill
      * and the quantity that be afforded by that account
      * 
-     * @param sell
+     * @param sell The sell trade to be made.
      */
     public void processSell(Trade sell) {
         Trade buy = getHighestBidTradeForStock(sell.getSymbol());
@@ -320,7 +320,7 @@ public class TradeServiceImpl implements TradeService {
      * trade is filled, there are no more sell trades, or there are insufficient funds for any 
      * further purchases (in units of 100 stocks)
      * 
-     * @param buy
+     * @param buy The buy trade to be made.
      */
     public void processMarketBuy(Trade buy) {
         Account acc = buy.getAccount();
@@ -345,7 +345,7 @@ public class TradeServiceImpl implements TradeService {
      * trade is filled, there are no more sell trades, or there are insufficient funds for any 
      * further purchases (in units of 100 stocks)
      * 
-     * @param buy
+     * @param sell The sell trade to be made.
      */
     public void processMarketSell(Trade sell) {
         Trade buy = getHighestBidTradeForStock(sell.getSymbol());
@@ -375,10 +375,10 @@ public class TradeServiceImpl implements TradeService {
      * (partial-filled or filled)
      * 
      * 
-     * @param buy
-     * @param sell
-     * @param price
-     * @param qty
+     * @param buy The buy trade to be filled.
+     * @param sell The sell trade to be filled.
+     * @param price The price of the trade.
+     * @param qty The quantity of stocks to be traded.
      */
     public void fillTrades(Trade buy, Trade sell, Double price, int qty) {
         Transfer transfer = new Transfer();
@@ -431,6 +431,8 @@ public class TradeServiceImpl implements TradeService {
      * - If no asset with the desired stock symbol is found, we create a new asset for that 
      * portfolio. We can be sure that this is a bought asset, since no user would be able to sell
      * a stock that they did not own.
+     * 
+     * @param portfolio The portfolio to be updated.
      */
     public void updatePortfolioAsset(Portfolio portfolio, String symbol, Double price, int qty) {
         List<Asset> assets = portfolio.getAssets();
@@ -470,7 +472,7 @@ public class TradeServiceImpl implements TradeService {
     /**
      * Cancels a trade. Operations performed are largely similar to the process of trade expiry.
      * 
-     * @param trade
+     * @param trade The trade to be cancelled.
      */
     public void processCancelTrade(Trade trade) {
         if (trade.getAction().equals("buy")) {

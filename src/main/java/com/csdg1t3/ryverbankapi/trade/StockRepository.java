@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Data access object
+ * Class that allows us to store accounts as persistent data through JPA
+ * Methods do not have to be explicitly declared, supports save(), findBy() and delete() 
+ * operations
  */
 @Repository
 public interface StockRepository extends JpaRepository<Stock, String>{

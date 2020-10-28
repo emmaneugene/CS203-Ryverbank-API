@@ -38,13 +38,12 @@ public class TradeController {
         this.uAuth = uAuth;
     }
 
-    /**
+     /**
      * Retrieves all trades that the authenticated user has made
      * 
      * This method is only authorised for ROLE_USER as configured in SecurityConfig
      * 
-     * @param id
-     * @return
+     * @return a list containing all of the trades associated with the authenticated user
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/trades")
@@ -60,8 +59,8 @@ public class TradeController {
      * 
      * This method is only authorised for ROLE_USER, as configured in SecurityConfig
      * 
-     * @param id
-     * @return trade that matches the ID specified
+     * @param id The ID of the trade to be retrieved
+     * @return Trade that matches the ID specified
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/trades/{id}")
@@ -93,8 +92,9 @@ public class TradeController {
      * 
      * This method is only authorised for ROLE_USER, as configured in SecurityConfig
      * 
-     * @param trade
-     * @return successfully created trade
+     * @param trade The trade to be created.
+     * @return The trade created in database.
+     * @throws TradeNotValidException If trade conditions are not met.
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/trades")
@@ -184,8 +184,8 @@ public class TradeController {
      * 
      * This method is only authorised for ROLE_USER, as configured in SecurityConfig
      * 
-     * @param trade
-     * @return cancelled trade
+     * @param trade The trade to be cancelled.
+     * @return The cancelled trade.
      */
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/trades/{id}")

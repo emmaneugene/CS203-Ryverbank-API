@@ -21,7 +21,7 @@ import javax.validation.Valid;
 import com.csdg1t3.ryverbankapi.user.*;
 
 /**
- * Controller that manages HTTP GET/POST requests 
+ * Controller that manages HTTP requests to "/accounts"
  */
 @RestController
 public class AccountController {

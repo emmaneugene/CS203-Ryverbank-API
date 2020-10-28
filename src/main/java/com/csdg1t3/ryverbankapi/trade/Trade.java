@@ -7,6 +7,12 @@ import com.csdg1t3.ryverbankapi.account.*;
 import com.csdg1t3.ryverbankapi.user.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * POJO that stores the details of a trade
+ * Trade is linked to Account & Customer in a many-to-one relationship, and each Trade must have an 
+ * Account & Customer
+ * 
+ */
 @Entity
 public class Trade {
     @Id
@@ -53,8 +59,26 @@ public class Trade {
     @NotNull(message = "status should not be null")
     private String status;
 
+    /**
+     * Default constructor for class Trade.
+     */
     public Trade() {}
 
+    /**
+     * Another constructor for class Trade
+     * @param id The unique ID number for the trade
+     * @param action The act of buying or selling
+     * @param symbol The symbol of the stock being traded
+     * @param quantity The quantity of the stock being traded
+     * @param bid The price that the customer is willing to pay
+     * @param ask The ask price that the seller is asking for
+     * @param avg_price The average price of the stock being traded
+     * @param filled_quantity The quantity of requested stock that has been filled
+     * @param date The date the trade is requested
+     * @param account The customer's account being used for the trade
+     * @param customer The customer making the trade
+     * @param status The status of the trade
+     */
     public Trade(Long id, String action, String symbol, int quantity, Double bid, Double ask, 
     double avg_price, int filled_quantity, long date, Account account, User customer, String status){
         this.id = id;

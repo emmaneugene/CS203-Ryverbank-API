@@ -34,7 +34,7 @@ public class PortfolioController {
      * Returns the user's portfolio. Each time this method is called, we must update the current
      * price of all assets, and modify unrealised gain/loss as necessary
      * 
-     * Only ROLE_USER can has the authority to perform this, as outlined in SecurityConfig
+     * Only ROLE_USER has the authority to perform this, as outlined in SecurityConfig
      * 
      * @return the user's portfolio
      */
