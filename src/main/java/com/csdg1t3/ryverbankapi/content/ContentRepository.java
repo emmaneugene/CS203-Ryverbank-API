@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface ContentRepository extends JpaRepository<Content, Long>{
     Content save(Content content);
     List<Content> findAll();
-    List<Content> findByApproval(Boolean approval);
+    List<Content> findByApproved(Boolean approved);
     Optional<Content> findById(Long id);
     void deleteById(Long id);
        

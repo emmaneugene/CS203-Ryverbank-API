@@ -29,7 +29,7 @@ Authorization: Basic analyst_1 01_analyst_01
     "summary": "Handy tips to save money for the future",
     "content": "Lorem ipsum dolor sit amet",
     "link": "https://www.youtube.com/watch?v=oHg5SJYRHA0&feature=youtu.be",
-    "approval": true
+    "approved": true
 }
 ###
 
@@ -42,7 +42,7 @@ Authorization: Basic manager_1 01_manager_01
     "summary": "Financial analysis of market performance in Q2 2020 by KPMG",
     "content": "KPMG reports on major accounting and financial reporting developments that could affect companies in the current period and near term.",
     "link": "https://frv.kpmg.us/reference-library/2020/q2-2020-quarterly-outlook.html",
-    "approval": true
+    "approved": true
 }
 ###
 
@@ -55,7 +55,7 @@ Authorization: Basic iamironman i<3carmen
     "summary": "Click the link for easy profit!!!",
     "content": "Just click the link!!",
     "link": "Don't have la",
-    "approval": true
+    "approved": true
 }
 ###
 

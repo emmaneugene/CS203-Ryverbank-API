@@ -46,7 +46,7 @@ public class ContentController {
             uAuthorities.contains(new SimpleGrantedAuthority("ROLE_ANALYST")))
             return contentRepo.findAll();
         
-        return contentRepo.findByApproval(true);
+        return contentRepo.findByApproved(true);
     }
 
     /**

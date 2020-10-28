@@ -87,7 +87,7 @@ public class User implements UserDetails {
 
     public Long getId() { return id; }
 
-    public String getName() { return full_name; }
+    public String getFull_name() { return full_name; }
 
     public String getNric() { return nric; }
 
@@ -121,7 +121,7 @@ public class User implements UserDetails {
 
     public void setId(Long id) { this.id = id; }
 
-    public void setName(String name) { this.full_name = name; }
+    public void setName(String full_name) { this.full_name = full_name; }
 
     public void setNric(String nric) { this.nric = nric; }
 
