@@ -48,7 +48,7 @@ public class AccountController {
         .getPrincipal();
         User user = userRepo.findByUsername(uDetails.getUsername()).get();
                 
-        return accountRepo.findByCustId(user.getId());
+        return accountRepo.findByCustomerId(user.getId());
     }
 
     /**
