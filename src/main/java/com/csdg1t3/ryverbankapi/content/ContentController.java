@@ -72,7 +72,7 @@ public class ContentController {
         uAuthorities.contains(new SimpleGrantedAuthority("ROLE_ANALYST")))
             return content;
         
-        if (content.getApproval())
+        if (content.getApproved())
             return content;
         
         throw new ContentNotApprovedException(id);
@@ -86,7 +86,7 @@ public class ContentController {
         Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
 
         if (!uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")))
-            content.setApproval(false);
+            content.setApproved(false);
         return contentRepo.save(content);
     }
 
@@ -107,14 +107,14 @@ public class ContentController {
             content.setContent(newContent.getContent());
         if (newContent.getLink() != null)
             content.setLink(newContent.getLink());
-        if (newContent.getApproval() != null)
-            content.setApproval(newContent.getApproval());
+        if (newContent.getApproved() != null)
+            content.setApproved(newContent.getApproved());
 
         UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
         .getPrincipal();
         Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
         if (!uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")))
-            content.setApproval(false);
+            content.setApproved(false);
 
         return contentRepo.save(content);
     }
