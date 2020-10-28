@@ -32,9 +32,11 @@ public class ContentController {
     }
 
     /**
-     * List all content in the system. ROLE_MANAGER and ROLE_ANALYST can view all content,
+     * Retrieve all content in the system. 
+     * 
+     * ROLE_MANAGER and ROLE_ANALYST can view all content,
      * while ROLE_USER can only view approved content
-     * @return list of all content
+     * @return a List of all content
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/contents")
@@ -50,10 +52,13 @@ public class ContentController {
     }
 
     /**
-     * Search for content with the given id
-     * If there isn't one with the given id, throw ContentNotFoundException
-     * @param id
-     * @return content with the given id
+     * Search for content with the given ID.
+     * If there isn't a content with the given ID, throw ContentNotFoundException.
+     * 
+     * @param id ID of the content to be retrieved.
+     * @return Content with the given ID.
+     * @throws ContentNotFoundException If content ID is not found.
+     * @throws ContentNotApprovedException If Content is not approved by a ROLE_ADMIN.
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/contents/{id}")
@@ -78,6 +83,13 @@ public class ContentController {
         throw new ContentNotApprovedException(id);
     }
 
+    /**
+     * Creates a new content.
+     * 
+     * Only ROLE_MANAGER and ROLE_ANALYST can create new content, as validated in security config.
+     * @param content The new content to be added into the database.
+     * @return The content after being added into the database.
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/contents")
     public Content createContent(@Valid @RequestBody Content content) {
@@ -90,6 +102,15 @@ public class ContentController {
         return contentRepo.save(content);
     }
 
+    /**
+     * Updates the content with the given ID with new details.
+     * If there isn't a content with the given ID, throw ContentNotFoundException.
+     * 
+     * @param id The ID of the content to be changed.
+     * @param newContent The new content.
+     * @return The new content saved in the databased.
+     * @throws ContentNotFoundException If content with the given ID is not found.
+     */
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/contents/{id}")
     public Content updateContent(@PathVariable Long id, @RequestBody Content newContent) {
@@ -119,6 +140,13 @@ public class ContentController {
         return contentRepo.save(content);
     }
 
+    /**
+     * Deletes content with the given ID.
+     * If there isn't a content with the given ID, throw ContentNotFoundException.
+     * 
+     * @param id The ID of the content to be deleted.
+     * @throws ContentNotFoundException If content with given ID is not found.
+     */
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/contents/{id}")
     public void deleteContent(@PathVariable Long id) {
