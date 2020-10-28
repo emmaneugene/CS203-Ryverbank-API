@@ -108,7 +108,7 @@ public class UserController {
         if (!Validator.validateNRIC(user.getNric())) 
             throw new UserNotValidException("NRIC is invalid");
 
-        if (!Validator.validatePhoneno(user.getPhoneNo())) 
+        if (!Validator.validatePhoneno(user.getPhone())) 
             throw new UserNotValidException("Phone number is invalid");
 
         user.setPassword(encoder.encode(user.getPassword()));
@@ -148,10 +148,10 @@ public class UserController {
             && !user.getUsername().equals(uDetails.getUsername()))
             throw new RoleNotAuthorisedException("You cannot update another customer's details");
         
-        if (newUserInfo.getPhoneNo() != null)
-            if (!Validator.validatePhoneno(user.getPhoneNo())) 
+        if (newUserInfo.getPhone() != null)
+            if (!Validator.validatePhoneno(user.getPhone())) 
                 throw new UserNotValidException("Phone number is invalid");
-            user.setPhoneNo(newUserInfo.getPhoneNo());
+            user.setPhone(newUserInfo.getPhone());
         
         if (newUserInfo.getAddress() != null)
             user.setAddress(newUserInfo.getAddress());
@@ -161,7 +161,7 @@ public class UserController {
         
         if (uDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) 
             && newUserInfo.getStatus() != null)
-            user.setStatus(newUserInfo.getStatus());
+            user.setActive(newUserInfo.getStatus());
 
         return userRepo.save(user);
     }

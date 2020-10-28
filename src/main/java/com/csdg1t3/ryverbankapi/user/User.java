@@ -32,7 +32,7 @@ public class User implements UserDetails {
 
     @NotNull(message = "Name should not be null")
     @Size(min = 5, max = 150, message = "name should be between 5 and 150 characters")
-    private String name;
+    private String full_name;
 
     @NotNull(message = "Nric should not be null")
     @Size(min = 9, max = 9, message = "nric should be exactly 9 characters")
@@ -40,7 +40,7 @@ public class User implements UserDetails {
 
     @NotNull(message = "phone no should not be null")
     @Size(min = 8, max = 8, message = "Phone number should be exactly 8 characters")
-    private String phoneNo;
+    private String phone;
 
     @NotNull(message = "Address should not be null")
     @Size(min = 5, max = 200, message = "address should be between 5 and 200 characters")
@@ -59,7 +59,7 @@ public class User implements UserDetails {
 
     // can be null if manager or analyst 
     @NotNull(message = "Status should not be null")
-    private Boolean status;
+    private Boolean active;
     
     @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL /*, orphanRemoval = true*/)
     @JsonIgnore
@@ -72,26 +72,26 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(long id, String name, String nric, String phoneNo, String address, String username, 
-    String password, String authorities, Boolean status) {
+    public User(long id, String full_name, String nric, String phone, String address, String username, 
+    String password, String authorities, Boolean active) {
         this.id = id;
-        this.name = name;
+        this.full_name = full_name;
         this.nric = nric;
-        this.phoneNo = phoneNo;
+        this.phone = phone;
         this.address = address;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
-        this.status = status;
+        this.active = active;
     }
 
     public Long getId() { return id; }
 
-    public String getName() { return name; }
+    public String getName() { return full_name; }
 
     public String getNric() { return nric; }
 
-    public String getPhoneNo() { return phoneNo; }
+    public String getPhone() { return phone; }
 
     public String getAddress() { return address; }
 
@@ -99,6 +99,7 @@ public class User implements UserDetails {
 
     public String getPassword() { return password; }
 
+    @JsonIgnore
     public String getStringAuthorities() { return authorities; }
 
      /* Return a collection of authorities (roles) granted to the user.
@@ -112,7 +113,7 @@ public class User implements UserDetails {
         return result;
     }
 
-    public Boolean getStatus() { return status; }
+    public Boolean getStatus() { return active; }
 
     public List<Account> getAccounts() { return accounts; }
 
@@ -120,11 +121,11 @@ public class User implements UserDetails {
 
     public void setId(Long id) { this.id = id; }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) { this.full_name = name; }
 
     public void setNric(String nric) { this.nric = nric; }
 
-    public void setPhoneNo(String phoneNo) { this.phoneNo = phoneNo; }
+    public void setPhone(String phone) { this.phone = phone; }
 
     public void setAddress(String address) { this.address =  address; }
 
@@ -134,7 +135,7 @@ public class User implements UserDetails {
 
     public void setAuthorities(String authorities) { this.authorities = authorities; }
 
-    public void setStatus(Boolean status) { this.status = status; }
+    public void setActive(Boolean active) { this.active = active; }
 
     public void setAccounts(List<Account> accounts) { this.accounts = accounts; }
 
@@ -147,23 +148,24 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonExpired() {
-        return status;
+        return active;
     }
 
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
-        return status;
+        return active;
     }
 
     @Override
     @JsonIgnore
     public boolean isCredentialsNonExpired() {
-        return status;
+        return active;
     }
+
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return status;
+        return active;
     }
 }
