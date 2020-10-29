@@ -20,15 +20,15 @@ import java.util.*;
 public class UserAuthenticator {
     private UserRepository userRepo;
 
-    private static final SimpleGrantedAuthority MANAGER = new SimpleGrantedAuthority("ROLE_MANAGER");
-    private static final SimpleGrantedAuthority USER = new SimpleGrantedAuthority("ROLE_USER");
-    private static final SimpleGrantedAuthority ANALYST = new SimpleGrantedAuthority("ROLE_ANALYST");
+    public static final SimpleGrantedAuthority MANAGER = new SimpleGrantedAuthority("ROLE_MANAGER");
+    public static final SimpleGrantedAuthority USER = new SimpleGrantedAuthority("ROLE_USER");
+    public static final SimpleGrantedAuthority ANALYST = new SimpleGrantedAuthority("ROLE_ANALYST");
 
     public UserAuthenticator(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
 
-    public User getCurrentUser() {
+    public User getAuthenticatedUser() {
         UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext()
         .getAuthentication().getPrincipal(); 
 
@@ -40,7 +40,7 @@ public class UserAuthenticator {
             return false;
 
         User userAtId = userRepo.findById(id).get();
-        User authenticatedUser = getCurrentUser();
+        User authenticatedUser = getAuthenticatedUser();
         return authenticatedUser.getId() == userAtId.getId();
     }
 }

@@ -26,7 +26,7 @@ Authorization: Basic manager_1 01_manager_01
     "username": "johntxm",
     "password": "johnpwsucks!1!",
     "authorities": "ROLE_USER",
-    "status": true
+    "active": true
 }
 ###
 
@@ -42,7 +42,7 @@ Authorization: Basic iamironman i<3carmen
     "username": "theronlyone",
     "password": "donttryguessingthis",
     "authorities": "ROLE_USER",
-    "status": true
+    "active": true
 }
 ###
 
@@ -60,18 +60,18 @@ Authorization: Basic iamironman i<3carmen
     "username": "iamnotironman",
     "password": "i</3carmen",
     "authorities": "ROLE_USER",
-    "status": false
+    "active": false
 }
 ###
 
-# PUT request by manager should be able to change status as well
+# PUT request by manager should be able to change active as well
 PUT http://localhost:8080/customers/2
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
 {
     "phone": "91234567",
-    "status": false
+    "active": false
 }
 ###
 

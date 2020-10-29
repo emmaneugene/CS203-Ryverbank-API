@@ -50,7 +50,7 @@ public class TradeController {
     public List<Trade> getTrades() {
         tradeService.updateTradeExpiry();
 
-        return tradeRepo.findByCustomerId(uAuth.getCurrentUser().getId());
+        return tradeRepo.findByCustomerId(uAuth.getAuthenticatedUser().getId());
     }
 
     /**
@@ -108,7 +108,7 @@ public class TradeController {
             throw new TradeNotValidException("Account_id is invalid");
         
         Account acc = accountRepo.findById(trade.getAccount_id()).get();
-        User cust = uAuth.getCurrentUser();
+        User cust = uAuth.getAuthenticatedUser();
         if (acc.getCustomer_id() != trade.getCustomer_id())
             throw new TradeNotValidException("Trade must be made with your own account");
         trade.setAccount(acc);

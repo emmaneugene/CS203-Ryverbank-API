@@ -41,7 +41,7 @@ public class PortfolioController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/portfolio")
     public Portfolio getPortfolio() {
-        User user = uAuth.getCurrentUser();
+        User user = uAuth.getAuthenticatedUser();
         Portfolio portfolio = portfolioRepo.findByCustomerId(user.getId()).get();
 
         List<Asset> assets = assetRepo.findByPortfolioCustomerId(portfolio.getCustomer_id());
