@@ -12,13 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.Authentication;
-
 import javax.validation.Valid;
+
+import com.csdg1t3.ryverbankapi.security.UserAuthenticator;
+import com.csdg1t3.ryverbankapi.user.User;
 
 /**
  * Controller that manages HTTP GET/POST/PUT/DELETE requests
@@ -26,9 +23,11 @@ import javax.validation.Valid;
 @RestController
 public class ContentController {
     private ContentRepository contentRepo;
+    private UserAuthenticator uAuth;
 
-    public ContentController (ContentRepository contentRepo) {
+    public ContentController (ContentRepository contentRepo, UserAuthenticator uAuth) {
         this.contentRepo = contentRepo;
+        this.uAuth = uAuth;
     }
 
     /**
@@ -41,11 +40,10 @@ public class ContentController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/contents")
     public List<Content> getContent() {
-        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
-        Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
-        if (uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")) || 
-            uAuthorities.contains(new SimpleGrantedAuthority("ROLE_ANALYST")))
+        User authenticatedUser = uAuth.getAuthenticatedUser();
+        
+        if (authenticatedUser.getAuthorities().contains(uAuth.MANAGER) ||
+            authenticatedUser.getAuthorities().contains(uAuth.ANALYST))
             return contentRepo.findAll();
         
         return contentRepo.findByApproved(true);
@@ -69,12 +67,10 @@ public class ContentController {
         }
         Content content = result.get();
 
-        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
-        Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
-
-        if (uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")) || 
-        uAuthorities.contains(new SimpleGrantedAuthority("ROLE_ANALYST")))
+        User authenticatedUser = uAuth.getAuthenticatedUser();
+        
+        if (authenticatedUser.getAuthorities().contains(uAuth.MANAGER) ||
+            authenticatedUser.getAuthorities().contains(uAuth.ANALYST))
             return content;
         
         if (content.getApproved())
@@ -93,11 +89,9 @@ public class ContentController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/contents")
     public Content createContent(@Valid @RequestBody Content content) {
-        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
-        Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
-
-        if (!uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")))
+        User authenticatedUser = uAuth.getAuthenticatedUser();
+        
+        if (!authenticatedUser.getAuthorities().contains(uAuth.MANAGER))
             content.setApproved(false);
         return contentRepo.save(content);
     }
@@ -131,10 +125,9 @@ public class ContentController {
         if (newContent.getApproved() != null)
             content.setApproved(newContent.getApproved());
 
-        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
-        Collection<? extends GrantedAuthority> uAuthorities = uDetails.getAuthorities();
-        if (!uAuthorities.contains(new SimpleGrantedAuthority("ROLE_MANAGER")))
+        User authenticatedUser = uAuth.getAuthenticatedUser();
+    
+        if (!authenticatedUser.getAuthorities().contains(uAuth.MANAGER))
             content.setApproved(false);
 
         return contentRepo.save(content);
