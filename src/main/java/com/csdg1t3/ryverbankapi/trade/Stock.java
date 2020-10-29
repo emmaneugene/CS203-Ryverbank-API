@@ -7,7 +7,9 @@ import javax.validation.Valid;
 
 import java.util.*;
 
-
+/**
+ * POJO that stores the details of a stock
+ */
 @Entity
 public class Stock {
     @Id
@@ -28,8 +30,20 @@ public class Stock {
     @NotNull(message = "ask should not be null")
     private double ask; 
 
+    /**
+     * Default constructor for class Stock.
+     */
     public Stock(){}
 
+    /**
+     * Another constructor for class Stock
+     * @param symbol The unique symbol for the stock
+     * @param last_price The price of the stock last traded
+     * @param bid_volume The quantity of stocks the customer wishes to buy
+     * @param bid The price the customer is willing to pay
+     * @param ask_volume The quantity of stocks the seller wishes to sell
+     * @param ask The price the seller is asking for
+     */
     public Stock(String symbol, double last_price, int bid_volume, double bid, int ask_volume, double ask){
         this.symbol = symbol;
         this.last_price = last_price;

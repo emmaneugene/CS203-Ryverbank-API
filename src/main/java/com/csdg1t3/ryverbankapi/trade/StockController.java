@@ -19,6 +19,9 @@ import javax.validation.Valid;
 import java.util.*;
 import java.io.*;
 
+/**
+ * Controller that manages HTTP requests to "/stocks"
+ */
 @RestController
 public class StockController {
     private StockRepository stockRepo;
@@ -38,6 +41,8 @@ public class StockController {
      * 
      * This method should be called by the main method during application startup, with a file
      * containing a list stock symbols and last prices provided
+     *
+     * @param data A txt file containing information for stocks
      */
     public void createStocks(File data){
         Random random = new Random();
@@ -125,7 +130,7 @@ public class StockController {
      * Updates a stock's bid volume, bid, ask volume and ask using methods from
      * TradeService. It then saves the updated stock to the database
      * 
-     * @param stock
+     * @param stock The stock to be updated
      */
     public void updateStockDetails(Stock stock) {
         double bid, ask;

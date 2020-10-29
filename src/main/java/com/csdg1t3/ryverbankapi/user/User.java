@@ -101,7 +101,8 @@ public class User implements UserDetails {
 
     public String getStringAuthorities() { return authorities; }
 
-     /* Return a collection of authorities (roles) granted to the user.
+     /* 
+     Return a collection of authorities (roles) granted to the user.
     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

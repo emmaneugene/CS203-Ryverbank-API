@@ -21,7 +21,7 @@ import javax.validation.Valid;
 import com.csdg1t3.ryverbankapi.user.*;
 
 /**
- * Controller that manages HTTP GET/POST requests 
+ * Controller that manages HTTP requests to "/accounts"
  */
 @RestController
 public class AccountController {
@@ -37,9 +37,13 @@ public class AccountController {
     }
     
     /**
-     * Only ROLE_USER can view accounts, as validated in security config
-     * Thus method returns a list of accounts associated with user's ID 
-     * @return 
+     * Retrieve all the accounts owned by the logged in customer.
+     * 
+     * Only ROLE_USER can view their own accounts, as validated in security config
+     * This method calls getAccount() and returns a list of accounts associated with user's ID
+     * If the user ID or role is wrong, a 403 error would be shown.
+     * 
+     * @return a List containing all of the accounts associated with the user's ID.
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/accounts")
@@ -52,10 +56,15 @@ public class AccountController {
     }
 
     /**
-     * Only ROLE_USER can view accounts, as validated in security config
+     * Search for the account with the given account ID.
+     * 
+     * Only ROLE_USER can view their own accounts, as validated in security config
      * This method calls getAccount() and further validates by customer's ID
-     * @param id
-     * @return
+     * If the user ID, account ID or role is wrong, a 403 error would be shown.
+     * 
+     * @param id The ID of the account that the customer is accessing.
+     * @return The account that is tied to the customer and account ID.
+     * @throws AccountNotFoundException If the account is not found.
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/accounts/{id}")
@@ -71,10 +80,15 @@ public class AccountController {
     }
 
     /**
+     * Creates a new account.
+     * 
      * Only ROLE_MANAGER can create new accounts, as validated in security config. 
-     * This method needs to validate customer ID and account details
-     * @param account
-     * @return
+     * This method needs to validate customer ID and account details.
+     * 
+     * @param account The account to be created.
+     * @return The account created in database.
+     * @throws UserNotFoundException If customer ID is not found
+     * @throws AccountNotValidExcception If balance is below 5000 or initial and available balance does not match
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/accounts")
@@ -94,11 +108,17 @@ public class AccountController {
     }
 
     /**
+     * Retrieve transaction details of the account with the given account ID.
+     * 
      * Only ROLE_USER can view transactions, as validated in security config
      * This method needs to validate account ID, and make sure that the user is the owner of the
      * account
-     * @param accountId
-     * @return
+     * 
+     * @param accountId The account ID of the transactions to be retrieved.
+     * @return The transaction details of the account with the given account ID.
+     * @throws AccountNotFoundException If account ID is not found
+     * @throws RoleNotAuthorizedException If the user ID of the person accessing the account 
+     *                                    does not match the user ID tied to the account.
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/accounts/{account_id}/transactions")
@@ -120,13 +140,20 @@ public class AccountController {
     }
 
     /**
+     * Create a new transaction.
+     * 
      * Only ROLE_USER can create a new transfer, as validated in security config
      * This method needs to 
      * 1. validate sender and receiver accounts
      * 2. ensure that user sending the request owns the account
      * 3. ensure that the sender has sufficient funds for transfer
-     * @param accountId
-     * @return
+     * 
+     * @param accountId The account ID that the sender wishes to transfer money out from.
+     * @return The transaction created in the database.
+     * @throws TransferNotValidException If sender and receiver fields are the same or there is insufficient balance.
+     * @throws AccountNotValidException If account ID in sender field is different from the logged in customer's account.
+     * @throws AccountNotFoundException If sender or receiver account is not found.
+     * @throws RoleNotAuthorisedException If account is not owned by the sender customer.
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/accounts/{account_id}/transactions")

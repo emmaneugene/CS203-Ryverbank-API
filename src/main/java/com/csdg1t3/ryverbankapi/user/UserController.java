@@ -44,10 +44,10 @@ public class UserController {
 
     /**
      * Retrieve all customers in the bank. The method returns ROLE_MANAGER and ROLE_ANALYST 
-     * accounts as well
+     * accounts as well.
      * 
      * This method is only authorised for ROLE_MANAGER, as configured in SecurityConfig. 
-     * @return all customers
+     * @return a List of all customers
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/customers")
@@ -56,14 +56,17 @@ public class UserController {
     }
 
     /**
-     * Search for customer with the given id. If there is no customer with the given "id", throws a
-     * UserNotFoundException
+     * Search for customer with the given ID.
+     * If there is no customer with the given ID, throw UserNotFoundException
      * 
      * This method is authorised for the following roles: 
      * ROLE_MANAGER - can view all customer accounts
      * ROLE_USER - can only view their own account
-     * @param id
-     * @return customer with the given id
+     * @param id ID of the customer to be retrieved.
+     * @return Customer with the given ID.
+     * @throws UserNotFoundException If user ID is not found.
+     * @throws RoleNotAuthorisedException If the role of the user accessing is not ROLE_MANAGER
+     *                                    or the username is not the same as the user ID being accessed.
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/customers/{id}")
@@ -85,7 +88,7 @@ public class UserController {
 
     
     /**
-     * Create a new customer in the bank. In addition to basic field validation, the controller 
+     * Creates a new customer in the bank. In addition to basic field validation, the controller 
      * must verify additional fields:
      * 1. Username must be unique
      * 2. NRIC must be valid 
@@ -95,8 +98,9 @@ public class UserController {
      * This controller also creates an empty portfolio for the user if the user is ROLE_USER
      * 
      * This method is only authorised for ROLE_MANAGER, as configured in SecurityConfig
-     * @param user
-     * @return new customer
+     * @param user The user to be added into the database.
+     * @return The user after being added into the database.
+     * @throws UserNotValidException If username is already taken, NRIC or phone number is invalid.
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/customers")
@@ -122,16 +126,19 @@ public class UserController {
     }
 
     /**
-     * Update customer information. The method only allows for phone no, address and password fields
+     * Updates customer information. The method only allows for phone no, address and password fields
      * and status to be updated. Changes to any other fields are ignored.
      * 
      * This method is authorised for the following roles:
      * ROLE_USER - only allowed to update their own information, and cannot
      * change their status
      * ROLE_MANAGER - allowed to update information for all customers, including their status 
-     * @param id
-     * @param newUserInfo
-     * @return updated customer
+     * 
+     * @param id The ID of the customer to be updated.
+     * @param newUserInfo The new details to be updated.
+     * @return The new customer with the updated details.
+     * @throws RoleNotAuthorisedException If user is updating another customer's details or not a ROLE_MANAGER.
+     * @throws UserNotValidException If new phone number is invalid.
     */
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/customers/{id}")
