@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Allows us to store asset as persistent data through JPA.
+ * Class that allows us to store asset as persistent data through JPA.
  * Methods do not have to by explicitly declared, supports save(), findById() and delete()
  */
 @Repository

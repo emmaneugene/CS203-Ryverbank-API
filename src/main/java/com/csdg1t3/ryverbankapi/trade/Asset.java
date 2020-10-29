@@ -8,6 +8,12 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * POJO that stores the details of a customer's assets
+ * Asset is linked to Portfolio in a many-to-one relationship, and each asset must have a 
+ * portfolio
+ * 
+ */
 @Entity 
 public class Asset {
     @Id
@@ -36,8 +42,21 @@ public class Asset {
     @NotNull(message = "Current price should not be null")
     private double current_price;
 
+    /**
+     * Default constructor for class Asset.
+     */
     public Asset() {};
 
+    /**
+     * Another constructor for class Asset
+     * @param id The unique ID number for the asset
+     * @param code The code of the asset
+     * @param portfolio The portfolio which the asset belongs to
+     * @param quantity The quantity of the asset
+     * @param available_quantity The available quantity of the asset
+     * @param avg_price The average price of the asset
+     * @param current_price The current price of the asset
+     */
     public Asset(Long id, String code, Portfolio portfolio, int quantity, int available_quantity, 
     double avg_price, double current_price) {
         this.id = id;

@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Exception thrown when an account is invalid. This also returns a HTTP response 
+ * Exception thrown when an account is invalid. This also returns a HTTP response.
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class AccountNotValidException extends RuntimeException {

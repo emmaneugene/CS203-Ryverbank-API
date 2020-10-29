@@ -4,9 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Exception thrown when a trade created is not valid
- * 
- * HTTP error code: 400 (Bad Request)
+ * Exception thrown when a trade to be created is not valid. This also returns a HTTP response.
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class TradeNotValidException extends RuntimeException {

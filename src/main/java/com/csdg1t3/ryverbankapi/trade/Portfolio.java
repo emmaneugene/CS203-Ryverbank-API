@@ -11,6 +11,12 @@ import java.util.ArrayList;
 import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.trade.*;
 
+/**
+ * POJO that stores the details of a customer's portfolio
+ * Portfolio is linked to Customer in a many-to-one relationship, and each portfolio must have a 
+ * customer
+ * 
+ */
 @Entity 
 public class Portfolio {
     @Id
@@ -35,8 +41,20 @@ public class Portfolio {
     @NotNull(message = "total_gain_loss should not be null")
     private double realized_gain_loss;
 
+    /**
+     * Default constructor for class Portfolio.
+     */
     public Portfolio() {};
 
+    
+    /**
+     * Another constructor for class Portfolio.
+     * @param id The unique ID number for the portfolio
+     * @param customer The customer who owns the portfolio
+     * @param assets The assets that the portfolio contains
+     * @param unrealized_gain_loss The unrealized gain loss of the customer's assets
+     * @param total_gain_loss The total gain loss of the customer's assets
+     */
     public Portfolio(Long id, Long customer_id, User customer, List<Asset> assets, 
     double unrealized_gain_loss, double realized_gain_loss) {
         this.id = id;

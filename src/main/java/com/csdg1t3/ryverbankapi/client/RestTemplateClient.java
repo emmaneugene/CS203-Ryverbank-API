@@ -14,8 +14,7 @@ public class RestTemplateClient {
     private final RestTemplate template;
 
     /**
-     * Add authentication information for the RestTemplate
-     * 
+     * Adds authentication information for the RestTemplate
      */
     public RestTemplateClient(RestTemplateBuilder restTemplateBuilder) {
         this.template = restTemplateBuilder
@@ -23,11 +22,11 @@ public class RestTemplateClient {
                 .build();
     }
     /**
-     * Get a user with given id
+     * Gets a user with given id
      * 
-     * @param URI
-     * @param id
-     * @return
+     * @param URI The URI used by the code.
+     * @param id The ID of the user to be retrieved.
+     * @return The user with the given ID.
      */
     public User getUser(final String URI, final Long id) {
         final User user = template.getForObject(URI + "/" + id, User.class);
@@ -35,26 +34,25 @@ public class RestTemplateClient {
     }
 
     /**
-     * Add a new user
+     * Adds a new user
      * 
-     * @param URI
-     * @param newUser
-     * @return
+     * @param URI The URI used by the code.
+     * @param newUser The new user to be added into the database.
+     * @return The new user after being added into the database.
      */
     public User addUser(final String URI, final User newUser) {
-       System.out.println("IM HERE ");
-    
-        System.out.println( template.postForObject(URI, newUser, User.class));
+        System.out.println(template.postForObject(URI, newUser, User.class));
 
         // final User returned = template.postForObject(URI, newUser, User.class);
         return newUser;
     }
 
     /**
-     * Get a user, but return a HTTP response entity.
-     * @param URI
-     * @param id
-     * @return
+     * Gets a user, but returns a HTTP response entity.
+     * 
+     * @param URI The URI used by the code.
+     * @param id The ID of the user to be retrieved.
+     * @return The HTTP response when the user is retrieved.
      */
     public ResponseEntity<User> getUserEntity(final String URI, final Long id){
         System.out.println("String URI " + URI + " id " + id );
