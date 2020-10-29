@@ -14,9 +14,7 @@ public interface ContentRepository extends JpaRepository<Content, Long>{
     Content save(Content content);
     void deleteById(Long id);
     List<Content> findAll();
-    List<Content> findByApproval(Boolean approval);
-
-    // Using Optional - the return value of this method may contain a null value
+    List<Content> findByApproved(Boolean approved);
     Optional<Content> findById(Long id);
        
 }

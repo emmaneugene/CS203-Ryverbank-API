@@ -52,7 +52,7 @@ public class AccountController {
         .getPrincipal();
         User user = userRepo.findByUsername(uDetails.getUsername()).get();
                 
-        return accountRepo.findByCustomerId(user.getId());
+        return accountRepo.findByCustId(user.getId());
     }
 
     /**
@@ -92,17 +92,13 @@ public class AccountController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/accounts")
-    public Account addAccount(@Valid @RequestBody Account account) {
-        Optional<User> result = userRepo.findById(account.getCustomerId());
+    public Account addAccount(@RequestBody Account account) {
+        Optional<User> result = userRepo.findById(account.getCustomer_id());
         if (!result.isPresent())
-            throw new UserNotFoundException(account.getCustomerId());
+            throw new AccountNotValidException("invalid customer_id");
         User user = result.get();
 
-        if (account.getBalance() < 5000.0 )
-            throw new AccountNotValidException("Initial account balance must be more than 5000 ");
-        if (Math.round(account.getBalance() * 100) != Math.round(account.getAvailableBalance() * 100)) 
-            throw new AccountNotValidException("Initial balance must match available balance");
-        
+        account.setAvailable_balance(account.getBalance());
         account.setCustomer(user);
         return accountRepo.save(account);
     }
@@ -131,7 +127,7 @@ public class AccountController {
         UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
         .getPrincipal();
         User user = userRepo.findByUsername(uDetails.getUsername()).get();
-        if (account.getCustomerId() != user.getId())
+        if (account.getCustomer_id() != user.getId())
             throw new RoleNotAuthorisedException("You cannot view another customer's accounts");
 
         List<Transfer> transfers = transferRepo.findBySenderIdOrReceiverId(accountId, accountId);
@@ -173,10 +169,10 @@ public class AccountController {
         UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
         .getPrincipal();
         User user = userRepo.findByUsername(uDetails.getUsername()).get();
-        if (senderAcc.getCustomerId() != user.getId())
+        if (senderAcc.getCustomer_id() != user.getId())
             throw new RoleNotAuthorisedException("You cannot transfer funds from another person's account");
 
-        if (senderAcc.getAvailableBalance() < transfer.getAmount())
+        if (senderAcc.getAvailable_balance() < transfer.getAmount())
             throw new TransferNotValidException("Insufficient funds in account for transfer");
         transfer.setSender(senderAcc);
 
@@ -187,10 +183,10 @@ public class AccountController {
         Account receiverAcc = receiver.get();
         transfer.setReceiver(receiverAcc);
         
-        senderAcc.setAvailableBalance(senderAcc.getAvailableBalance() - transfer.getAmount());
+        senderAcc.setAvailable_balance(senderAcc.getAvailable_balance() - transfer.getAmount());
         senderAcc.setBalance(senderAcc.getBalance() - transfer.getAmount());
         accountRepo.save(senderAcc);
-        receiverAcc.setAvailableBalance(receiverAcc.getAvailableBalance() + transfer.getAmount());
+        receiverAcc.setAvailable_balance(receiverAcc.getAvailable_balance() + transfer.getAmount());
         receiverAcc.setBalance(receiverAcc.getBalance() + transfer.getAmount());
         accountRepo.save(receiverAcc);
 
@@ -211,15 +207,15 @@ public class AccountController {
      */
     public Transfer createTradeTransfer(Transfer transfer, Account sender, Account receiver) {
         if (sender != null) {
-            if (Math.round(sender.getAvailableBalance() * 100) == Math.round(sender.getBalance() * 100))
-                sender.setAvailableBalance(sender.getAvailableBalance() - transfer.getAmount());
+            if (Math.round(sender.getAvailable_balance() * 100) == Math.round(sender.getBalance() * 100))
+                sender.setAvailable_balance(sender.getAvailable_balance() - transfer.getAmount());
         
             sender.setBalance(sender.getBalance() - transfer.getAmount());
             accountRepo.save(sender);
         }
         
         if (receiver != null) {
-            receiver.setAvailableBalance(receiver.getAvailableBalance() + transfer.getAmount());
+            receiver.setAvailable_balance(receiver.getAvailable_balance() + transfer.getAmount());
             receiver.setBalance(receiver.getBalance() + transfer.getAmount());
             accountRepo.save(receiver);
         }

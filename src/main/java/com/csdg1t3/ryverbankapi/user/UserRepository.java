@@ -13,18 +13,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
     User save(User user);
-    void deleteById(Long id);
-    //List<User> findAll();
-    List<User> findAllByAuthorities(String authorities);
-
-    // Using Optional - the return value of this method may contain a null value
-    Optional<User> findById(Long id);
-
-    // Using Optional - the return value of this method may contain a null value
-    Optional<User> findByUsername(String username);
-
-    // Using Optional - the return value of this method may contain a null value
-    Optional<User> findByAuthorities(String authorities);
     boolean existsById(Long id);
- 
+    List<User> findAll();
+    Optional<User> findById(Long id);
+    Optional<User> findByUsername(String username);
+    void deleteById(Long id);
+    void deleteByAuthoritiesContaining(String authority);
+    
 }

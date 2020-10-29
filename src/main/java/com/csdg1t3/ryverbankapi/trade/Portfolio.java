@@ -32,20 +32,21 @@ public class Portfolio {
     @JsonIgnore
     private User customer;
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Asset> assets;
 
     @NotNull(message = "unrealized_gain_loss should not be null")
     private double unrealized_gain_loss;
 
     @NotNull(message = "total_gain_loss should not be null")
-    private double total_gain_loss;
+    private double realized_gain_loss;
 
     /**
      * Default constructor for class Portfolio.
      */
     public Portfolio() {};
 
+    
     /**
      * Another constructor for class Portfolio.
      * @param id The unique ID number for the portfolio
@@ -54,14 +55,14 @@ public class Portfolio {
      * @param unrealized_gain_loss The unrealized gain loss of the customer's assets
      * @param total_gain_loss The total gain loss of the customer's assets
      */
-    public Portfolio(Long id, User customer, List<Asset> assets, 
-    double unrealized_gain_loss, double total_gain_loss) {
+    public Portfolio(Long id, Long customer_id, User customer, List<Asset> assets, 
+    double unrealized_gain_loss, double realized_gain_loss) {
         this.id = id;
-        this.customer_id = customer.getId();
+        this.customer_id = customer_id;
         this.customer = customer;
         this.assets = assets;
         this.unrealized_gain_loss = unrealized_gain_loss;
-        this.total_gain_loss = total_gain_loss;
+        this.realized_gain_loss = realized_gain_loss;
     }
 
     @JsonIgnore
@@ -76,9 +77,14 @@ public class Portfolio {
 
     public double getUnrealized_gain_loss() { return unrealized_gain_loss; }
 
-    public double getTotal_gain_loss() { return total_gain_loss; }
+    @JsonIgnore
+    public double getRealized_gain_loss() { return realized_gain_loss; }
+
+    public double getTotal_gain_loss() { return realized_gain_loss + unrealized_gain_loss; }
 
     public void setId(Long id) { this.id = id; }
+
+    public void setCustomer_id(Long customer_id) { this.customer_id = customer_id; }
 
     public void setCustomer(User customer) { this.customer = customer; }
 
@@ -94,8 +100,8 @@ public class Portfolio {
         }
     }
 
-    public void setTotal_gain_loss(double total_gain_loss) {
-        this.total_gain_loss = total_gain_loss;
+    public void setRealized_gain_loss(double total_gain_loss) {
+        this.realized_gain_loss = total_gain_loss;
     }
 
     public String assetsToString() {
@@ -111,7 +117,7 @@ public class Portfolio {
     @Override
     public String toString() {
         return String.format("Portfolio[customerId=%d, assets[\n%s\n], unrealized_gain_loss=%.2lf, total_gain_loss=%.2lf",
-        this.id, assetsToString(), this.unrealized_gain_loss, this.total_gain_loss);
+        this.id, assetsToString(), this.unrealized_gain_loss, this.realized_gain_loss);
     }
 
 }

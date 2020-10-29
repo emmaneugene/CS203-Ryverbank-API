@@ -10,7 +10,7 @@ import javax.validation.constraints.*;
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
     @NotNull(message = "Title should not be null")
     private String title;
     @NotNull(message = "Summary should not be null")
@@ -19,65 +19,41 @@ public class Content {
     private String content;
     @NotNull(message = "Link should not be null")
     private String link;
-    private Boolean approval;
+    private Boolean approved;
 
     public Content() {}
 
-    public Content(long Id, String title, String summary, String content, String link,
-    Boolean approval) {
-        this.Id = Id;
+    public Content(Long id, String title, String summary, String content, String link,
+    Boolean approved) {
+        this.id = id;
         this.title = title;
         this.summary = summary;
         this.content = content;
         this.link = link;
-        this.approval = approval;
+        this.approved = approved;
     }
 
-    public Long getId() {
-        return Id;
-    }
+    public Long getId() { return id; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title; }
 
-    public String getSummary() {
-        return summary;
-    }
+    public String getSummary() { return summary; }
 
-    public String getContent() {
-        return content;
-    }
+    public String getContent() { return content; }
 
-    public String getLink() {
-        return link;
-    }
+    public String getLink() { return link; }
 
-    public Boolean getApproval() {
-        return approval;
-    }
+    public Boolean getApproved() { return approved; }
 
-    public void setId(Long Id) {
-        this.Id = Id;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public void setTitle(String title) { this.title = title; }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
+    public void setSummary(String summary) { this.summary = summary; }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+    public void setContent(String content) { this.content = content; }
 
-    public void setLink(String link) {
-        this.link = link;
-    }
+    public void setLink(String link) { this.link = link; }
 
-    public void setApproval(Boolean approval) {
-        this.approval = approval;
-    }
+    public void setApproved(Boolean approved) { this.approved = approved; }
 }

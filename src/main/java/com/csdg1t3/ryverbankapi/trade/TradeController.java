@@ -109,7 +109,7 @@ public class TradeController {
         
         Account acc = accountRepo.findById(trade.getAccount_id()).get();
         User cust = uAuth.getCurrentUser();
-        if (acc.getCustomerId() != trade.getCustomer_id())
+        if (acc.getCustomer_id() != trade.getCustomer_id())
             throw new TradeNotValidException("Trade must be made with your own account");
         trade.setAccount(acc);
         trade.setCustomer(cust);
@@ -140,12 +140,12 @@ public class TradeController {
             throw new TradeNotValidException("Quantity must be a multiple of 100");
 
         if (trade.getAction().equals("buy") && trade.getBid() > 0) {
-            Double avail = acc.getAvailableBalance();
+            Double avail = acc.getAvailable_balance();
             Double needed = trade.getBid() * trade.getQuantity();
             if (avail < needed)
                 throw new TradeNotValidException("Insufficient funds for trade");
             
-            acc.setAvailableBalance(avail - needed);
+            acc.setAvailable_balance(avail - needed);
             accountRepo.save(acc);
         } else if (trade.getAction().equals("sell")) {
             Optional<Asset> result = assetRepo.findByPortfolioCustomerIdAndCode(

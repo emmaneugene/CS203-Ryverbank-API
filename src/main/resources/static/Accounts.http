@@ -16,9 +16,9 @@ Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
 {
-    "customerId": 3,
+    "customer_id": 3,
     "balance": 10000,
-    "availableBalance": 10000
+    "available_balance": 10000
 }
 ###
 
@@ -27,9 +27,9 @@ Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
 {
-    "customerId": 3,
+    "customer_id": 3,
     "balance": 50000,
-    "availableBalance": 50000
+    "available_balance": 50000
 }
 ###
 
@@ -38,9 +38,9 @@ Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
 {
-    "customerId": 2,
+    "customer_id": 2,
     "balance": 1000000,
-    "availableBalance": 1000000
+    "available_balance": 1000000
 }
 ###
 
@@ -50,9 +50,9 @@ Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
 {
-    "customerId": 3,
+    "customer_id": 3,
     "balance": 20000,
-    "availableBalance": 5000
+    "available_balance": 5000
 }
 ###
 
