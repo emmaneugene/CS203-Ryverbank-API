@@ -61,18 +61,18 @@ public class User implements UserDetails {
     @NotNull(message = "Status should not be null")
     private Boolean active;
     
-    @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL /*, orphanRemoval = true*/)
+    @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Account> accounts;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "portfolio_id")
     @JsonIgnore
     private Portfolio portfolio;
 
     public User() {}
 
-    public User(long id, String full_name, String nric, String phone, String address, String username, 
+    public User(Long id, String full_name, String nric, String phone, String address, String username, 
     String password, String authorities, Boolean active) {
         this.id = id;
         this.full_name = full_name;

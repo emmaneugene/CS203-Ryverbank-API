@@ -23,7 +23,7 @@ public class Content {
 
     public Content() {}
 
-    public Content(long id, String title, String summary, String content, String link,
+    public Content(Long id, String title, String summary, String content, String link,
     Boolean approved) {
         this.id = id;
         this.title = title;

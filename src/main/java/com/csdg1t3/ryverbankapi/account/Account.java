@@ -36,11 +36,11 @@ public class Account {
     @NotNull(message = "balance should not be null")
     private Double available_balance;
    
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Transfer> sentTransfers = new ArrayList<Transfer>();
     
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Transfer> receivedTransfers = new ArrayList<Transfer>();
 

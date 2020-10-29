@@ -26,7 +26,7 @@ public class Portfolio {
     @JsonIgnore
     private User customer;
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Asset> assets;
 
     @NotNull(message = "unrealized_gain_loss should not be null")
@@ -37,10 +37,10 @@ public class Portfolio {
 
     public Portfolio() {};
 
-    public Portfolio(Long id, User customer, List<Asset> assets, 
+    public Portfolio(Long id, Long customer_id, User customer, List<Asset> assets, 
     double unrealized_gain_loss, double realized_gain_loss) {
         this.id = id;
-        this.customer_id = customer.getId();
+        this.customer_id = customer_id;
         this.customer = customer;
         this.assets = assets;
         this.unrealized_gain_loss = unrealized_gain_loss;
@@ -65,6 +65,8 @@ public class Portfolio {
     public double getTotal_gain_loss() { return realized_gain_loss + unrealized_gain_loss; }
 
     public void setId(Long id) { this.id = id; }
+
+    public void setCustomer_id(Long customer_id) { this.customer_id = customer_id; }
 
     public void setCustomer(User customer) { this.customer = customer; }
 

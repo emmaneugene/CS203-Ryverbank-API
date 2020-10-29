@@ -115,8 +115,9 @@ public class UserController {
 
         User savedUser = userRepo.save(user);
 
-        if (user.getStringAuthorities().contains("ROLE_USER")) 
-            portfolioRepo.save(new Portfolio(savedUser.getId(), savedUser, null, 0, 0));
+        if (user.getStringAuthorities().contains("ROLE_USER")) {
+            portfolioRepo.save(new Portfolio(null, user.getId(), user, null, 0, 0));
+        } 
 
         return savedUser;
     }
@@ -165,4 +166,5 @@ public class UserController {
 
         return userRepo.save(user);
     }
+
 }

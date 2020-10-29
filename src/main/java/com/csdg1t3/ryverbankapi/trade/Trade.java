@@ -53,10 +53,14 @@ public class Trade {
     @NotNull(message = "status should not be null")
     private String status;
 
+    @JsonIgnore
+    private boolean processed;
+
     public Trade() {}
 
     public Trade(Long id, String action, String symbol, int quantity, Double bid, Double ask, 
-    double avg_price, int filled_quantity, long date, Account account, User customer, String status){
+    double avg_price, int filled_quantity, long date, Account account, User customer, 
+    String status, boolean processed){
         this.id = id;
         this.action = action;
         this.symbol = symbol;
@@ -71,6 +75,7 @@ public class Trade {
         this.customer_id = customer.getId();
         this.customer = customer;
         this.status = status;
+        this.processed = processed;
     }
 
     public Long getId() { return id; }
@@ -101,6 +106,9 @@ public class Trade {
     public User getCustomer() { return customer; }
 
     public String getStatus() { return status; }
+
+    @JsonIgnore
+    public boolean getProcessed() { return processed; }
 
     @JsonIgnore
     public boolean isFilled() { return filled_quantity == quantity; }
@@ -135,4 +143,6 @@ public class Trade {
     public void setCustomer(User customer) { this.customer = customer; }
 
     public void setStatus(String status) { this.status = status; }
+
+    public void setProcessed(boolean processed) { this.processed = processed; }
 }
