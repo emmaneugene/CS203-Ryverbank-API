@@ -1,8 +1,6 @@
 package com.csdg1t3.ryverbankapi.user;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,19 +8,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.Authentication;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.Valid;
 
+import com.csdg1t3.ryverbankapi.security.UserAuthenticator;
 import com.csdg1t3.ryverbankapi.trade.*;
 
 
@@ -33,12 +26,14 @@ import com.csdg1t3.ryverbankapi.trade.*;
 public class UserController {
     private UserRepository userRepo;
     private PortfolioRepository portfolioRepo;
+    private UserAuthenticator uAuth;
     private BCryptPasswordEncoder encoder;
 
     public UserController(UserRepository userRepo, PortfolioRepository portfolioRepo, 
-    BCryptPasswordEncoder encoder) {
-        this.userRepo= userRepo;
+    UserAuthenticator uAuth, BCryptPasswordEncoder encoder) {
+        this.userRepo = userRepo;
         this.portfolioRepo = portfolioRepo;
+        this.uAuth = uAuth;
         this.encoder = encoder;
     }
 
@@ -76,11 +71,10 @@ public class UserController {
             throw new UserNotFoundException(id);
 
         User user = result.get();
-        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext()
-        .getAuthentication().getPrincipal();
+        User authenticatedUser = uAuth.getAuthenticatedUser();
         
-        if (!uDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) 
-            && !user.getUsername().equals(uDetails.getUsername())) 
+        if (!authenticatedUser.getAuthorities().contains(uAuth.MANAGER) 
+            && user.getId() != authenticatedUser.getId()) 
             throw new RoleNotAuthorisedException("You cannot view other customer details");
                 
         return user;
@@ -149,11 +143,10 @@ public class UserController {
             throw new UserNotFoundException(id);
 
         User user = result.get();
-        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext()
-        .getAuthentication().getPrincipal();
+        User authenticatedUser = uAuth.getAuthenticatedUser();
 
-        if (!uDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) 
-            && !user.getUsername().equals(uDetails.getUsername()))
+        if (!authenticatedUser.getAuthorities().contains(uAuth.MANAGER) 
+            && user.getId() != authenticatedUser.getId())
             throw new RoleNotAuthorisedException("You cannot update another customer's details");
         
         if (newUserInfo.getPhone() != null)
@@ -167,9 +160,9 @@ public class UserController {
         if (newUserInfo.getPassword() != null)
             user.setPassword(encoder.encode(newUserInfo.getPassword()));
         
-        if (uDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) 
-            && newUserInfo.getStatus() != null)
-            user.setActive(newUserInfo.getStatus());
+        if (authenticatedUser.getAuthorities().contains(uAuth.MANAGER) 
+            && newUserInfo.getActive() != null)
+            user.setActive(newUserInfo.getActive());
 
         return userRepo.save(user);
     }
