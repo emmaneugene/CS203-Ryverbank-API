@@ -1,6 +1,5 @@
 package com.csdg1t3.ryverbankapi.account;
 
-
 import java.util.Optional;
 import java.util.List;
 
@@ -12,12 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.Authentication;
-
-import javax.validation.Valid;
-
+import com.csdg1t3.ryverbankapi.security.UserAuthenticator;
 import com.csdg1t3.ryverbankapi.user.*;
 
 /**
@@ -28,55 +22,54 @@ public class AccountController {
     private AccountRepository accountRepo;
     private UserRepository userRepo;
     private TransferRepository transferRepo;
+    private UserAuthenticator uAuth;
 
     public AccountController(AccountRepository accountRepo, UserRepository userRepo,
-                             TransferRepository transferRepo) {
+    TransferRepository transferRepo, UserAuthenticator uAuth) {
         this.accountRepo = accountRepo;
         this.userRepo = userRepo;
         this.transferRepo = transferRepo;
+        this.uAuth = uAuth;
     }
     
     /**
      * Retrieve all the accounts owned by the logged in customer.
      * 
      * Only ROLE_USER can view their own accounts, as validated in security config
-     * This method calls getAccount() and returns a list of accounts associated with user's ID
-     * If the user ID or role is wrong, a 403 error would be shown.
+     * This method queries accountRepo and returns a list of accounts associated with user's ID
      * 
      * @return a List containing all of the accounts associated with the user's ID.
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/accounts")
     public List<Account> getAccounts() {
-        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
-        User user = userRepo.findByUsername(uDetails.getUsername()).get();
-                
-        return accountRepo.findByCustId(user.getId());
+        return accountRepo.findByCustId(uAuth.getAuthenticatedUser().getId());
     }
 
     /**
      * Search for the account with the given account ID.
      * 
      * Only ROLE_USER can view their own accounts, as validated in security config
-     * This method calls getAccount() and further validates by customer's ID
-     * If the user ID, account ID or role is wrong, a 403 error would be shown.
+     * This method queries accountRepo to find the account according to its ID. If the account is
+     * present, it then validates whether the current authenticated user is the owner of the account
      * 
      * @param id The ID of the account that the customer is accessing.
-     * @return The account that is tied to the customer and account ID.
+     * @return The account that is tied to the account ID and owned by the customer.
      * @throws AccountNotFoundException If the account is not found.
+     * @throws RoleNotAuthorisedException If the authenticated user is not the account owner
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/accounts/{id}")
     public Account getAccount(@PathVariable Long id) {
-        List<Account> userAccounts = getAccounts();
-        
-        for (Account acc : userAccounts) {
-            if (acc.getId() == id)
-                return acc;
-        }
+        Optional<Account> result = accountRepo.findById(id);
+        if (!result.isPresent()) 
+            throw new AccountNotFoundException(id);
+        Account account = result.get();
 
-        throw new AccountNotFoundException(id);
+        if(uAuth.getAuthenticatedUser().getId() != account.getCustomer_id())
+            throw new RoleNotAuthorisedException("You cannot view another customer's accounts");
+        
+        return account;
     }
 
     /**
@@ -87,16 +80,18 @@ public class AccountController {
      * 
      * @param account The account to be created.
      * @return The account created in database.
-     * @throws UserNotFoundException If customer ID is not found
-     * @throws AccountNotValidExcception If balance is below 5000 or initial and available balance does not match
+     * @throws AccountNotValidException If the customer ID is invalid, or if the balance is negative
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/accounts")
     public Account addAccount(@RequestBody Account account) {
         Optional<User> result = userRepo.findById(account.getCustomer_id());
         if (!result.isPresent())
-            throw new AccountNotValidException("invalid customer_id");
+            throw new AccountNotValidException("Invalid customer ID");
         User user = result.get();
+
+        if (account.getBalance() < 0)
+            throw new AccountNotValidException("Balance cannot be negative");
 
         account.setAvailable_balance(account.getBalance());
         account.setCustomer(user);
@@ -124,10 +119,9 @@ public class AccountController {
             throw new AccountNotFoundException(accountId);
         Account account = result.get();
 
-        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
-        User user = userRepo.findByUsername(uDetails.getUsername()).get();
-        if (account.getCustomer_id() != user.getId())
+        User authenticatedUser = uAuth.getAuthenticatedUser();
+        
+        if (account.getCustomer_id() != authenticatedUser.getId())
             throw new RoleNotAuthorisedException("You cannot view another customer's accounts");
 
         List<Transfer> transfers = transferRepo.findBySenderIdOrReceiverId(accountId, accountId);
@@ -166,10 +160,8 @@ public class AccountController {
             throw new AccountNotFoundException(transfer.getFrom());
         Account senderAcc = sender.get();
 
-        UserDetails uDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
-        User user = userRepo.findByUsername(uDetails.getUsername()).get();
-        if (senderAcc.getCustomer_id() != user.getId())
+        User authenticatedUser = uAuth.getAuthenticatedUser();
+        if (senderAcc.getCustomer_id() != authenticatedUser.getId())
             throw new RoleNotAuthorisedException("You cannot transfer funds from another person's account");
 
         if (senderAcc.getAvailable_balance() < transfer.getAmount())
