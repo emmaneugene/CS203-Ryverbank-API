@@ -27,13 +27,13 @@ public class Account {
     @JsonIgnore
     private User cust;
 
-    @NotNull(message = "customer should not be null")
+    @NotNull(message = "Customer should not be null")
     private Long customer_id;
 
-    @NotNull(message = "balance should not be null")
+    @NotNull(message = "Balance should not be null")
     private Double balance;
 
-    @NotNull(message = "balance should not be null")
+    @NotNull(message = "Available balance should not be null")
     private Double available_balance;
    
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
