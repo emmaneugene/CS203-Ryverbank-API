@@ -41,9 +41,24 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
 {
     "action": "buy",
     "symbol": "A17U",
-    "quantity": 500,
+    "quantity": 10000,
     "bid": 0,
-    "account_id": 1,
+    "account_id": 2,
+    "customer_id": 3
+}
+###
+
+# Make a sell trade
+POST http://localhost:8080/trades
+Content-Type: application/json
+Authorization: Basic spiderman mrstark,Idontfeels0good
+
+{
+    "action": "sell",
+    "symbol": "A17U",
+    "quantity": 1000,
+    "ask": 3.22,
+    "account_id": 2,
     "customer_id": 3
 }
 ###
@@ -58,7 +73,7 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
     "symbol": "A17U",
     "quantity": 300,
     "ask": 0,
-    "account_id": 1,
+    "account_id": 2,
     "customer_id": 3
 }
 ###
