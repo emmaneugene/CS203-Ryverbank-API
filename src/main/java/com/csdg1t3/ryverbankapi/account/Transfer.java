@@ -24,10 +24,13 @@ public class Transfer {
     @JsonIgnore
     private Account receiver;
 
+    @NotNull(message = "'From' field cannot be null")
     private Long accFrom;
 
+    @NotNull(message = "'To' field cannot be null")
     private Long accTo;
 
+    @NotNull(message = "Amount cannot be null")
     private Double amount;
 
     public Transfer() {}

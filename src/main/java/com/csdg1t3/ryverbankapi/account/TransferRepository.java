@@ -15,10 +15,6 @@ public interface TransferRepository extends JpaRepository<Transfer, Long>{
     List<Transfer> findBySenderId(Long senderId);
     List<Transfer> findByReceiverId(Long receiverId);
     List<Transfer> findBySenderIdOrReceiverId(Long senderId, Long receiverId);
-    
-    // Using Optional - the return value of this method may contain a null value
     Optional<Transfer> findByIdAndSenderId(Long id, Long senderId);
-
-    // Using Optional - the return value of this method may contain a null value
     Optional<Transfer> findByIdAndReceiverId(Long id, Long receiverId);
 }

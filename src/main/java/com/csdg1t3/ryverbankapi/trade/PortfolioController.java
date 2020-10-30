@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.security.*;
 
-import javax.validation.Valid;
-
 /**
  * Controller that manages HTTP requests to "/portfolio"
  */
@@ -41,7 +39,7 @@ public class PortfolioController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/portfolio")
     public Portfolio getPortfolio() {
-        User user = uAuth.getCurrentUser();
+        User user = uAuth.getAuthenticatedUser();
         Portfolio portfolio = portfolioRepo.findByCustomerId(user.getId()).get();
 
         List<Asset> assets = assetRepo.findByPortfolioCustomerId(portfolio.getCustomer_id());

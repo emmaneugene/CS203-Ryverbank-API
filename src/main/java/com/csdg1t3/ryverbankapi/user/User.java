@@ -38,7 +38,7 @@ public class User implements UserDetails {
     @Size(min = 9, max = 9, message = "nric should be exactly 9 characters")
     private String nric;
 
-    @NotNull(message = "phone no should not be null")
+    @NotNull(message = "Phone number should not be null")
     @Size(min = 8, max = 8, message = "Phone number should be exactly 8 characters")
     private String phone;
 
@@ -58,7 +58,7 @@ public class User implements UserDetails {
     private String authorities;
 
     // can be null if manager or analyst 
-    @NotNull(message = "Status should not be null")
+    @NotNull(message = "Active boolean should not be null")
     private Boolean active;
     
     @OneToMany(mappedBy = "cust", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -114,7 +114,7 @@ public class User implements UserDetails {
         return result;
     }
 
-    public Boolean getStatus() { return active; }
+    public Boolean getActive() { return active; }
 
     public List<Account> getAccounts() { return accounts; }
 
@@ -148,25 +148,17 @@ public class User implements UserDetails {
 
     @Override
     @JsonIgnore
-    public boolean isAccountNonExpired() {
-        return active;
-    }
+    public boolean isAccountNonExpired() { return active; }
 
     @Override
     @JsonIgnore
-    public boolean isAccountNonLocked() {
-        return active;
-    }
+    public boolean isAccountNonLocked() { return active; }
 
     @Override
     @JsonIgnore
-    public boolean isCredentialsNonExpired() {
-        return active;
-    }
+    public boolean isCredentialsNonExpired() { return active; }
 
     @Override
     @JsonIgnore
-    public boolean isEnabled() {
-        return active;
-    }
+    public boolean isEnabled() { return active; }
 }

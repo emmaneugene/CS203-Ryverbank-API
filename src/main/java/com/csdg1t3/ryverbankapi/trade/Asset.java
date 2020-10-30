@@ -1,12 +1,8 @@
 package com.csdg1t3.ryverbankapi.trade;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.validation.Valid;
 
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * POJO that stores the details of a customer's assets
@@ -28,18 +24,13 @@ public class Asset {
     @JsonIgnore
     private Portfolio portfolio;
 
-    @NotNull(message = "Quantity should not be null")
-    @Positive(message = "Quantity should be positive")
     private int quantity;
 
-    @NotNull(message = "Quantity on hold should not be null")
     @JsonIgnore
     private int available_quantity;
 
-    @NotNull(message = "Avg price should not be null")
     private double avg_price;
 
-    @NotNull(message = "Current price should not be null")
     private double current_price;
 
     /**
