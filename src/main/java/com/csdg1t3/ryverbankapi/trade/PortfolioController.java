@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.security.*;
 
-import javax.validation.Valid;
-
 /**
  * Controller that manages HTTP requests to "/portfolio"
  */

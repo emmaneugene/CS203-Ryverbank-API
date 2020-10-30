@@ -3,13 +3,10 @@ package com.csdg1t3.ryverbankapi.trade;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.validation.Valid;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import com.csdg1t3.ryverbankapi.user.*;
-import com.csdg1t3.ryverbankapi.trade.*;
 
 /**
  * POJO that stores the details of a customer's portfolio
@@ -24,7 +21,7 @@ public class Portfolio {
     @JsonIgnore
     private Long id;
 
-    @NotNull(message = "customer_id should not be null")
+    @NotNull(message = "Customer ID should not be null")
     private Long customer_id;
 
     @OneToOne
@@ -35,10 +32,8 @@ public class Portfolio {
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Asset> assets;
 
-    @NotNull(message = "unrealized_gain_loss should not be null")
     private double unrealized_gain_loss;
 
-    @NotNull(message = "total_gain_loss should not be null")
     private double realized_gain_loss;
 
     /**
@@ -100,8 +95,8 @@ public class Portfolio {
         }
     }
 
-    public void setRealized_gain_loss(double total_gain_loss) {
-        this.realized_gain_loss = total_gain_loss;
+    public void setRealized_gain_loss(double realized_gain_loss) {
+        this.realized_gain_loss = realized_gain_loss;
     }
 
     public String assetsToString() {
