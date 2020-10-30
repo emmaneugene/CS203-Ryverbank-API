@@ -362,7 +362,9 @@ public class TradeService {
     }
 
     /**
-     * Fills a buy-sell trade pair according to the price and quantity specified.
+     * Fills a buy-sell trade pair according to the price and quantity specified. If the buy and 
+     * sell trades are posted by the same customer, however, the function does not fill them,
+     * and returns immediately
      * 
      * 1. Buyer makes an account transfer to the seller.
      * - Balance is updated for buyer (also update available balance if it's a market buy),
@@ -374,6 +376,7 @@ public class TradeService {
      * 3. Update filled_quantity for each of the trades, and set status as needed 
      * (partial-filled or filled)
      * 
+
      * 
      * @param buy The buy trade to be filled.
      * @param sell The sell trade to be filled.
@@ -381,6 +384,9 @@ public class TradeService {
      * @param qty The quantity of stocks to be traded.
      */
     public void fillTrades(Trade buy, Trade sell, Double price, int qty) {
+        if (buy.getCustomer_id() == sell.getCustomer_id())
+            return;
+
         Transfer transfer = new Transfer();
         transfer.setSender(buy.getAccount());
         transfer.setReceiver(sell.getAccount());
