@@ -18,7 +18,19 @@ Navigate to the root of the directory (`ryverbank-api/`) and execute `mvnw sprin
 
 If the program compiles with no errors, the servlet should be running at [localhost:8080] 
 
-## Usage
+## Building the docker image
+
+For macOs and Linux:
+`./mvnw spring-boot:build-image`
+
+For Windows:
+`mvnw package`
+
+`docker build -t <image_name> .`
+
+## Running the docker image
+
+`docker run -it -p 8080:8080 <image name>`
 
 ## Requirements
 
