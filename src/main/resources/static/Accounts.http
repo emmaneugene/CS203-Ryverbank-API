@@ -10,15 +10,28 @@ GET http://localhost:8080/accounts
 Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
+GET http://localhost:8080/accounts
+Authorization: Basic iamironman i<3carmen
+###
+
 # ROLE_MANAGER can create new accounts
 POST http://localhost:8080/accounts
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
 {
+    "customer_id": 2,
+    "balance": 1000000
+}
+###
+
+POST http://localhost:8080/accounts
+Content-Type: application/json
+Authorization: Basic manager_1 01_manager_01
+
+{
     "customer_id": 3,
-    "balance": 10000,
-    "available_balance": 10000
+    "balance": 10000
 }
 ###
 
@@ -30,17 +43,6 @@ Authorization: Basic manager_1 01_manager_01
     "customer_id": 3,
     "balance": 50000,
     "available_balance": 50000
-}
-###
-
-POST http://localhost:8080/accounts
-Content-Type: application/json
-Authorization: Basic manager_1 01_manager_01
-
-{
-    "customer_id": 2,
-    "balance": 1000000,
-    "available_balance": 1000000
 }
 ###
 
