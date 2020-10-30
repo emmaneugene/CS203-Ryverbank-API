@@ -34,12 +34,12 @@ public class Asset {
     private double current_price;
 
     /**
-     * Default constructor for class Asset.
+     * Empty constructor for class Asset.
      */
     public Asset() {};
 
     /**
-     * Another constructor for class Asset
+     * Full field constructor for class Asset
      * @param id The unique ID number for the asset
      * @param code The code of the asset
      * @param portfolio The portfolio which the asset belongs to

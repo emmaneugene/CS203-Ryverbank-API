@@ -63,12 +63,12 @@ public class Trade {
     private boolean processed;
 
     /**
-     * Default constructor for class Trade.
+     * Empty constructor for class Trade.
      */
     public Trade() {}
 
     /**
-     * Another constructor for class Trade
+     * Full field constructor for class Trade
      * @param id The unique ID number for the trade
      * @param action The act of buying or selling
      * @param symbol The symbol of the stock being traded

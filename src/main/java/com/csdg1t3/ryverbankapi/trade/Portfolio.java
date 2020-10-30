@@ -37,13 +37,13 @@ public class Portfolio {
     private double realized_gain_loss;
 
     /**
-     * Default constructor for class Portfolio.
+     * Empty constructor for class Portfolio.
      */
     public Portfolio() {};
 
     
     /**
-     * Another constructor for class Portfolio.
+     * Full field constructor for class Portfolio.
      * @param id The unique ID number for the portfolio
      * @param customer The customer who owns the portfolio
      * @param assets The assets that the portfolio contains

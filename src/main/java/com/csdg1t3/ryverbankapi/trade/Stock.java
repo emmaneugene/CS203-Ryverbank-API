@@ -21,12 +21,12 @@ public class Stock {
     private double ask; 
 
     /**
-     * Default constructor for class Stock.
+     * Empty constructor for class Stock.
      */
     public Stock(){}
 
     /**
-     * Another constructor for class Stock
+     * Full field constructor for class Stock
      * @param symbol The unique symbol for the stock
      * @param last_price The price of the stock last traded
      * @param bid_volume The quantity of stocks the customer wishes to buy

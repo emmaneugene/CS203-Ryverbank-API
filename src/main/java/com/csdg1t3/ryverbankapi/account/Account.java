@@ -45,13 +45,13 @@ public class Account {
     private List<Transfer> receivedTransfers = new ArrayList<Transfer>();
 
     /**
-     * Default constructor for class Account.
+     * Empty constructor for class Account.
      */
     public Account() {}
 
     
     /**
-     * Another constructor for class Account.
+     * Full field constructor for class Account.
      * @param id The unique ID number for the account.
      * @param customer The customer who owns the account.
      * @param customerId The unique ID of the customer who owns the account.
