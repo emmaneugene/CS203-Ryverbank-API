@@ -1,6 +1,7 @@
 package com.csdg1t3.ryverbankapi.trade;
 
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.*;
 
@@ -23,53 +24,6 @@ public class TradeService {
         this.accountController = accountController;
         this.assetRepo = assetRepo;
         this.portfolioRepo = portfolioRepo;
-    }
-
-    /**
-     * Goes through all open or parially filled trades and changes the status to "expired" if any
-     * trades are expired. For more information on trade expiry, read the documentation on the 
-     * isExpired() method.
-     * 
-     * - Market maker tradse are the exception to this. Market trades will never expire, as their 
-     *   purpose is to add liquidity.
-     */
-    public void updateTradeExpiry() {
-        List<Trade> validTrades = tradeRepo.findByStatusIn(VALID_STATUSES);
-
-        for (Trade trade : validTrades) {
-            if (trade.getAccount_id() != 0 && isExpired(trade))
-                processExpiredTrade(trade);
-        }
-    }
-
-    /**
-     * First, check the following
-     * 1. The year matches
-     * 2. The month matches
-     * 3. The day the trade was posted is at most 1 day earlier
-     * 
-     * If the trade was placed on the current day:
-     *      If it was placed before 5pm and the current time is 5pm or later,the trade is expired
-     * 
-     * Otherwise if the trade was placed 1 day before:
-     *      If it was placed before 5pm or if the current time is 5pm or later, the trade is expired
-     */
-    public boolean isExpired(Trade trade) {
-        Calendar now = Calendar.getInstance();
-        Calendar prev = Calendar.getInstance();
-        prev.setTime(new Date(trade.getDate()));
-        
-        if (prev.get(prev.YEAR) == now.get(now.YEAR) 
-            && prev.get(prev.MONTH) == now.get(now.MONTH)
-            && now.get(now.DAY_OF_MONTH) - prev.get(prev.DAY_OF_MONTH) <= 1) {
-            
-            if (prev.get(prev.DAY_OF_MONTH) == now.get(now.DAY_OF_MONTH))
-                return prev.get(prev.HOUR_OF_DAY) < 17 && now.get(now.HOUR_OF_DAY) >= 17;
-            else 
-                return prev.get(prev.HOUR_OF_DAY) < 17 || now.get(now.HOUR_OF_DAY) >= 17;
-               
-        }
-        return true;
     }
 
     public void processExpiredTrade(Trade trade) {
@@ -96,7 +50,6 @@ public class TradeService {
      * @return a list of open or partial-filled buy trades
      */
     public List<Trade> listValidBuyTradesForStock(String symbol) {
-        updateTradeExpiry();
         return tradeRepo.findByActionAndSymbolAndStatusIn("buy", symbol, VALID_STATUSES);
     }
 
@@ -107,7 +60,6 @@ public class TradeService {
      * @return a list of open or partial-filled sell trades
      */
     public List<Trade> listValidSellTradesForStock(String symbol) {
-        updateTradeExpiry();
         return tradeRepo.findByActionAndSymbolAndStatusIn("sell", symbol, VALID_STATUSES);
     }
 
@@ -212,16 +164,26 @@ public class TradeService {
     }
 
     /**
-     * Method that intiates the processing of a newly created trade. Depending on whether the trade
+     * Method that intiates the processing of a newly created or unprocessed trade. Depending on whether the trade
      * is a buy or sell, and whether it is made at market price, the method will call different 
      * processing functions.
+     * 
+     * If the current time is before 9am or after 5pm, the trade will not be processed
      * 
      * @param trade The trade to be made.
      * @return The processed trade.
      */
     public Trade makeTrade(Trade trade) {
-        updateTradeExpiry();
+        // updateTradeExpiry();
+        Calendar now = Calendar.getInstance();
+        
+        if (now.get(now.HOUR_OF_DAY) < 9 || now.get(now.HOUR_OF_DAY) > 17) {
+            trade.setProcessed(false);
+            tradeRepo.save(trade);
+            return trade;
+        }
 
+        
         if (trade.getAction().equals("buy")) {
             if (trade.getBid() == 0)
                 processMarketBuy(trade);
@@ -233,7 +195,7 @@ public class TradeService {
             else 
                 processSell(trade);
         }
-
+        trade.setProcessed(true);
         return trade;
     }
 
@@ -494,5 +456,37 @@ public class TradeService {
 
         trade.setStatus("cancelled");
         tradeRepo.save(trade);
+    }
+
+    /**
+     * Scheduler method that runs at 9am daily. The method retrieves all trades that have not 
+     * been processed yet. These are trades that have been placed after 5pm on the previous day
+     * or before 9am on the current day. These trades will enter the system and be matched from
+     * earliest to latest
+     */
+    @Scheduled(cron = "0 0 9 ? * *")
+	public void processUnprocessedTrades() {
+        List<Trade> unprocessedTrades = tradeRepo.findByProcessed(false);
+        
+        unprocessedTrades.sort(new TradeTimeComparator());
+        for (Trade trade : unprocessedTrades) 
+            makeTrade(trade);
+    }
+
+    /**
+     * Schedule method that runs at 5pm daily. The method retrieves all trades that are either open
+     * or partial-filled, and expires them.
+     */
+    @Scheduled(cron = "0 0 17 ? * *")
+    public void expireTrades() {
+        List<Trade> toExpire = tradeRepo.findByStatusIn(VALID_STATUSES);
+
+        for (Trade trade : toExpire)
+            processExpiredTrade(trade);
+    }
+    
+    @Scheduled(fixedRate = 300000)
+    public void checkMarketBuyTrades() {
+        
     }
 }
