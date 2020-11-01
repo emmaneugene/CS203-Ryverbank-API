@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.csdg1t3.ryverbankapi.security.UserAuthenticator;
 import com.csdg1t3.ryverbankapi.user.*;
+import com.csdg1t3.ryverbankapi.trade.*;
 
 /**
  * Controller that manages HTTP requests to "/accounts"
@@ -22,13 +23,15 @@ public class AccountController {
     private AccountRepository accountRepo;
     private UserRepository userRepo;
     private TransferRepository transferRepo;
+    private TradeService tradeSvc;
     private UserAuthenticator uAuth;
 
     public AccountController(AccountRepository accountRepo, UserRepository userRepo,
-    TransferRepository transferRepo, UserAuthenticator uAuth) {
+    TransferRepository transferRepo, TradeService tradeSvc, UserAuthenticator uAuth) {
         this.accountRepo = accountRepo;
         this.userRepo = userRepo;
         this.transferRepo = transferRepo;
+        this.tradeSvc = tradeSvc;
         this.uAuth = uAuth;
     }
     
@@ -132,6 +135,10 @@ public class AccountController {
     /**
      * Create a new transaction.
      * 
+     * As part of the trading function, whenever a transfer is made, a call will be made
+     * to TradeService.processExistingBuyTradesForAccount(). This is so that any existing
+     * market buy trades that have not been fully filled due to lacking funds can be processed.
+     * 
      * Only ROLE_USER can create a new transfer, as validated in security config
      * This method needs to 
      * 1. validate sender and receiver accounts
@@ -182,37 +189,9 @@ public class AccountController {
         receiverAcc.setBalance(receiverAcc.getBalance() + transfer.getAmount());
         accountRepo.save(receiverAcc);
 
-        return transferRepo.save(transfer);
-    }
-
-    /**
-     * Creates a trade transfer between two accounts. The method will also update the balances of
-     * both sender and receiver accounts as necessary
-     * 
-     * If the sender or receiver account is null, that account is associated with a market maker
-     * trade, and hence no account operations will occur
-     * 
-     * @param transfer
-     * @param sender
-     * @param receiver
-     * @return created transfer
-     */
-    public Transfer createTradeTransfer(Transfer transfer, Account sender, Account receiver) {
-        if (sender != null) {
-            if (Math.round(sender.getAvailable_balance() * 100) == Math.round(sender.getBalance() * 100))
-                sender.setAvailable_balance(sender.getAvailable_balance() - transfer.getAmount());
-        
-            sender.setBalance(sender.getBalance() - transfer.getAmount());
-            accountRepo.save(sender);
-        }
-        
-        if (receiver != null) {
-            receiver.setAvailable_balance(receiver.getAvailable_balance() + transfer.getAmount());
-            receiver.setBalance(receiver.getBalance() + transfer.getAmount());
-            accountRepo.save(receiver);
-        }
-
-        return transferRepo.save(transfer);
+        Transfer savedTransfer = transferRepo.save(transfer);
+        tradeSvc.processExistingMarketBuysForAccount(receiverAcc);
+        return savedTransfer;
     }
     
 }

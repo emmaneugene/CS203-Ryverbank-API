@@ -5,6 +5,7 @@ import java.util.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.csdg1t3.ryverbankapi.client.RestTemplateClient;
@@ -13,9 +14,8 @@ import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.security.*;
 import com.csdg1t3.ryverbankapi.trade.*;
 
-import java.io.File;
-
 @SpringBootApplication
+@EnableScheduling
 public class RyverbankApiApplication {
     public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(RyverbankApiApplication.class, args);

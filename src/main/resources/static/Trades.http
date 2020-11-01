@@ -43,7 +43,7 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
     "symbol": "A17U",
     "quantity": 10000,
     "bid": 0,
-    "account_id": 2,
+    "account_id": 1,
     "customer_id": 3
 }
 ###
@@ -58,7 +58,7 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
     "symbol": "A17U",
     "quantity": 1000,
     "ask": 3.22,
-    "account_id": 2,
+    "account_id": 1,
     "customer_id": 3
 }
 ###
@@ -73,7 +73,7 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
     "symbol": "A17U",
     "quantity": 300,
     "ask": 0,
-    "account_id": 2,
+    "account_id": 1,
     "customer_id": 3
 }
 ###
