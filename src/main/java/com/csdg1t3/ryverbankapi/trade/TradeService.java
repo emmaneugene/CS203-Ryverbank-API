@@ -32,7 +32,7 @@ public class TradeService {
      * or before 9am on the current day. These trades will enter the system and be matched from
      * earliest to latest
      */
-    @Scheduled(cron = "0 0 9 ? * *")
+    @Scheduled(cron = "0 0 9 ? * *", zone = "GMT+8")
 	public void processUnprocessedTrades() {
         List<Trade> unprocessedTrades = tradeRepo.findByProcessed(false);
         
@@ -45,7 +45,7 @@ public class TradeService {
      * Scheduler method that runs at 5pm daily. The method retrieves all trades that are either open
      * or partial-filled, and expires them.
      */
-    @Scheduled(cron = "0 0 17 ? * *")
+    @Scheduled(cron = "0 0 17 ? * *", zone = "GMT+8")
     public void expireTrades() {
         List<Trade> toExpire = tradeRepo.findByStatusIn(VALID_STATUSES);
 
@@ -53,7 +53,14 @@ public class TradeService {
             processExpiredTrade(trade);
     }
 
+    /**
+     * Processes and expired trade. If the trade's account ID is 0, it is a market maker trade,
+     * and will not be expired
+     */
     public void processExpiredTrade(Trade trade) {
+        if (trade.getAccount_id() == 0)
+            return;
+
         if (trade.getAction().equals("buy")) {
             Account acc = accountRepo.findById(trade.getAccount_id()).get();
             acc.setAvailable_balance(acc.getBalance());
@@ -177,7 +184,7 @@ public class TradeService {
     public Trade makeTrade(Trade trade) {
         Calendar now = Calendar.getInstance();
         
-        if (now.get(now.HOUR_OF_DAY) < 9 || now.get(now.HOUR_OF_DAY) > 17) {
+        if (now.get(now.HOUR_OF_DAY) < 9 || now.get(now.HOUR_OF_DAY) > 16) {
             trade.setProcessed(false);
             tradeRepo.save(trade);
             return trade;
