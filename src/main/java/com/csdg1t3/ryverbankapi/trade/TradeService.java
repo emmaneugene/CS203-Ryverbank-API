@@ -11,19 +11,46 @@ import com.csdg1t3.ryverbankapi.account.*;
 public class TradeService {
     private TradeRepository tradeRepo;
     private AccountRepository accountRepo;
-    private AccountController accountController;
+    private TransferRepository transferRepo;
     private AssetRepository assetRepo;
     private PortfolioRepository portfolioRepo;
     
     private static final List<String> VALID_STATUSES = Arrays.asList("open", "partial-filled");
 
     public TradeService(TradeRepository tradeRepo, AccountRepository accountRepo, 
-    AccountController accountController, AssetRepository assetRepo, PortfolioRepository portfolioRepo) {
+    TransferRepository transferRepo, PortfolioRepository portfolioRepo, AssetRepository assetRepo) {
         this.tradeRepo = tradeRepo;
         this.accountRepo = accountRepo;
-        this.accountController = accountController;
-        this.assetRepo = assetRepo;
+        this.transferRepo = transferRepo;
         this.portfolioRepo = portfolioRepo;
+        this.assetRepo = assetRepo;
+    }
+
+    /**
+     * Scheduler method that runs at 9am daily. The method retrieves all trades that have not 
+     * been processed yet. These are trades that have been placed after 5pm on the previous day
+     * or before 9am on the current day. These trades will enter the system and be matched from
+     * earliest to latest
+     */
+    @Scheduled(cron = "0 0 9 ? * *")
+	public void processUnprocessedTrades() {
+        List<Trade> unprocessedTrades = tradeRepo.findByProcessed(false);
+        
+        unprocessedTrades.sort(new TradeTimeComparator());
+        for (Trade trade : unprocessedTrades) 
+            makeTrade(trade);
+    }
+
+    /**
+     * Scheduler method that runs at 5pm daily. The method retrieves all trades that are either open
+     * or partial-filled, and expires them.
+     */
+    @Scheduled(cron = "0 0 17 ? * *")
+    public void expireTrades() {
+        List<Trade> toExpire = tradeRepo.findByStatusIn(VALID_STATUSES);
+
+        for (Trade trade : toExpire)
+            processExpiredTrade(trade);
     }
 
     public void processExpiredTrade(Trade trade) {
@@ -120,47 +147,21 @@ public class TradeService {
     }
 
     /**
-     * Returns the earliest valid market buy for a given stock
+     * Method that processes all existing market buy trades for an account. This method is called
+     * by AccountController after a transaction is made. The receiver account, which has gained
+     * additional funds, is passed in to this function.
      * 
-     * @param symbol The symbol of the stock which buy trade is to be retrieved.
-     * @return The earliest market buy.
+     * 1. Retrieve all valid market buy trades made by the account
+     * 2. Sort trades from earliest to latest
+     * 3. Call processMarketBuy() for all trades
      */
-    public Trade getEarliestMarketBuyForStock(String symbol) {
-        List<Trade> trades = tradeRepo.findByActionAndSymbolAndBidAndStatusIn("buy", symbol, 
-        Double.valueOf(0), VALID_STATUSES);
-
-        if (trades == null || trades.isEmpty())
-            return null;
-        
-        Trade earliest = trades.get(0);
-        for (Trade trade : trades) {
-            if (trade.getDate() < earliest.getDate()) 
-                earliest = trade;
+    public void processExistingMarketBuysForAccount(Account acc) {
+        List<Trade> accMarketBuyTrades = tradeRepo.findByActionAndAccountIdAndBidAndStatusIn("buy", 
+        acc.getId(), Double.valueOf(0), VALID_STATUSES);
+        accMarketBuyTrades.sort(new TradeTimeComparator());
+        for (Trade trade : accMarketBuyTrades) {
+            makeTrade(trade);
         }
-        
-        return earliest;
-    }
-
-    /**
-     * Returns the earliest valid market sell for a given stock
-     * 
-     * @param symbol The symbol of the stock which sell trade is to be retrieved.
-     * @return The earliest market sell.
-     */
-    public Trade getEarliestMarketSellForStock(String symbol) {
-        List<Trade> trades = tradeRepo.findByActionAndSymbolAndAskAndStatusIn("sell", symbol, 
-        Double.valueOf(0), VALID_STATUSES);
-
-        if (trades == null || trades.isEmpty())
-            return null;
-        
-        Trade earliest = trades.get(0);
-        for (Trade trade : trades) {
-            if (trade.getDate() < earliest.getDate())
-                earliest = trade;
-        }
-
-        return earliest;
     }
 
     /**
@@ -174,7 +175,6 @@ public class TradeService {
      * @return The processed trade.
      */
     public Trade makeTrade(Trade trade) {
-        // updateTradeExpiry();
         Calendar now = Calendar.getInstance();
         
         if (now.get(now.HOUR_OF_DAY) < 9 || now.get(now.HOUR_OF_DAY) > 17) {
@@ -221,16 +221,19 @@ public class TradeService {
                 sell = getLowestAskTradeForStock(buy.getSymbol());
         }
 
-        Trade marketSell = getEarliestMarketSellForStock(buy.getSymbol());
-        while (!buy.isFilled() && marketSell != null) {
+        List<Trade> marketSells = tradeRepo.findByActionAndSymbolAndBidAndStatusIn("sell", buy.getSymbol(), 
+        Double.valueOf(0), VALID_STATUSES);
+        marketSells.sort(new TradeTimeComparator());
+        int idx = 0;
+
+        while (!buy.isFilled() && idx < marketSells.size()) {
+            Trade marketSell = marketSells.get(idx);
             int needed = buy.getRemaining_quantity();
             int avail = marketSell.getRemaining_quantity();
             int toFill = Math.min(needed, avail);
             
             fillTrades(buy, marketSell, buy.getBid(), toFill);
-
-            if (marketSell.isFilled())
-                marketSell = getEarliestMarketSellForStock(buy.getSymbol());
+            idx++;
         }
     }
 
@@ -260,10 +263,13 @@ public class TradeService {
                 buy = getLowestAskTradeForStock(sell.getSymbol());
         }
 
-        Trade marketBuy = getEarliestMarketBuyForStock(sell.getSymbol());
-        while (!sell.isFilled() && marketBuy != null) {
+        List<Trade> marketBuys = tradeRepo.findByActionAndSymbolAndBidAndStatusIn("buy", sell.getSymbol(), 
+        Double.valueOf(0), VALID_STATUSES);
+        marketBuys.sort(new TradeTimeComparator());
+        int idx = 0;
+        while (!sell.isFilled() && idx < marketBuys.size()) {
+            Trade marketBuy = marketBuys.get(idx);
             int needed = sell.getRemaining_quantity();
-
             int qty_affordable = (int)Math.round(
                 marketBuy.getAccount().getAvailable_balance() / (sell.getAsk() * 100)
                 ) * 100;
@@ -272,8 +278,7 @@ public class TradeService {
 
             fillTrades(marketBuy, sell, sell.getAsk(), toFill);
 
-            if (marketBuy.isFilled())
-                marketBuy = getEarliestMarketBuyForStock(sell.getSymbol());
+            idx++;
         }
     }  
     
@@ -356,7 +361,7 @@ public class TradeService {
         transfer.setTo(sell.getAccount_id());
         transfer.setAmount(price * qty);
 
-        accountController.createTradeTransfer(transfer, buy.getAccount(), sell.getAccount());
+        createTradeTransfer(transfer, buy.getAccount(), sell.getAccount());
 
         Optional<Portfolio> sellerPortfolioOpt = portfolioRepo.findByCustomerId(sell.getCustomer_id());
         Optional<Portfolio> buyerPortfolioOpt = portfolioRepo.findByCustomerId(buy.getCustomer_id());
@@ -384,6 +389,36 @@ public class TradeService {
         String sellStatus = sell.isFilled() ? "filled" : "partial-filled";
         sell.setStatus(sellStatus);
         tradeRepo.save(sell);
+    }
+
+    /**
+     * Creates a trade transfer between two accounts. The method will also update the balances of
+     * both sender and receiver accounts as necessary
+     * 
+     * If the sender or receiver account is null, that account is associated with a market maker
+     * trade, and hence no account operations will occur
+     * 
+     * @param transfer
+     * @param sender
+     * @param receiver
+     * @return created transfer
+     */
+    public Transfer createTradeTransfer(Transfer transfer, Account sender, Account receiver) {
+        if (sender != null) {
+            if (Math.round(sender.getAvailable_balance() * 100) == Math.round(sender.getBalance() * 100))
+                sender.setAvailable_balance(sender.getAvailable_balance() - transfer.getAmount());
+        
+            sender.setBalance(sender.getBalance() - transfer.getAmount());
+            accountRepo.save(sender);
+        }
+        
+        if (receiver != null) {
+            receiver.setAvailable_balance(receiver.getAvailable_balance() + transfer.getAmount());
+            receiver.setBalance(receiver.getBalance() + transfer.getAmount());
+            accountRepo.save(receiver);
+        }
+
+        return transferRepo.save(transfer);
     }
 
     /**
@@ -456,37 +491,5 @@ public class TradeService {
 
         trade.setStatus("cancelled");
         tradeRepo.save(trade);
-    }
-
-    /**
-     * Scheduler method that runs at 9am daily. The method retrieves all trades that have not 
-     * been processed yet. These are trades that have been placed after 5pm on the previous day
-     * or before 9am on the current day. These trades will enter the system and be matched from
-     * earliest to latest
-     */
-    @Scheduled(cron = "0 0 9 ? * *")
-	public void processUnprocessedTrades() {
-        List<Trade> unprocessedTrades = tradeRepo.findByProcessed(false);
-        
-        unprocessedTrades.sort(new TradeTimeComparator());
-        for (Trade trade : unprocessedTrades) 
-            makeTrade(trade);
-    }
-
-    /**
-     * Schedule method that runs at 5pm daily. The method retrieves all trades that are either open
-     * or partial-filled, and expires them.
-     */
-    @Scheduled(cron = "0 0 17 ? * *")
-    public void expireTrades() {
-        List<Trade> toExpire = tradeRepo.findByStatusIn(VALID_STATUSES);
-
-        for (Trade trade : toExpire)
-            processExpiredTrade(trade);
-    }
-    
-    @Scheduled(fixedRate = 300000)
-    public void checkMarketBuyTrades() {
-        
     }
 }

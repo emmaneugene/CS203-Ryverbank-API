@@ -25,7 +25,9 @@ public interface TradeRepository extends JpaRepository<Trade, Long>{
     Collection<String> statuses);
     List<Trade> findByActionAndSymbolAndAskAndStatusIn(String action, String symbol, Double ask,
     Collection<String> statuses);
-    List<Trade> findByActionAndSymbolAndCustomerIdAndStatusIn(String Action, String symbol, Long id, 
+    List<Trade> findByActionAndSymbolAndCustomerIdAndStatusIn(String action, String symbol, Long id, 
+    Collection<String> statuses);
+    List<Trade> findByActionAndAccountIdAndBidAndStatusIn(String action, Long id, Double bid, 
     Collection<String> statuses);
     List<Trade> findByProcessed(boolean processed);
     boolean existsById(Long id);

@@ -20,8 +20,8 @@ Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
 {
-    "customer_id": 2,
-    "balance": 1000000
+    "customer_id": 3,
+    "balance": 10000
 }
 ###
 
@@ -30,8 +30,8 @@ Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
 {
-    "customer_id": 3,
-    "balance": 10000
+    "customer_id": 2,
+    "balance": 1000000
 }
 ###
 
