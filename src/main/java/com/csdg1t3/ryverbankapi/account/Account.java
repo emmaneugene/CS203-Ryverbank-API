@@ -1,6 +1,5 @@
 package com.csdg1t3.ryverbankapi.account;
 
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
