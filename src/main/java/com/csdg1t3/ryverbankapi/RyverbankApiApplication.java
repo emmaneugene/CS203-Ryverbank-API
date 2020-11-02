@@ -5,7 +5,9 @@ import java.util.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import javax.annotation.PostConstruct;
 
 import com.csdg1t3.ryverbankapi.client.RestTemplateClient;
 import com.csdg1t3.ryverbankapi.content.*;
@@ -13,10 +15,16 @@ import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.security.*;
 import com.csdg1t3.ryverbankapi.trade.*;
 
-import java.io.File;
-
 @SpringBootApplication
+@EnableScheduling
 public class RyverbankApiApplication {
+    
+    // Set the application timezone as GMT+8 (Singapore)
+    @PostConstruct
+    public void init(){
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
+    }
+    
     public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(RyverbankApiApplication.class, args);
         initApplicationData(ctx);

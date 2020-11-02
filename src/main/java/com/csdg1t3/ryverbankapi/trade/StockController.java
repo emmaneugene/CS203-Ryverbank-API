@@ -62,6 +62,7 @@ public class StockController {
             marketBuy.setAccount_id(Long.valueOf(0));
             marketBuy.setCustomer_id(Long.valueOf(0));
             marketBuy.setStatus("open");
+            marketBuy.setProcessed(true);
 
             Trade marketSell = new Trade();
             marketSell.setAction("sell");
@@ -73,6 +74,7 @@ public class StockController {
             marketSell.setAccount_id(Long.valueOf(0));
             marketSell.setCustomer_id(Long.valueOf(0));
             marketSell.setStatus("open");
+            marketSell.setProcessed(false);
 
             tradeRepo.save(marketBuy);
             tradeRepo.save(marketSell);

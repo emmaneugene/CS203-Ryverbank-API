@@ -29,13 +29,14 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
 }
 ###
 
-POST http://localhost:8080/accounts/3/transactions
+# Tony Stark sends Peter Parker 50,000 to help him fill his market buy trades
+POST http://localhost:8080/accounts/2/transactions
 Content-Type: application/json
 Authorization: Basic iamironman i<3carmen
 
 {
-    "from": 3,
+    "from": 2,
     "to": 1,
-    "amount": 3000
+    "amount": 50000
 }
 ###

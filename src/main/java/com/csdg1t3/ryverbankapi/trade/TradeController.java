@@ -48,8 +48,6 @@ public class TradeController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/trades")
     public List<Trade> getTrades() {
-        tradeService.updateTradeExpiry();
-
         return tradeRepo.findByCustomerId(uAuth.getAuthenticatedUser().getId());
     }
 
@@ -65,8 +63,6 @@ public class TradeController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/trades/{id}")
     public Trade getTrade(@PathVariable Long id) {
-        tradeService.updateTradeExpiry();
-
         if (!tradeRepo.existsById(id))
             throw new TradeNotFoundException(id);
         
@@ -99,8 +95,6 @@ public class TradeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/trades")
     public Trade createTrade(@RequestBody Trade trade) {
-        tradeService.updateTradeExpiry();
-
         if (!uAuth.idMatchesAuthenticatedUser(trade.getCustomer_id()))
             throw new TradeNotValidException("You cannot post a trade for another user");
         
