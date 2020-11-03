@@ -39,7 +39,7 @@ public class ContentController {
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/contents")
-    public List<Content> getContent() {
+    public List<Content> getContents() {
         User authenticatedUser = uAuth.getAuthenticatedUser();
         
         if (authenticatedUser.getAuthorities().contains(uAuth.MANAGER) ||
