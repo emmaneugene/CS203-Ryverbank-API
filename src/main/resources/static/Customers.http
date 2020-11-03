@@ -6,7 +6,7 @@ GET http://localhost:8080/customers
 Authorization: Basic manager_1 01_manager_01
 ###
 
-GET http://localhost:8080/customers/3
+GET http://localhost:8080/customers/2
 Authorization: Basic iamironman i<3carmen
 ###
 

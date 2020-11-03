@@ -39,7 +39,7 @@ public class User implements UserDetails {
     private String nric;
 
     @NotNull(message = "Phone number should not be null")
-    @Size(min = 8, max = 8, message = "Phone number should be exactly 8 characters")
+    //@Size(min = 8, max = 8, message = "Phone number should be exactly 8 characters")
     private String phone;
 
     @NotNull(message = "Address should not be null")

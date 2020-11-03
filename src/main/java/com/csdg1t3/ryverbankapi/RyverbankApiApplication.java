@@ -46,8 +46,8 @@ public class RyverbankApiApplication {
         PortfolioRepository portfolios = ctx.getBean(PortfolioRepository.class);
         StockController stockController = ctx.getBean(StockController.class);
 
-        User admin = new User(null, "admin", "S1234567G", "80756529", "Lalaland 10, Potato's Dream, 10200", "manager_1", encoder.encode("01_manager_01"), "ROLE_MANAGER", true);
-        User tstark = new User(null, "Tony Stark", "S8732269I", "80437586", "10880 Malibu Point, 90265", "iamironman", encoder.encode("i<3carmen"), "ROLE_USER", true);
+        User admin = new User(null, "admin", "S1234567G", "81756529", "Lalaland 10, Potato's Dream, 10200", "manager_1", encoder.encode("01_manager_01"), "ROLE_MANAGER", true);
+        User tstark = new User(null, "Tony Stark", "S8732269I", "81437586", "10880 Malibu Point, 90265", "iamironman", encoder.encode("i<3carmen"), "ROLE_USER", true);
         User tholland = new User(null, "Tom Holland", "S9847385E", "93580378", "20 Ingram Street", "spiderman", encoder.encode("mrstark,Idontfeels0good"), "ROLE_USER", true);
         User analyst1 = new User(null, "analyst 1", "S1234567D", "00000000", "no address", "analyst_1", encoder.encode("01_analyst_01"), "ROLE_ANALYST", true);
         User analyst2 = new User(null, "analyst 2", "S1234567D", "00000000", "no address", "analyst_2", encoder.encode("02_analyst_02"), "ROLE_ANALYST", true);
@@ -60,7 +60,9 @@ public class RyverbankApiApplication {
         System.out.println("[Add analyst]: " + users.save(analyst2));
 
         // Add portfolios
-        portfolios.save(new Portfolio(null, tstark.getId(), tstark, null, 0, 0));
+        System.out.println("Adding portfolio for stark");
+        portfolios.save(new Portfolio(null, tstark.getId(),tstark, null, 0, 0));
+        System.out.println("Adding portfolio for tholland");
         portfolios.save(new Portfolio(null, tholland.getId(), tholland, null, 0, 0));
         
         // Add content
