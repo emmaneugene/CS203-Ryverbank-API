@@ -1,10 +1,19 @@
 package com.csdg1t3.ryverbankapi.user;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.springframework.stereotype.Component;
+
+
 /**
 * Validator class that provides NRIC and phone number validation
 */
+@Component
 public class Validator {
-    public static boolean validateNRIC(String nric) {
+
+    public Validator(){};
+
+    public boolean validateNRIC(String nric) {
         // NRIC must be 9 characters long
         if (nric.length() != 9) {
             return false;
@@ -42,7 +51,7 @@ public class Validator {
         return (outputs[remainder] == nric.charAt(8));
     }
 
-    public static boolean validatePhoneno(String phoneNo) {
+    public boolean validatePhoneno(String phoneNo) {
         // Phone number can only be 8 characters long
         if (phoneNo.length() != 8) {
             return false;
@@ -53,9 +62,21 @@ public class Validator {
                 return false;
             }
         }
-        // First digit must be 9 or 8
+        // First digit must be 9 or 8 or 6
         if (phoneNo.charAt(0) != '9' && phoneNo.charAt(0) != '8' && phoneNo.charAt(0) != '6') {
             return false;
+        }
+
+        if (phoneNo.charAt(0) == '8') {
+            if (phoneNo.charAt(1) == '0') {
+                return false;
+            }
+        }
+
+        if (phoneNo.charAt(0) == '9') {
+            if (phoneNo.charAt(1) == '9') {
+                return false;
+            }
         }
         return true;
     }
