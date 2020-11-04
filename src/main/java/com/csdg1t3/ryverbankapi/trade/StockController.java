@@ -127,7 +127,7 @@ public class StockController {
      */
     public void updateStockDetails(Stock stock) {
         double bid, ask;
-        bid = ask = 0;
+        bid = ask = stock.getLast_price();
         int bid_volume, ask_volume;
         bid_volume = ask_volume = 0;
         Trade buy = tradeService.getHighestBidTradeForStock(stock.getSymbol());

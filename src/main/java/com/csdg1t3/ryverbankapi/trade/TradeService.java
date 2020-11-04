@@ -14,16 +14,19 @@ public class TradeService {
     private TransferRepository transferRepo;
     private AssetRepository assetRepo;
     private PortfolioRepository portfolioRepo;
+    private StockRepository stockRepo;
     
     private static final List<String> VALID_STATUSES = Arrays.asList("open", "partial-filled");
 
     public TradeService(TradeRepository tradeRepo, AccountRepository accountRepo, 
-    TransferRepository transferRepo, PortfolioRepository portfolioRepo, AssetRepository assetRepo) {
+    TransferRepository transferRepo, PortfolioRepository portfolioRepo, AssetRepository assetRepo, 
+    StockRepository stockRepo) {
         this.tradeRepo = tradeRepo;
         this.accountRepo = accountRepo;
         this.transferRepo = transferRepo;
         this.portfolioRepo = portfolioRepo;
         this.assetRepo = assetRepo;
+        this.stockRepo = stockRepo;
     }
 
     /**
@@ -350,7 +353,7 @@ public class TradeService {
      * 3. Update filled_quantity for each of the trades, and set status as needed 
      * (partial-filled or filled)
      * 
-
+     * 4. Update last price of the associated stock 
      * 
      * @param buy The buy trade to be filled.
      * @param sell The sell trade to be filled.
@@ -382,6 +385,11 @@ public class TradeService {
             updatePortfolioAsset(buyerPortfolioOpt.get(), buy.getSymbol(), 
             price, qty);
         }
+
+        Stock stock = stockRepo.findBySymbol(buy.getSymbol()).get();
+        stock.setLast_price(price);
+        stockRepo.save(stock);
+
 
         buy.setAvg_price(
             (buy.getAvg_price() * buy.getFilled_quantity() + price * qty) / (buy.getFilled_quantity() + qty));
