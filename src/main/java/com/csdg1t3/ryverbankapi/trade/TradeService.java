@@ -225,8 +225,9 @@ public class TradeService {
             int needed = buy.getRemaining_quantity();
             int avail = sell.getRemaining_quantity();
             int toFill = Math.min(needed, avail);
+            Double price = Math.min(buy.getBid(), sell.getAsk());
             
-            fillTrades(buy, sell, sell.getAsk(), toFill);
+            fillTrades(buy, sell, price, toFill);
 
             if (sell.isFilled())
                 sell = getLowestAskTradeForStock(buy.getSymbol());
@@ -266,9 +267,9 @@ public class TradeService {
             int needed = sell.getRemaining_quantity();
             int avail = buy.getRemaining_quantity();
             int toFill = Math.min(needed, avail);
-
+            Double price = Math.max(sell.getAsk(), buy.getBid());
             
-            fillTrades(buy, sell, sell.getAsk(), toFill);
+            fillTrades(buy, sell, price, toFill);
 
             if (buy.isFilled())
                 buy = getLowestAskTradeForStock(sell.getSymbol());
