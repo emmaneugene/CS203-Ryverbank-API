@@ -157,24 +157,6 @@ public class TradeService {
     }
 
     /**
-     * Method that processes all existing market buy trades for an account. This method is called
-     * by AccountController after a transaction is made. The receiver account, which has gained
-     * additional funds, is passed in to this function.
-     * 
-     * 1. Retrieve all valid market buy trades made by the account
-     * 2. Sort trades from earliest to latest
-     * 3. Call processMarketBuy() for all trades
-     */
-    public void processExistingMarketBuysForAccount(Account acc) {
-        List<Trade> accMarketBuyTrades = tradeRepo.findByActionAndAccountIdAndBidAndStatusIn("buy", 
-        acc.getId(), Double.valueOf(0), VALID_STATUSES);
-        accMarketBuyTrades.sort(new TradeTimeComparator());
-        for (Trade trade : accMarketBuyTrades) {
-            makeTrade(trade);
-        }
-    }
-
-    /**
      * Method that intiates the processing of a newly created or unprocessed trade. Depending on whether the trade
      * is a buy or sell, and whether it is made at market price, the method will call different 
      * processing functions.
@@ -302,15 +284,11 @@ public class TradeService {
      * @param buy The buy trade to be made.
      */
     public void processMarketBuy(Trade buy) {
-        Account acc = buy.getAccount();
         Trade sell = getLowestAskTradeForStock(buy.getSymbol());
-        while (!buy.isFilled() && sell != null && acc.getAvailable_balance() >= sell.getAsk() * 100) {
-            int needed = buy.getRemaining_quantity();
+        while (!buy.isFilled() && sell != null && buy.getAmtRemaining() >= sell.getAsk() * 100) {
             int avail = sell.getRemaining_quantity();
-            int toFill = needed <= avail ? needed : avail;
-
-            if (acc.getAvailable_balance() < sell.getAsk() * toFill)
-                toFill = (int)Math.floor(acc.getAvailable_balance() / (sell.getAsk() * 100)) * 100;
+            int affordable = (int)Math.floor(buy.getAmtRemaining() / (sell.getAsk() * 100)) * 100;
+            int toFill = Math.min(avail, affordable);
 
             fillTrades(buy, sell, sell.getAsk(), toFill);
 
@@ -394,18 +372,25 @@ public class TradeService {
 
 
         buy.setAvg_price(
-            (buy.getAvg_price() * buy.getFilled_quantity() + price * qty) / (buy.getFilled_quantity() + qty));
+            averageOf(buy.getAvg_price(), buy.getFilled_quantity(), price, qty));
         buy.setFilled_quantity(buy.getFilled_quantity() + qty);
         String buyStatus = buy.isFilled() ? "filled" : "partial-filled";
         buy.setStatus(buyStatus);
         tradeRepo.save(buy);
 
         sell.setAvg_price(
-            (sell.getAvg_price() * sell.getFilled_quantity() + price * qty) / (sell.getFilled_quantity() + qty));
+            averageOf(sell.getAvg_price(), sell.getFilled_quantity(), price, qty));
         sell.setFilled_quantity(sell.getFilled_quantity() + qty);
         String sellStatus = sell.isFilled() ? "filled" : "partial-filled";
         sell.setStatus(sellStatus);
         tradeRepo.save(sell);
+    }
+
+    /**
+     * Computes new average price given 2 prices and their respective quantities
+     */
+    public double averageOf(double price1, int qty1, double price2, int qty2) {
+        return (price1 * qty1 + price2 * qty2) / (qty1 + qty2);
     }
 
     /**
@@ -422,9 +407,6 @@ public class TradeService {
      */
     public Transfer createTradeTransfer(Transfer transfer, Account sender, Account receiver) {
         if (sender != null) {
-            if (Math.round(sender.getAvailable_balance() * 100) == Math.round(sender.getBalance() * 100))
-                sender.setAvailable_balance(sender.getAvailable_balance() - transfer.getAmount());
-        
             sender.setBalance(sender.getBalance() - transfer.getAmount());
             accountRepo.save(sender);
         }
@@ -478,13 +460,7 @@ public class TradeService {
             toUpdate.setQuantity(toUpdate.getQuantity() + qty);
             
         } else {
-            Asset newAsset = new Asset();
-            newAsset.setCode(symbol);
-            newAsset.setPortfolio(portfolio);
-            newAsset.setQuantity(qty);
-            newAsset.setAvailable_quantity(qty);
-            newAsset.setAvg_price(price);
-            
+            Asset newAsset = new Asset(null, symbol, portfolio, qty, qty, price, 0);
             assetRepo.save(newAsset);
         }
     }

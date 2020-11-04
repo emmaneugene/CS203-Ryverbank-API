@@ -188,10 +188,8 @@ public class AccountController {
         receiverAcc.setAvailable_balance(receiverAcc.getAvailable_balance() + transfer.getAmount());
         receiverAcc.setBalance(receiverAcc.getBalance() + transfer.getAmount());
         accountRepo.save(receiverAcc);
-
-        Transfer savedTransfer = transferRepo.save(transfer);
-        tradeSvc.processExistingMarketBuysForAccount(receiverAcc);
-        return savedTransfer;
+        
+        return transferRepo.save(transfer);
     }
     
 }
