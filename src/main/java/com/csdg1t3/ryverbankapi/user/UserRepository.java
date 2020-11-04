@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Long>{
     User save(User user);
     boolean existsById(Long id);
+    boolean existsByNric(String nric);
     List<User> findAll();
     Optional<User> findById(Long id);
     Optional<User> findByUsername(String username);
