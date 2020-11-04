@@ -6,6 +6,7 @@ import javax.validation.constraints.*;
 import com.csdg1t3.ryverbankapi.account.*;
 import com.csdg1t3.ryverbankapi.user.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * POJO that stores the details of a trade
@@ -62,6 +63,9 @@ public class Trade {
     @JsonIgnore
     private boolean processed;
 
+    @JsonIgnore
+    private Double amtReserved;
+
     /**
      * Empty constructor for class Trade.
      */
@@ -81,10 +85,11 @@ public class Trade {
      * @param account The customer's account being used for the trade
      * @param customer The customer making the trade
      * @param status The status of the trade
+     * @param amtReserved The amount of funds put on hold for the trade
      */
     public Trade(Long id, String action, String symbol, int quantity, Double bid, Double ask, 
     double avg_price, int filled_quantity, long date, Account account, User customer, 
-    String status, boolean processed){
+    String status, boolean processed, Double amtReserved){
         this.id = id;
         this.action = action;
         this.symbol = symbol;
@@ -100,6 +105,7 @@ public class Trade {
         this.customer = customer;
         this.status = status;
         this.processed = processed;
+        this.amtReserved = amtReserved;
     }
 
     public Long getId() { return id; }
@@ -133,6 +139,12 @@ public class Trade {
 
     @JsonIgnore
     public boolean getProcessed() { return processed; }
+
+    @JsonIgnore
+    public Double getAmtReserved() { return amtReserved; }
+
+    @JsonIgnore
+    public Double getAmtRemaining() { return amtReserved - avg_price * filled_quantity; }
 
     @JsonIgnore
     public boolean isFilled() { return filled_quantity == quantity; }
@@ -169,4 +181,6 @@ public class Trade {
     public void setStatus(String status) { this.status = status; }
 
     public void setProcessed(boolean processed) { this.processed = processed; }
+
+    public void setAmtReserved(double amtReserved) { this.amtReserved = amtReserved; }
 }

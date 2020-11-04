@@ -101,7 +101,10 @@ public class UserController {
     public User createUser(@Valid @RequestBody User user) {
         Optional<User> result = userRepo.findByUsername(user.getUsername());
         if (result.isPresent())
-            throw new UserNotValidException("Username already taken");
+            throw new UserConflictException("Username already taken");
+        
+        if (userRepo.existsByNric(user.getNric()))
+            throw new UserConflictException("Customer with NRIC already exists");
 
         if (!Validator.validateNRIC(user.getNric())) 
             throw new UserNotValidException("NRIC is invalid");

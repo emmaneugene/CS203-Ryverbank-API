@@ -22,16 +22,16 @@ import java.util.*;
 @RestController
 public class TradeController {
     private TradeRepository tradeRepo;
-    private TradeService tradeService;
+    private TradeService tradeSvc;
     private StockRepository stockRepo;
     private AccountRepository accountRepo;
     private AssetRepository assetRepo;
     private UserAuthenticator uAuth;
 
-    public TradeController (TradeRepository tradeRepo, TradeService tradeService, 
+    public TradeController (TradeRepository tradeRepo, TradeService tradeSvc, 
     AccountRepository accountRepo, StockRepository stockRepo, AssetRepository assetRepo, UserAuthenticator uAuth) {
         this.tradeRepo = tradeRepo;
-        this.tradeService = tradeService;
+        this.tradeSvc = tradeSvc;
         this.stockRepo = stockRepo;
         this.accountRepo = accountRepo;
         this.assetRepo = assetRepo;
@@ -133,9 +133,25 @@ public class TradeController {
         if (trade.getQuantity() % 100 != 0)
             throw new TradeNotValidException("Quantity must be a multiple of 100");
 
-        if (trade.getAction().equals("buy") && trade.getBid() > 0) {
+
+        // Set amount of funds to be reserved for a buy trade
+        if (trade.getAction().equals("buy")) {
+            if (trade.getBid() > 0)
+                trade.setAmtReserved(trade.getBid() * trade.getQuantity());
+            else if (trade.getBid() == 0) {
+                Trade marketSell = tradeSvc.getLowestAskTradeForStock(trade.getSymbol());
+                if (marketSell != null) {
+                    trade.setAmtReserved(marketSell.getAsk() * trade.getQuantity());
+                } else {
+                    Stock stock = stockRepo.findBySymbol(trade.getSymbol()).get();
+                    trade.setAmtReserved(stock.getLast_price() * trade.getQuantity());
+                }
+            }
+        }
+
+        if (trade.getAction().equals("buy")) {
             Double avail = acc.getAvailable_balance();
-            Double needed = trade.getBid() * trade.getQuantity();
+            Double needed = trade.getAmtReserved();
             if (avail < needed)
                 throw new TradeNotValidException("Insufficient funds for trade");
             
@@ -161,7 +177,7 @@ public class TradeController {
         trade.setDate(System.currentTimeMillis());
         trade.setStatus("open");
 
-        return tradeService.makeTrade(tradeRepo.save(trade));
+        return tradeSvc.makeTrade(tradeRepo.save(trade));
     } 
 
     /**
@@ -195,7 +211,7 @@ public class TradeController {
         if (tradeDetails.getStatus() == null || !tradeDetails.getStatus().equals("cancelled"))
             throw new TradeNotValidException("Only trade cancellation is supported");
         
-        tradeService.processCancelTrade(trade);
+        tradeSvc.processCancelTrade(trade);
         return trade;
     }
 }
