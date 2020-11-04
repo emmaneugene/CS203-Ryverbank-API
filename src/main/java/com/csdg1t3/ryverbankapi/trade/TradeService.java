@@ -265,7 +265,7 @@ public class TradeService {
             Trade marketBuy = marketBuys.get(idx);
             int needed = sell.getRemaining_quantity();
             int qty_affordable = (int)Math.round(
-                marketBuy.getAccount().getAvailable_balance() / (sell.getAsk() * 100)
+                marketBuy.getAmtRemaining() / (sell.getAsk() * 100)
                 ) * 100;
             int avail = Math.min(qty_affordable, marketBuy.getRemaining_quantity());
             int toFill =  Math.min(needed, avail);
