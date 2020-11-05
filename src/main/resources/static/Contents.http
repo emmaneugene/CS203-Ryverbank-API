@@ -1,26 +1,26 @@
 # Content
 
-GET http://localhost:8080/contents
+GET http://localhost:8080/api/contents
 Authorization: Basic manager_1 01_manager_01
 ###
 
-GET http://localhost:8080/contents
+GET http://localhost:8080/api/contents
 Authorization: Basic analyst_1 01_analyst_01
 ###
 
-GET http://localhost:8080/contents
+GET http://localhost:8080/api/contents
 Authorization: Basic iamironman i<3carmen
 ### 
 
-GET http://localhost:8080/contents/1
+GET http://localhost:8080/api/contents/1
 Authorization: Basic iamironman i<3carmen
 ###
 
-GET http://localhost:8080/contents/2
+GET http://localhost:8080/api/contents/2
 Authorization: Basic iamironman i<3carmen
 ### 
 
-POST http://localhost:8080/contents
+POST http://localhost:8080/api/contents
 Content-Type: application/json
 Authorization: Basic analyst_1 01_analyst_01
 
@@ -33,7 +33,7 @@ Authorization: Basic analyst_1 01_analyst_01
 }
 ###
 
-POST http://localhost:8080/contents
+POST http://localhost:8080/api/contents
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
@@ -46,7 +46,7 @@ Authorization: Basic manager_1 01_manager_01
 }
 ###
 
-POST http://localhost:8080/contents
+POST http://localhost:8080/api/contents
 Content-Type: application/json
 Authorization: Basic iamironman i<3carmen
 
@@ -59,7 +59,7 @@ Authorization: Basic iamironman i<3carmen
 }
 ###
 
-PUT http://localhost:8080/contents/3
+PUT http://localhost:8080/api/contents/3
 Content-Type: application/json
 Authorization: Basic analyst_2 02_analyst_02
 
@@ -69,7 +69,7 @@ Authorization: Basic analyst_2 02_analyst_02
 }
 ###
 
-PUT http://localhost:8080/contents/3
+PUT http://localhost:8080/api/contents/3
 Content-Type: application/json
 Authorization: Basic iamironman i<3carmen
 
@@ -80,14 +80,14 @@ Authorization: Basic iamironman i<3carmen
 }
 ###
 
-DELETE http://localhost:8080/contents/3
+DELETE http://localhost:8080/api/contents/3
 Authorization: Basic iamironman i<3carmen
 ###
 
-DELETE http://localhost:8080/contents/3
+DELETE http://localhost:8080/api/contents/3
 Authorization: Basic manager_1 01_manager_01
 ###
 
-DELETE http://localhost:8080/contents/3
+DELETE http://localhost:8080/api/contents/3
 Authorization: Basic analyst_2 02_analyst_02
 ###

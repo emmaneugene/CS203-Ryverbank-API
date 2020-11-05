@@ -1,5 +1,5 @@
 # Reset
 
-PUT http://localhost:8080/reset
+PUT http://localhost:8080/api/reset
 Authorization: Basic manager_1 01_manager_01
 ###
