@@ -17,14 +17,14 @@ import com.csdg1t3.ryverbankapi.security.*;
 public class PortfolioController {
     private AssetRepository assetRepo;
     private PortfolioRepository portfolioRepo;
-    private StockController stockController;
+    private StockService stockSvc;
     private UserAuthenticator uAuth;
 
     public PortfolioController (PortfolioRepository portfolioRepo, AssetRepository assetRepo, 
-    StockController stockController, UserAuthenticator uAuth) {
+    StockService stockSvc, UserAuthenticator uAuth) {
         this.portfolioRepo = portfolioRepo;
         this.assetRepo = assetRepo;
-        this.stockController = stockController;
+        this.stockSvc = stockSvc;
         this.uAuth = uAuth;
     }
 
@@ -42,10 +42,10 @@ public class PortfolioController {
         User user = uAuth.getAuthenticatedUser();
         Portfolio portfolio = portfolioRepo.findByCustomerId(user.getId()).get();
 
-        List<Asset> assets = assetRepo.findByPortfolioCustomerId(portfolio.getCustomer_id());
+        List<Asset> assets = portfolio.getAssets();
         
         for (Asset asset : assets) {
-            Stock stock = stockController.getStock(asset.getCode());
+            Stock stock = stockSvc.getUpdatedStock(asset.getCode()).get();
             asset.setCurrent_price(stock.getBid());
             assetRepo.save(asset);
         }
