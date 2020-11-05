@@ -1,13 +1,13 @@
 # View portfolio
-GET http://localhost:8080/portfolio
+GET http://localhost:8080/api/portfolio
 Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
-GET http://localhost:8080/portfolio
+GET http://localhost:8080/api/portfolio
 Authorization: Basic iamironman i<3carmen
 ###
 
 # Run this method after creating the new customer (John Tan) in Customer.http 
-GET http://localhost:8080/portfolio
+GET http://localhost:8080/api/portfolio
 Authorization: Basic johntxm johnpwsucks!1!
 ###

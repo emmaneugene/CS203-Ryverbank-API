@@ -21,7 +21,7 @@ public class ResetController {
     public ResetController() {}
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/reset")
+    @PutMapping("/api/reset")
     public void reset() {
         ctx.getBean(ContentRepository.class).deleteAll();
         ctx.getBean(TradeRepository.class).deleteAll();

@@ -45,7 +45,7 @@ public class UserController {
      * @return a List of all customers
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/customers")
+    @GetMapping("/api/customers")
     public List<User> getCustomers() {
         return userRepo.findAll();
     }
@@ -64,7 +64,7 @@ public class UserController {
      *                                    or the username is not the same as the user ID being accessed.
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/customers/{id}")
+    @GetMapping("/api/customers/{id}")
     public User getCustomer(@PathVariable Long id) {
         Optional<User> result = userRepo.findById(id);
         if (!result.isPresent())
@@ -97,7 +97,7 @@ public class UserController {
      * @throws UserNotValidException If username is already taken, NRIC or phone number is invalid.
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/customers")
+    @PostMapping("/api/customers")
     public User createUser(@Valid @RequestBody User user) {
         Optional<User> result = userRepo.findByUsername(user.getUsername());
         if (result.isPresent())
@@ -139,7 +139,7 @@ public class UserController {
      * @throws UserNotValidException If new phone number is invalid.
     */
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/customers/{id}")
+    @PutMapping("/api/customers/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User newUserInfo) {
         Optional<User> result = userRepo.findById(id); 
         if (!result.isPresent())
