@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 /**
- * Controller that manages HTTP requests to "/stocks"
+ * Controller that manages HTTP requests to "/api/stocks"
  */
 @RestController
 public class StockController {
@@ -90,7 +90,7 @@ public class StockController {
      * @return list of all tradable stocks
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/stocks")
+    @GetMapping("/api/stocks")
     public List<Stock> getStocks() {
         List<Stock> stocks = stockRepo.findAll();
 
@@ -108,7 +108,7 @@ public class StockController {
      * @return the stock specified by the symbol
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/stocks/{symbol}")
+    @GetMapping("/api/stocks/{symbol}")
     public Stock getStock(@PathVariable String symbol) {
         if (!stockRepo.existsBySymbol(symbol))
             throw new StockNotFoundException(symbol);

@@ -11,7 +11,7 @@ import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.security.*;
 
 /**
- * Controller that manages HTTP requests to "/portfolio"
+ * Controller that manages HTTP requests to "/api/portfolio"
  */
 @RestController
 public class PortfolioController {
@@ -37,7 +37,7 @@ public class PortfolioController {
      * @return the user's portfolio
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/portfolio")
+    @GetMapping("/api/portfolio")
     public Portfolio getPortfolio() {
         User user = uAuth.getAuthenticatedUser();
         Portfolio portfolio = portfolioRepo.findByCustomerId(user.getId()).get();
