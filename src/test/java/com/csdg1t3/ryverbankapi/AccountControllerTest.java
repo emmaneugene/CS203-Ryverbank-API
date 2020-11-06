@@ -41,9 +41,6 @@ public class AccountControllerTest {
     @InjectMocks
     private AccountController accountController;
 
-    @InjectMocks
-    private UserController userController;
-
     private User user = new User((long) 1, "Test User", "S9926201Z", "92307743", "23 Hume Rd", "testUser", "testing", "ROLE_USER", true);
 
     private final String u1_FULL_NAME = "cspotatoes";
