@@ -13,25 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.csdg1t3.ryverbankapi.security.UserAuthenticator;
 import com.csdg1t3.ryverbankapi.user.*;
-import com.csdg1t3.ryverbankapi.trade.*;
 
 /**
- * Controller that manages HTTP requests to "/accounts"
+ * Controller that manages HTTP requests to "/api/accounts"
  */
 @RestController
 public class AccountController {
     private AccountRepository accountRepo;
     private UserRepository userRepo;
     private TransferRepository transferRepo;
-    private TradeService tradeSvc;
     private UserAuthenticator uAuth;
 
     public AccountController(AccountRepository accountRepo, UserRepository userRepo,
-    TransferRepository transferRepo, TradeService tradeSvc, UserAuthenticator uAuth) {
+    TransferRepository transferRepo, UserAuthenticator uAuth) {
         this.accountRepo = accountRepo;
         this.userRepo = userRepo;
         this.transferRepo = transferRepo;
-        this.tradeSvc = tradeSvc;
         this.uAuth = uAuth;
     }
     
@@ -44,7 +41,7 @@ public class AccountController {
      * @return a List containing all of the accounts associated with the user's ID.
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/accounts")
+    @GetMapping("/api/accounts")
     public List<Account> getAccounts() {
         return accountRepo.findByCustId(uAuth.getAuthenticatedUser().getId());
     }
@@ -62,7 +59,7 @@ public class AccountController {
      * @throws RoleNotAuthorisedException If the authenticated user is not the account owner
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/accounts/{id}")
+    @GetMapping("/api/accounts/{id}")
     public Account getAccount(@PathVariable Long id) {
         Optional<Account> result = accountRepo.findById(id);
         if (!result.isPresent()) 
@@ -86,7 +83,7 @@ public class AccountController {
      * @throws AccountNotValidException If the customer ID is invalid, or if the balance is negative
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/accounts")
+    @PostMapping("/api/accounts")
     public Account addAccount(@RequestBody Account account) {
         Optional<User> result = userRepo.findById(account.getCustomer_id());
         if (!result.isPresent())
@@ -115,7 +112,7 @@ public class AccountController {
      *                                    does not match the user ID tied to the account.
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/accounts/{account_id}/transactions")
+    @GetMapping("/api/accounts/{account_id}/transactions")
     public List<Transfer> getTransfers(@PathVariable (value = "account_id") Long accountId) {
         Optional<Account> result = accountRepo.findById(accountId);
         if (!result.isPresent()) 
@@ -153,7 +150,7 @@ public class AccountController {
      * @throws RoleNotAuthorisedException If account is not owned by the sender customer.
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/accounts/{account_id}/transactions")
+    @PostMapping("/api/accounts/{account_id}/transactions")
     public Transfer createTransfer(@PathVariable (value = "account_id") Long senderId, 
     @RequestBody Transfer transfer) {
         if (transfer.getTo() == transfer.getFrom())
@@ -188,10 +185,8 @@ public class AccountController {
         receiverAcc.setAvailable_balance(receiverAcc.getAvailable_balance() + transfer.getAmount());
         receiverAcc.setBalance(receiverAcc.getBalance() + transfer.getAmount());
         accountRepo.save(receiverAcc);
-
-        Transfer savedTransfer = transferRepo.save(transfer);
-        tradeSvc.processExistingMarketBuysForAccount(receiverAcc);
-        return savedTransfer;
+        
+        return transferRepo.save(transfer);
     }
     
 }

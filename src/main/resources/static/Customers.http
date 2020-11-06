@@ -1,20 +1,20 @@
 # Customer 
-GET http://localhost:8080/customers
+GET http://localhost:8080/api/customers
 ###
 
-GET http://localhost:8080/customers
+GET http://localhost:8080/api/customers
 Authorization: Basic manager_1 01_manager_01
 ###
 
-GET http://localhost:8080/customers/2
+GET http://localhost:8080/api/customers/3
 Authorization: Basic iamironman i<3carmen
 ###
 
-GET http://localhost:8080/customers/3
+GET http://localhost:8080/api/customers/3
 Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
-POST http://localhost:8080/customers
+POST http://localhost:8080/api/customers
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
@@ -30,7 +30,7 @@ Authorization: Basic manager_1 01_manager_01
 }
 ###
 
-POST http://localhost:8080/customers
+POST http://localhost:8080/api/customers
 Content-Type: application/json
 Authorization: Basic iamironman i<3carmen
 
@@ -47,7 +47,7 @@ Authorization: Basic iamironman i<3carmen
 ###
 
 # PUT request should only be able to modify phone, password and address
-PUT http://localhost:8080/customers/2
+PUT http://localhost:8080/api/customers/2
 Content-Type: application/json
 Authorization: Basic iamironman i<3carmen
 
@@ -65,7 +65,7 @@ Authorization: Basic iamironman i<3carmen
 ###
 
 # PUT request by manager should be able to change active as well
-PUT http://localhost:8080/customers/2
+PUT http://localhost:8080/api/customers/2
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
@@ -75,6 +75,6 @@ Authorization: Basic manager_1 01_manager_01
 }
 ###
 
-GET http://localhost:8080/portfolio
+GET http://localhost:8080/api/portfolio
 Content-Type: application/json
 Authorization: Basic iamironman i<3carmen
