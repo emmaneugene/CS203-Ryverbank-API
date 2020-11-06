@@ -1,21 +1,21 @@
 # Account
 
 # ROLE_MANAGER cannot view any accounts
-GET http://localhost:8080/accounts
+GET http://localhost:8080/api/accounts
 Authorization: Basic manager_1 01_manager_01
 ###
 
 # ROLE_USER can view their own accounts
-GET http://localhost:8080/accounts
+GET http://localhost:8080/api/accounts
 Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
-GET http://localhost:8080/accounts
+GET http://localhost:8080/api/accounts
 Authorization: Basic iamironman i<3carmen
 ###
 
 # ROLE_MANAGER can create new accounts
-POST http://localhost:8080/accounts
+POST http://localhost:8080/api/accounts
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
@@ -25,7 +25,7 @@ Authorization: Basic manager_1 01_manager_01
 }
 ###
 
-POST http://localhost:8080/accounts
+POST http://localhost:8080/api/accounts
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
@@ -35,7 +35,7 @@ Authorization: Basic manager_1 01_manager_01
 }
 ###
 
-POST http://localhost:8080/accounts
+POST http://localhost:8080/api/accounts
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
@@ -47,7 +47,7 @@ Authorization: Basic manager_1 01_manager_01
 ###
 
 # PUT requests for accounts not supported
-PUT http://localhost:8080/accounts/1
+PUT http://localhost:8080/api/accounts/1
 Content-Type: application/json
 Authorization: Basic manager_1 01_manager_01
 
@@ -59,7 +59,7 @@ Authorization: Basic manager_1 01_manager_01
 ###
 
 # DELETE requests for accounts not supported
-DELETE http://localhost:8080/accounts/1
+DELETE http://localhost:8080/api/accounts/1
 Authorization: Basic manager_1 01_manager_01
 ###
 

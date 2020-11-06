@@ -1,12 +1,12 @@
 # Transfer
 
 # ROLE_USER can view their own transactions
-GET http://localhost:8080/accounts/1/transactions
+GET http://localhost:8080/api/accounts/1/transactions
 Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
 # ROLE_USER can create transactions between accounts
-POST http://localhost:8080/accounts/1/transactions
+POST http://localhost:8080/api/accounts/1/transactions
 Content-Type: application/json
 Authorization: : Basic spiderman mrstark,Idontfeels0good
 
@@ -18,7 +18,7 @@ Authorization: : Basic spiderman mrstark,Idontfeels0good
 ###
 
 # 'From' must match ID shown in URL
-POST http://localhost:8080/accounts/1/transactions
+POST http://localhost:8080/api/accounts/1/transactions
 Content-Type: application/json
 Authorization: Basic spiderman mrstark,Idontfeels0good
 
@@ -30,7 +30,7 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
 # Tony Stark sends Peter Parker 50,000 to help him fill his market buy trades
-POST http://localhost:8080/accounts/2/transactions
+POST http://localhost:8080/api/accounts/2/transactions
 Content-Type: application/json
 Authorization: Basic iamironman i<3carmen
 

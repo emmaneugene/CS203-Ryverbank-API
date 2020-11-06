@@ -1,15 +1,15 @@
 # View all trades
-GET http://localhost:8080/trades
+GET http://localhost:8080/api/trades
 Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
 # View a single trade
-GET http://localhost:8080/trades/1
+GET http://localhost:8080/api/trades/1
 Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
 # Make a trade
-POST http://localhost:8080/trades
+POST http://localhost:8080/api/trades
 Content-Type: application/json
 Authorization: Basic spiderman mrstark,Idontfeels0good
 
@@ -24,7 +24,7 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
 # Cancel earlier buy trade
-PUT http://localhost:8080/trades/61
+PUT http://localhost:8080/api/trades/61
 Content-Type: application/json
 Authorization: Basic spiderman mrstark,Idontfeels0good
 
@@ -34,7 +34,7 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
 # Make a market buy trade
-POST http://localhost:8080/trades
+POST http://localhost:8080/api/trades
 Content-Type: application/json
 Authorization: Basic spiderman mrstark,Idontfeels0good
 
@@ -49,7 +49,7 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
 # Make a sell trade
-POST http://localhost:8080/trades
+POST http://localhost:8080/api/trades
 Content-Type: application/json
 Authorization: Basic spiderman mrstark,Idontfeels0good
 
@@ -64,7 +64,7 @@ Authorization: Basic spiderman mrstark,Idontfeels0good
 ###
 
 # Make a market sell trade
-POST http://localhost:8080/trades
+POST http://localhost:8080/api/trades
 Content-Type: application/json
 Authorization: Basic spiderman mrstark,Idontfeels0good
 

@@ -38,7 +38,7 @@ public class ContentController {
      * @return a List of all content
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/contents")
+    @GetMapping("/api/contents")
     public List<Content> getContents() {
         User authenticatedUser = uAuth.getAuthenticatedUser();
         
@@ -59,7 +59,7 @@ public class ContentController {
      * @throws ContentNotApprovedException If Content is not approved by a ROLE_ADMIN.
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/contents/{id}")
+    @GetMapping("/api/contents/{id}")
     public Content getContent(@PathVariable Long id) {
         Optional<Content> result = contentRepo.findById(id);
         if (!result.isPresent()) {
@@ -87,7 +87,7 @@ public class ContentController {
      * @return The content after being added into the database.
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/contents")
+    @PostMapping("/api/contents")
     public Content createContent(@Valid @RequestBody Content content) {
         User authenticatedUser = uAuth.getAuthenticatedUser();
         
@@ -106,7 +106,7 @@ public class ContentController {
      * @throws ContentNotFoundException If content with the given ID is not found.
      */
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/contents/{id}")
+    @PutMapping("/api/contents/{id}")
     public Content updateContent(@PathVariable Long id, @RequestBody Content newContent) {
         Optional<Content> result = contentRepo.findById(id);
         if (!result.isPresent()) {
@@ -141,7 +141,7 @@ public class ContentController {
      * @throws ContentNotFoundException If content with given ID is not found.
      */
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/contents/{id}")
+    @DeleteMapping("/api/contents/{id}")
     public void deleteContent(@PathVariable Long id) {
         Optional<Content> result = contentRepo.findById(id);
         if (!result.isPresent()) {

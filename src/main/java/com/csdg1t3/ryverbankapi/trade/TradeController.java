@@ -17,7 +17,7 @@ import java.util.*;
 
 
 /**
- * Controller that manages HTTP requests to "/trades"
+ * Controller that manages HTTP requests to "/api/trades"
  */
 @RestController
 public class TradeController {
@@ -46,7 +46,7 @@ public class TradeController {
      * @return a list containing all of the trades associated with the authenticated user
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/trades")
+    @GetMapping("/api/trades")
     public List<Trade> getTrades() {
         return tradeRepo.findByCustomerId(uAuth.getAuthenticatedUser().getId());
     }
@@ -61,7 +61,7 @@ public class TradeController {
      * @return Trade that matches the ID specified
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/trades/{id}")
+    @GetMapping("/api/trades/{id}")
     public Trade getTrade(@PathVariable Long id) {
         if (!tradeRepo.existsById(id))
             throw new TradeNotFoundException(id);
@@ -93,7 +93,7 @@ public class TradeController {
      * @throws TradeNotValidException If trade conditions are not met.
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/trades")
+    @PostMapping("/api/trades")
     public Trade createTrade(@RequestBody Trade trade) {
         if (!uAuth.idMatchesAuthenticatedUser(trade.getCustomer_id()))
             throw new TradeNotValidException("You cannot post a trade for another user");
@@ -198,7 +198,7 @@ public class TradeController {
      * @return The cancelled trade.
      */
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/trades/{id}")
+    @PutMapping("/api/trades/{id}")
     public Trade cancelTrade(@PathVariable Long id, @RequestBody Trade tradeDetails) {
         Trade trade = getTrade(id);
         

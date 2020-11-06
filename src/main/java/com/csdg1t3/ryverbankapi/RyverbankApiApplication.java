@@ -44,7 +44,8 @@ public class RyverbankApiApplication {
         ContentRepository contents = ctx.getBean(ContentRepository.class);
         BCryptPasswordEncoder encoder = ctx.getBean(BCryptPasswordEncoder.class);
         PortfolioRepository portfolios = ctx.getBean(PortfolioRepository.class);
-        StockController stockController = ctx.getBean(StockController.class);
+        MarketMaker marketMaker = ctx.getBean(MarketMaker.class);
+        
 
         User admin = new User(null, "admin", "S1234567G", "81756529", "Lalaland 10, Potato's Dream, 10200", "manager_1", encoder.encode("01_manager_01"), "ROLE_MANAGER", true);
         User tstark = new User(null, "Tony Stark", "S8732269I", "81437586", "10880 Malibu Point, 90265", "iamironman", encoder.encode("i<3carmen"), "ROLE_USER", true);
@@ -70,7 +71,7 @@ public class RyverbankApiApplication {
         contents.save(new Content(null, "Title2", "Summary2", "Content2", "Link2", false));
         
         // Add stocks and market maker trades
-        stockController.createStocks();
+        marketMaker.initMarket();
     }
 
     
