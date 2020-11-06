@@ -87,9 +87,9 @@ public class UserControllerTest {
         
     }
 
-    // Assert that method throws UserNotValidException
+    // Assert that method throws UserConflictException
     @Test
-    void addCustomer_SameUserName_ThrowUserNotValidException() {
+    void addCustomer_SameUserName_ThrowUserConflictException() {
         //mock
         Long id = (long) 3;
         User existingUser = new User(id+1, u2_FULL_NAME, NRIC, PHONE_NO, "BLAH BLAH", u1_USERNAME, encoder.encode(u2_PASSWORD),u2_ROLE, true);
@@ -99,7 +99,7 @@ public class UserControllerTest {
         when(userRepo.findByUsername(any(String.class))).thenReturn(Found);
 
         //assert
-        assertThrows(UserNotValidException.class, () -> userController.createUser(newUser), "Username already taken");
+        assertThrows(UserConflictException.class, () -> userController.createUser(newUser), "Username already taken");
         verify(userRepo).findByUsername(existingUser.getUsername());
     }
 
