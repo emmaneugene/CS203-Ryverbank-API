@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.security.*;
 import com.csdg1t3.ryverbankapi.trade.*;
+import com.csdg1t3.ryverbankapi.account.*;
 
 import java.util.*;
 
@@ -24,7 +25,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.annotation.Id;
 
 @ExtendWith(MockitoExtension.class)
-public class PortfolioControllerTest {
+public class TradeServiceTest {
+    @Mock
+    private TradeRepository tradeRepo;
+
+    @Mock
+    private AccountRepository accountRepo;
+
+    @Mock
+    private TransferRepository transferRepo;
+
     @Mock
     private AssetRepository assetRepo;
 
@@ -32,13 +42,10 @@ public class PortfolioControllerTest {
     private PortfolioRepository portfolioRepo;
 
     @Mock
-    private StockService stockSvc;
-
-    @Mock
-    private UserAuthenticator uAuth;
+    private StockRepository stockRepo;
 
     @InjectMocks
-    PortfolioController portfolioController;
+    private TradeService tradesvc;
 
     private final String u1_FULL_NAME = "cspotatoes";
     private final String  u1_USERNAME = "potato";
@@ -46,21 +53,10 @@ public class PortfolioControllerTest {
     private final String u1_ROLE = "ROLE_USER";
     private final String NRIC = "S1234567G";
     private final String PHONE_NO = "93223235";
+    private final String u1_PASSWORD_ENCODED = "$2a$10$1/dOPkY80t.wyXV3p1MR0OhEJOnkljtU2AGkalTv1E3MZtJUqmmLO";
 
-    @Test
-    void getPortfolio_validUser_ReturnPortfolio() {
-        Long id = Long.valueOf(1);
-        User user = new User(id, u1_FULL_NAME, NRIC, PHONE_NO, "Test Address", u1_USERNAME, u1_PASSWORD, u1_ROLE, true);
-        List<Asset> assets = new ArrayList<Asset>();
-        Portfolio portfolio = new Portfolio(id, user.getId(), user, assets, 0.0, 0.0);
-        
-        when(uAuth.getAuthenticatedUser()).thenReturn(user);
-        when(portfolioRepo.findByCustomerId(any(Long.class))).thenReturn(Optional.of(portfolio));
-
-        Portfolio returnedPortfolio = portfolioController.getPortfolio();
-
-        assertEquals(returnedPortfolio, portfolio);
-        verify(uAuth).getAuthenticatedUser();
-        verify(portfolioRepo).findByCustomerId(id);
-    }
+    private final String u2_FULL_NAME = "Tan Li Ling";
+    private final String  u2_USERNAME = "manager_1";
+    private final String u2_PASSWORD = "01_manager_01";
+    private final String u2_ROLE = "ROLE_MANAGER";  
 }
