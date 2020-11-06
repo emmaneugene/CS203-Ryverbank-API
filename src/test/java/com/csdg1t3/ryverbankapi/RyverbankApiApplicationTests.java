@@ -21,7 +21,7 @@ import java.util.Optional;
 import com.csdg1t3.ryverbankapi.*;
 import com.csdg1t3.ryverbankapi.user.UserRepository;
 
-@SpringBootTest(WebEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
 class RyverbankApiApplicationTests {
 
 	@LocalServerPort

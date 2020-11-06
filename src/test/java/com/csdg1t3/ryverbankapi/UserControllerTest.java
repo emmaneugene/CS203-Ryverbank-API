@@ -42,48 +42,49 @@ public class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
-    private final String u1_FULL_NAME = "cspotatoes";
-    private final String  u1_USERNAME = "potato";
-    private final String u1_PASSWORD = "iamgoodpotato123";
-    private final String u1_ROLE = "ROLE_USER";
-    private final String NRIC = "S1234567G";
-    private final String PHONE_NO = "93223235";
-    private final String u1_PASSWORD_ENCODED = "$2a$10$1/dOPkY80t.wyXV3p1MR0OhEJOnkljtU2AGkalTv1E3MZtJUqmmLO";
+    private final User customer = new User((long) 1,"cspotatoes","S1234567G", "93223235", "Potato island", "potato","$2a$10$1/dOPkY80t.wyXV3p1MR0OhEJOnkljtU2AGkalTv1E3MZtJUqmmLO","ROLE_USER", true );
+    private final User newCustomer = new User((long) 3,"tony starks","S1234567G", "93223235", "starship", "iamironman","i<3carmen","ROLE_USER", true );
+    private final User manager = new User((long) 2,"Tan Li Ling","S1234567G", "93223235", "Potato island", "manager_1","$2a$10$HQKNcTWJ5Teo4dCwUeDc7uzijJoMJWgKvljwzQ/3aAS6w5Gf.Bblu","ROLE_MANAGER", true );
 
-    private final String u2_FULL_NAME = "Tan Li Ling";
-    private final String  u2_USERNAME = "manager_1";
-    private final String u2_PASSWORD = "01_manager_01";
-    private final String u2_ROLE = "ROLE_MANAGER";
+    private final String NEWCUSTOMER_USERNAME = "iamironman";
+    private final String NEWCUSTOMER_PASSWORD = "i<3carmen";
+    private final String NEWCUSTOMER_PASSWORD_ENCODED = "$2a$10$57cVEHOoCgQ5oXRRw8OD6OgufxqaW84orLtw9moW.cHEgxIFvy/F.";
+    
+    private final long CUST_ID = (long) 1;
+    private final String CUSTOMER_FULL_NAME = "cspotatoes";
+    private final String  CUSTOMER_USERNAME = "potato";
+    private final String CUSTOMER_PASSWORD = "iamgoodpotato123";
+    private final String CUSTOMER_ROLE = "ROLE_USER";
+    private final String NRIC = "S1234567G";
+    private final String PHONE = "93223235";
+    private final String CUSTOMER_PASSWORD_ENCODED = "$2a$10$1/dOPkY80t.wyXV3p1MR0OhEJOnkljtU2AGkalTv1E3MZtJUqmmLO";
 
     // Assert that method returns saved user
     @Test
     void addCustomer_NewUserName_ReturnSavedCustomer() {
         // mock 
-        Long id = (long) 5;
-        User newUser = new User(id, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
         Optional<User> notFound =  Optional.empty();
-        Portfolio newUserPortfolio = new Portfolio(null, id, newUser, null, 0, 0);
+        Portfolio newCustomerPortfolio = new Portfolio(null, (long) 1, newCustomer, null, 0, 0);
         when(userRepo.findByUsername(any(String.class))).thenReturn(notFound);
         when(Validator.validateNRIC(any(String.class))).thenReturn(true);
         when(Validator.validatePhoneno(any(String.class))).thenReturn(true);
-        when(userRepo.save(any(User.class))).thenReturn(newUser);
-        when(portfolioRepo.save(any(Portfolio.class))).thenReturn(newUserPortfolio);
-        when(encoder.encode(any(String.class))).thenReturn(u1_PASSWORD_ENCODED);
-
+        when(userRepo.save(any(User.class))).thenReturn(newCustomer);
+        when(portfolioRepo.save(any(Portfolio.class))).thenReturn(newCustomerPortfolio);
+        when(encoder.encode(any(String.class))).thenReturn(NEWCUSTOMER_PASSWORD_ENCODED);
 
         //act
-        User savedUser = userController.createUser(newUser);
+        User savedUser = userController.createUser(newCustomer);
 
         //assert 
-        assertEquals(savedUser,newUser);
+        assertEquals(savedUser,newCustomer);
         assertNotNull(savedUser.getPortfolio());
-        assertEquals(savedUser.getPassword(),u1_PASSWORD_ENCODED);
-        verify(userRepo).findByUsername(u1_USERNAME);
+        assertEquals(savedUser.getPassword(),NEWCUSTOMER_PASSWORD_ENCODED);
+        verify(userRepo).findByUsername(NEWCUSTOMER_USERNAME);
         verify(Validator).validateNRIC(NRIC);
-        verify(Validator).validatePhoneno(PHONE_NO);
-        verify(userRepo).save(newUser);
+        verify(Validator).validatePhoneno(PHONE);
+        verify(userRepo).save(newCustomer);
         verify(portfolioRepo).save(savedUser.getPortfolio());
-        verify(encoder).encode(u1_PASSWORD);
+        verify(encoder).encode(NEWCUSTOMER_PASSWORD);
         
     }
 
@@ -91,16 +92,14 @@ public class UserControllerTest {
     @Test
     void addCustomer_SameUserName_ThrowUserConflictException() {
         //mock
-        Long id = (long) 3;
-        User existingUser = new User(id+1, u2_FULL_NAME, NRIC, PHONE_NO, "BLAH BLAH", u1_USERNAME, encoder.encode(u2_PASSWORD),u2_ROLE, true);
-        User newUser = new User(id, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, encoder.encode(u1_PASSWORD),u1_ROLE, true);
-        Optional<User> Found = Optional.of(existingUser);
+        User newUser = new User(null, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, encoder.encode(CUSTOMER_PASSWORD),CUSTOMER_ROLE, true);
+        Optional<User> Found = Optional.of(customer);
         
         when(userRepo.findByUsername(any(String.class))).thenReturn(Found);
 
         //assert
         assertThrows(UserConflictException.class, () -> userController.createUser(newUser), "Username already taken");
-        verify(userRepo).findByUsername(existingUser.getUsername());
+        verify(userRepo).findByUsername(customer.getUsername());
     }
 
     @Test
@@ -108,7 +107,7 @@ public class UserControllerTest {
         //mock
         Long id = (long) 1;
         String invalidNRIC = "S1111111D";
-        User user = new User(id, u1_FULL_NAME, invalidNRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+        User user = new User(id, CUSTOMER_FULL_NAME, invalidNRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
 
         Optional<User> notFound =  Optional.empty();
         when(userRepo.findByUsername(any(String.class))).thenReturn(notFound);
@@ -116,7 +115,7 @@ public class UserControllerTest {
 
         //assert
         assertThrows(UserNotValidException.class, () -> userController.createUser(user), "NRIC is invalid");
-        verify(userRepo).findByUsername(u1_USERNAME);
+        verify(userRepo).findByUsername(CUSTOMER_USERNAME);
         verify(Validator).validateNRIC(invalidNRIC);
 
     }
@@ -125,7 +124,7 @@ public class UserControllerTest {
     void addCustomer_InvalidPhoneNoLength_ThrowUserNotValidException() {
         Long id = (long) 1;
         String invalidPhoneNo = "923079";
-        User user = new User(id, u1_FULL_NAME, "S9926201Z", invalidPhoneNo, "HOLLAND V ROAD", "pineapple", u1_PASSWORD,u1_ROLE, true);
+        User user = new User(id, CUSTOMER_FULL_NAME, "S9926201Z", invalidPhoneNo, "HOLLAND V ROAD", "pineapple", CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
 
         Optional<User> notFound =  Optional.empty(); 
         when(userRepo.findByUsername(any(String.class))).thenReturn(notFound);
@@ -143,7 +142,7 @@ public class UserControllerTest {
     void addCustomer_InvalidPhoneNotSGNo_ThrowUserNotValidException() {
         Long id = (long) 1;
         String invalidPhoneNo = "99319908";
-        User user = new User(id, u1_FULL_NAME, NRIC, invalidPhoneNo, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+        User user = new User(id, CUSTOMER_FULL_NAME, NRIC, invalidPhoneNo, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
 
         Optional<User> notFound =  Optional.empty(); 
         when(userRepo.findByUsername(any(String.class))).thenReturn(notFound);
@@ -152,7 +151,7 @@ public class UserControllerTest {
 
         //assert
         assertThrows(UserNotValidException.class, () -> userController.createUser(user), "Phone number is invalid");
-        verify(userRepo).findByUsername(u1_USERNAME);
+        verify(userRepo).findByUsername(CUSTOMER_USERNAME);
         verify(Validator).validateNRIC(NRIC);
         verify(Validator).validatePhoneno(invalidPhoneNo);
     }
@@ -177,9 +176,9 @@ public class UserControllerTest {
     @Test
     void getCustomers_WithCustomers_returnListOfCustomers(){
         //mock 
-        User user1 = new User(null, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
         List<User> users = new ArrayList<User>();
-        users.add(user1);
+        users.add(customer);
+        users.add(manager);
         when(userRepo.findAll()).thenReturn(users);
         
         //act 
@@ -207,14 +206,10 @@ public class UserControllerTest {
         //mock 
         Long id1 = (long) 1;
         Long id2 = (long) 2;
-        User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
-        User user2 = new User(id2, u2_FULL_NAME, NRIC, PHONE_NO, "MANAGER THREE STORY HOUSE", u2_USERNAME, u2_PASSWORD, u2_ROLE, true);
-        List<User> users = new ArrayList<User>();
-        users.add(user2);
        
-        Optional<User> found = Optional.of(user2);
+        Optional<User> found = Optional.of(manager);
         when(userRepo.findById(any(Long.class))).thenReturn(found);
-        when(uAuth.getAuthenticatedUser()).thenReturn(user1);
+        when(uAuth.getAuthenticatedUser()).thenReturn(customer);
 
         //assert
         assertThrows(RoleNotAuthorisedException.class, () -> userController.getCustomer(id2), "You cannot view other customer details");
@@ -227,23 +222,16 @@ public class UserControllerTest {
         //mock 
         Long id1 = (long) 1;
         Long id2 = (long) 2;
-        //user
-        User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
-        //manager
-        User user2 = new User(id2, u2_FULL_NAME, NRIC, PHONE_NO, "MANAGER THREE STORY HOUSE", u2_USERNAME, u2_PASSWORD, u2_ROLE, true);
-        List<User> users = new ArrayList<User>();
-        users.add(user1);
-        users.add(user2);
         
-        Optional<User> found = Optional.of(user1);
+        Optional<User> found = Optional.of(customer);
         when(userRepo.findById(any(Long.class))).thenReturn(found);
-        when(uAuth.getAuthenticatedUser()).thenReturn(user2);
+        when(uAuth.getAuthenticatedUser()).thenReturn(manager);
 
         //act
         User returned = userController.getCustomer(id1);
 
         //assert
-        assertEquals(user1, returned);
+        assertEquals(customer, returned);
         verify(userRepo).findById(id1);
         verify(uAuth).getAuthenticatedUser();
     }
@@ -252,19 +240,16 @@ public class UserControllerTest {
     void getCustomer_AuthenticatedAndFoundRoleUser_returnUser(){
         //mock 
         Long id1 = (long) 1;
-        User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
-        List<User> users = new ArrayList<User>();
-        users.add(user1);
-
-        Optional<User> found = Optional.of(user1);
+    
+        Optional<User> found = Optional.of(customer);
         when(userRepo.findById(any(Long.class))).thenReturn(found);
-        when(uAuth.getAuthenticatedUser()).thenReturn(user1);
+        when(uAuth.getAuthenticatedUser()).thenReturn(customer);
  
         //act
         User returned = userController.getCustomer(id1);
 
         //assert
-        assertEquals(user1, returned);
+        assertEquals(customer, returned);
         verify(userRepo).findById(id1);
         verify(uAuth).getAuthenticatedUser();
     }
@@ -273,12 +258,11 @@ public class UserControllerTest {
     void updateUser_UserNotFound_ThrowsUserNotFoundException(){
         //mock 
         Long id2 = (long) 2;
-        User user2 = new User(id2, u2_FULL_NAME, NRIC, PHONE_NO, "MANAGER THREE STORY HOUSE", u2_USERNAME, u2_PASSWORD, u2_ROLE, true);
         Optional<User> notFound = Optional.empty();
         when(userRepo.findById(any(Long.class))).thenReturn(notFound);
  
         //assert
-        assertThrows(UserNotFoundException.class, () -> userController.updateUser(id2,user2), "Could not find user " + id2);
+        assertThrows(UserNotFoundException.class, () -> userController.updateUser(id2,manager), "Could not find user " + id2);
         verify(userRepo).findById(id2);
     }
 
@@ -286,18 +270,14 @@ public class UserControllerTest {
     void updateUser_NotAuthenticated_ThrowsRoleNotAuthorisedException(){
         //mock 
         Long id1 = (long) 1;
-        User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
-        List<User> users = new ArrayList<User>();
-        users.add(user1);
-
         Long id2 = (long) 2;
-        User user2 = new User(id2, u2_FULL_NAME, NRIC, PHONE_NO, "MANAGER THREE STORY HOUSE", u2_USERNAME, u2_PASSWORD, u2_ROLE, true);
-        Optional<User> found = Optional.of(user2);
+
+        Optional<User> found = Optional.of(manager);
         when(userRepo.findById(any(Long.class))).thenReturn(found);
-        when(uAuth.getAuthenticatedUser()).thenReturn(user1);
+        when(uAuth.getAuthenticatedUser()).thenReturn(customer);
  
         //assert
-        assertThrows(RoleNotAuthorisedException.class, () -> userController.updateUser(id2,user2), "You cannot view other customer details");
+        assertThrows(RoleNotAuthorisedException.class, () -> userController.updateUser(id2,manager), "You cannot view other customer details");
         verify(userRepo).findById(id2);
         verify(uAuth).getAuthenticatedUser();
     }
@@ -306,15 +286,15 @@ public class UserControllerTest {
     // void updateUser_UserSetStatus_NothingChanged(){
     //     //mock 
     //     Long id1 = (long) 1;
-    //     User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
-    //     User newUser1 =  new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, false);
+    //     User user1 = new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
+    //     User newUser1 =  new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, false);
     //     List<User> users = new ArrayList<User>();
     //     users.add(user1);
 
     //     Optional<User> found = Optional.of(user1);
     //     when(userRepo.findById(any(Long.class))).thenReturn(found);
     //     when(uAuth.getAuthenticatedUser()).thenReturn(user1);
-    //     when(Validator.validatePhoneno(PHONE_NO)).thenReturn(true);
+    //     when(Validator.validatePhoneno(PHONE)).thenReturn(true);
     //     // when(Validator.validateNRIC(NRIC)).thenReturn(true);
     //    // when(userRepo.save(any(User.class))).thenReturn(user1);
     //     //act
@@ -332,14 +312,14 @@ public class UserControllerTest {
     // void updateUser_ManagerSetStatus_StatusChanged(){
     //     //mock 
     //     Long id1 = (long) 1;
-    //     User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //     User user1 = new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
     //     List<User> users = new ArrayList<User>();
     //     users.add(user1);
 
-    //     User newUser1 =  new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, false);
+    //     User newUser1 =  new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, false);
 
     //     Long id2 = (long) 2;
-    //     User manager = new User(id2, u2_FULL_NAME, NRIC, PHONE_NO, "MANAGER THREE STORY HOUSE", u2_USERNAME, u2_PASSWORD, u2_ROLE, true);
+    //     User manager = new User(id2, u2_FULL_NAME, NRIC, PHONE, "MANAGER THREE STORY HOUSE", u2_USERNAME, u2_PASSWORD, u2_ROLE, true);
     //     Optional<User> found = Optional.of(user1);
     //     when(userRepo.findById(any(Long.class))).thenReturn(found);
     //     when(uAuth.getAuthenticatedUser()).thenReturn(manager);
@@ -357,7 +337,7 @@ public class UserControllerTest {
     // void updateUser_UpdateFullName_FieldsNotChanged(){
     //     //mock 
     //     Long id1 = (long) 1;
-    //     User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //     User user1 = new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
     //     List<User> users = new ArrayList<User>();
     //     users.add(user1);
 
@@ -366,7 +346,7 @@ public class UserControllerTest {
     //     when(uAuth.getAuthenticatedUser()).thenReturn(user1);
 
     //     //change full name
-    //     User newUser1 =  new User(id1, "apple", NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);       
+    //     User newUser1 =  new User(id1, "apple", NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);       
     //     //act
     //     User returned = userController.updateUser(id1,newUser1);
 
@@ -380,7 +360,7 @@ public class UserControllerTest {
     // void updateUser_UpdateNRIC_FieldsNotChanged(){
     //     //mock 
     //     Long id1 = (long) 1;
-    //     User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //     User user1 = new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
     //     List<User> users = new ArrayList<User>();
     //     users.add(user1);
 
@@ -389,7 +369,7 @@ public class UserControllerTest {
     //     when(uAuth.getAuthenticatedUser()).thenReturn(user1);
 
     //     //change nric
-    //     User newUser1 =  new User(id1, u1_FULL_NAME, "S1234567D", PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //     User newUser1 =  new User(id1, CUSTOMER_FULL_NAME, "S1234567D", PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
  
     //     //act
     //     User returned = userController.updateUser(id1,newUser1);
@@ -404,7 +384,7 @@ public class UserControllerTest {
     // void updateUser_UpdateUsername_FieldsNotChanged(){
     //     //mock 
     //     Long id1 = (long) 1;
-    //     User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //     User user1 = new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
     //     List<User> users = new ArrayList<User>();
     //     users.add(user1);
 
@@ -413,7 +393,7 @@ public class UserControllerTest {
     //     when(uAuth.getAuthenticatedUser()).thenReturn(user1);
 
     //     //change username
-    //     User newUser1 =  new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", "aplhagvdf", u1_PASSWORD,u1_ROLE, true);
+    //     User newUser1 =  new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", "aplhagvdf", CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
  
     //     //act
     //     User returned = userController.updateUser(id1,newUser1);
@@ -428,7 +408,7 @@ public class UserControllerTest {
     // void updateUser_UpdatePhoneNo_PhoneNoChanged(){
     //      //mock 
     //      Long id1 = (long) 1;
-    //      User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //      User user1 = new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
     //      List<User> users = new ArrayList<User>();
     //      users.add(user1);
  
@@ -437,7 +417,7 @@ public class UserControllerTest {
     //      when(uAuth.getAuthenticatedUser()).thenReturn(user1);
  
     //      //change username
-    //      User newUser1 =  new User(id1, u1_FULL_NAME, NRIC, "90908765", "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //      User newUser1 =  new User(id1, CUSTOMER_FULL_NAME, NRIC, "90908765", "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
   
     //      //act
     //      User returned = userController.updateUser(id1,newUser1);
@@ -452,7 +432,7 @@ public class UserControllerTest {
     // void updateUser_UpdatePassword_PasswordChanged(){
     //      //mock 
     //      Long id1 = (long) 1;
-    //      User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //      User user1 = new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
     //      List<User> users = new ArrayList<User>();
     //      users.add(user1);
  
@@ -461,7 +441,7 @@ public class UserControllerTest {
     //      when(uAuth.getAuthenticatedUser()).thenReturn(user1);
  
     //      //change username
-    //      User newUser1 =  new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, "i<3carmen",u1_ROLE, true);
+    //      User newUser1 =  new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, "i<3carmen",CUSTOMER_ROLE, true);
   
     //      //act
     //      User returned = userController.updateUser(id1,newUser1);
@@ -476,7 +456,7 @@ public class UserControllerTest {
     // void updateUser_UpdateAddress_AddressChanged(){
     //      //mock 
     //      Long id1 = (long) 1;
-    //      User user1 = new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "HOLLAND V ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //      User user1 = new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "HOLLAND V ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
     //      List<User> users = new ArrayList<User>();
     //      users.add(user1);
  
@@ -485,7 +465,7 @@ public class UserControllerTest {
     //      when(uAuth.getAuthenticatedUser()).thenReturn(user1);
  
     //      //change username
-    //      User newUser1 =  new User(id1, u1_FULL_NAME, NRIC, PHONE_NO, "OLD TOWN ROAD", u1_USERNAME, u1_PASSWORD,u1_ROLE, true);
+    //      User newUser1 =  new User(id1, CUSTOMER_FULL_NAME, NRIC, PHONE, "OLD TOWN ROAD", CUSTOMER_USERNAME, CUSTOMER_PASSWORD,CUSTOMER_ROLE, true);
   
     //      //act
     //      User returned = userController.updateUser(id1,newUser1);
