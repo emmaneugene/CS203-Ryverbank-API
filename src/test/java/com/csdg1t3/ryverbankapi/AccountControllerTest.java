@@ -41,9 +41,6 @@ public class AccountControllerTest {
     @InjectMocks
     private AccountController accountController;
 
-    @InjectMocks
-    private UserController userController;
-
     private User user = new User((long) 1, "Test User", "S9926201Z", "92307743", "23 Hume Rd", "testUser", "testing", "ROLE_USER", true);
 
     private final String u1_FULL_NAME = "cspotatoes";
@@ -187,7 +184,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    void createTransfer_sameSenderAndRecevierAccount_ThrowsTransferNotValidException() {
+    void createTransfer_sameSenderAndReceivierAccount_ThrowsTransferNotValidException() {
         Long id1 = Long.valueOf(1);
         Account newAccount = new Account(id1, user, user.getId(), 1000.0, 1000.0);
         Transfer transfer = new Transfer(id1, newAccount, newAccount, id1, id1, 50.0);
@@ -207,20 +204,73 @@ public class AccountControllerTest {
         assertThrows(AccountNotValidException.class, () -> accountController.createTransfer(id2, transfer), "'From' field must match account ID in URL");
     }
 
-    // @Test
-    // void createTransfer_invalidSender_ThrowsAccountNotValidException() {
-    //     Long id1 = Long.valueOf(1);
-    //     Long id2 = Long.valueOf(2);
-    //     Account newAccount = new Account(id1, user, user.getId(), 1000.0, 1000.0);
-    //     User user2 = new User(id2, "Test User", "S9926201Z", "92307743", "23 Hume Rd", "testUser", "testing", "ROLE_USER", true);
-    //     Account account2 = new Account(id2, user2, user2.getId(), 1100.0, 1100.0);
-    //     Transfer transfer = new Transfer(id1, newAccount, account2, id1, id2, 50.0);
+    @Test
+    void createTransfer_invalidSender_ThrowsAccountNotValidException() {
+        Long id1 = Long.valueOf(1);
+        Long id2 = Long.valueOf(2);
+        Account newAccount = new Account(id1, user, user.getId(), 1000.0, 1000.0);
+        User user2 = new User(id2, "Test User", "S9926201Z", "92307743", "23 Hume Rd", "testUser", "testing", "ROLE_USER", true);
+        Account account2 = new Account(id2, user2, user2.getId(), 1100.0, 1100.0);
+        Transfer transfer = new Transfer(id1, newAccount, account2, id1, id2, 50.0);
 
-    //     when(accountRepo.findById(id2))).thenReturn(Optional.empty());
+        when(accountRepo.findById(id1)).thenReturn(Optional.empty());
 
-    //     assertThrows(AccountNotValidException.class, () -> accountController.createTransfer(id2, transfer), transfer.getFrom() + "");
-    //     verify(accountRepo).findById(id2);
-    // }
+        assertThrows(AccountNotFoundException.class, () -> accountController.createTransfer(id1, transfer), transfer.getFrom() + "");
+        verify(accountRepo).findById(id1);
+    }
+
+    @Test
+    void createTransfer_notAuthenticated_ThrowsAccountNotValidException() {
+        Long id1 = Long.valueOf(1);
+        Long id2 = Long.valueOf(2);
+        Account newAccount = new Account(id1, user, user.getId(), 1000.0, 1000.0);
+        User user2 = new User(id2, "Test User", "S9926201Z", "92307743", "23 Hume Rd", "testUser", "testing", "ROLE_USER", true);
+        Account account2 = new Account(id2, user2, user2.getId(), 1100.0, 1100.0);
+        Transfer transfer = new Transfer(id1, newAccount, account2, id1, id2, 50.0);
+
+        when(accountRepo.findById(id1)).thenReturn(Optional.of(newAccount));
+        when(uAuth.getAuthenticatedUser()).thenReturn(user2);
+
+        assertThrows(RoleNotAuthorisedException.class, () -> accountController.createTransfer(id1, transfer), "You cannot transfer funds from another person's account");
+        verify(accountRepo).findById(id1);
+        verify(uAuth).getAuthenticatedUser();
+    }
+
+    @Test
+    void createTransfer_insufficientBalance_ThrowsAccountNotValidException() {
+        Long id1 = Long.valueOf(1);
+        Long id2 = Long.valueOf(2);
+        Account newAccount = new Account(id1, user, user.getId(), 1000.0, 1000.0);
+        User user2 = new User(id2, "Test User", "S9926201Z", "92307743", "23 Hume Rd", "testUser", "testing", "ROLE_USER", true);
+        Account account2 = new Account(id2, user2, user2.getId(), 1100.0, 1100.0);
+        Transfer transfer = new Transfer(id1, newAccount, account2, id1, id2, 1100.0);
+
+        when(accountRepo.findById(id1)).thenReturn(Optional.of(newAccount));
+        when(uAuth.getAuthenticatedUser()).thenReturn(user);
+
+        assertThrows(TransferNotValidException.class, () -> accountController.createTransfer(id1, transfer), "Insufficient funds in account for transfer");
+        verify(accountRepo).findById(id1);
+        verify(uAuth).getAuthenticatedUser();
+    }
+
+    @Test
+    void createTransfer_invalidReceiver_ThrowsAccountNotValidException() {
+        Long id1 = Long.valueOf(1);
+        Long id2 = Long.valueOf(2);
+        Account newAccount = new Account(id1, user, user.getId(), 1000.0, 1000.0);
+        User user2 = new User(id2, "Test User", "S9926201Z", "92307743", "23 Hume Rd", "testUser", "testing", "ROLE_USER", true);
+        Account account2 = new Account(id2, user2, user2.getId(), 1100.0, 1100.0);
+        Transfer transfer = new Transfer(id1, newAccount, account2, id1, id2, 50.0);
+
+        when(accountRepo.findById(id1)).thenReturn(Optional.of(newAccount));
+        when(uAuth.getAuthenticatedUser()).thenReturn(user);
+        when(accountRepo.findById(id2)).thenReturn(Optional.empty());
+
+        assertThrows(AccountNotFoundException.class, () -> accountController.createTransfer(id1, transfer), transfer.getTo() + "");
+        verify(accountRepo).findById(id1);
+        verify(uAuth).getAuthenticatedUser();
+        verify(accountRepo).findById(id2);
+    }
 
     @Test
     void getTransaction_isInvolvedAccount_ReturnTransaction() {
