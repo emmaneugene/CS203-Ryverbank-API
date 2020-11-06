@@ -11,18 +11,10 @@ import static org.mockito.Mockito.when;
 import java.util.*;
 import java.util.Optional; 
 
-// import javax.management.relation.RoleNotFoundException;
-
 import com.csdg1t3.ryverbankapi.trade.*;
 import com.csdg1t3.ryverbankapi.user.*;
-import com.csdg1t3.ryverbankapi.user.UserNotFoundException;
-import com.csdg1t3.ryverbankapi.user.RoleNotAuthorisedException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import jdk.jfr.Timestamp;
-
 import com.csdg1t3.ryverbankapi.security.*;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
