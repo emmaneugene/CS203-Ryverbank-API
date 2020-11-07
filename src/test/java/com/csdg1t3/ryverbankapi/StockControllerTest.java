@@ -102,7 +102,7 @@ public class StockControllerTest {
         // assert
         assertEquals(stocks, returned);
         verify(stockSvc).getAllUpdatedStocks();
-
+    }
 
     @Test
     void getStocks_NoStocks_ReturnEmptyList(){

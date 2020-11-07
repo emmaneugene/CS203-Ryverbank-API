@@ -7,15 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.security.*;
 import com.csdg1t3.ryverbankapi.trade.*;
 import com.csdg1t3.ryverbankapi.account.*;
 
+import java.security.Timestamp;
 import java.util.*;
 
 import org.junit.jupiter.api.Test;
@@ -276,7 +275,7 @@ public class TradeServiceTest {
         assertEquals(returned, buy);
         verify(tradeRepo).findByActionAndSymbolAndStatusIn(action, symbol, VALID_STATUSES);
 
-    }
+    } 
 
     @Test
     void getHighestBidTradeForStock_invalidStock_returnNull() {
@@ -308,40 +307,41 @@ public class TradeServiceTest {
         verify(tradeRepo).findByActionAndSymbolAndStatusIn(action, symbol, VALID_STATUSES);
     }
 
-    // @Test
-    // void makeTrade_withinTradingTimeAndBuy_returnProcessedTrade() {
-    //     Date date = new Date();
-    //     date.set(Calendar.HOUR_OF_DAY, 13);
-    //     date.set(Calendar.DAY_OF_WEEK, 3);
-    //     String action = "buy";
-    //     String symbol = buy.getSymbol();
-    //     List<Trade> found = new ArrayList<>();
-    //     found.add(buy);
-        
-    //     when(calendar.getInstance()).thenReturn(calendar.setTime(date));
-    //     when(tradeRepo.findByActionAndSymbolAndStatusIn(action, symbol, VALID_STATUSES)).thenReturn(found);  
-    // }
+    @Test
+    void makeTrade_withinTradingTimeAndBuy_returnProcessedTrade() {
+        calendar.set(2020,11,7,13,0,0);
+        Trade newTrade = new Trade(Long.valueOf(1), "buy", stock.getSymbol(), 200, 3.43, stock.getAsk(), 3.33, 0, calendar.getTimeInMillis(), account, customer, "open", false, 0.0);
+        Trade returned = tradeSvc.makeTrade(newTrade);
+        newTrade.setProcessed(true);
+
+        assertEquals(returned, newTrade);
+    }
 
 
     @Test
     void makeTrade_withinTradingTimeAndMarketBuy_returnProcessedTrade() {
-        
+        calendar.set(2020,11,7,13,0,0);
+        Trade newTrade = new Trade(Long.valueOf(1), "buy", stock.getSymbol(), 200, 0.0, stock.getAsk(), 3.33, 0, calendar.getTimeInMillis(), account, customer, "open", false, 0.0);
+        Trade returned = tradeSvc.makeTrade(newTrade);
+        newTrade.setProcessed(true);
+
+        assertEquals(returned, newTrade);
     }
 
     @Test
     void makeTrade_withinTradingTimeAndSell_returnProcessedTrade() {
-        
+        calendar.set(2020,11,7,13,0,0);
+        Trade newTrade = new Trade(Long.valueOf(1), "sell", stock.getSymbol(), 0, stock.getBid(), 3.46, 3.33, 200, calendar.getTimeInMillis(), account, customer, "open", false, 0.0);
+        Trade returned = tradeSvc.makeTrade(newTrade);
+        newTrade.setProcessed(true);
+
+        assertEquals(returned, newTrade);
     }
 
-    @Test
-    void makeTrade_withinTradingTimeAndMarketSell_returnProcessedTrade() {
-        
-    }
-
-    @Test
-    void makeTrade_outsideTradingTime_returnUnprocessedTrade() {
-        
-    }
+    // @Test
+    // void makeTrade_outsideTradingTime_returnUnprocessedTrade() {
+    //     calendar.set(2020,11,7,20,0,0);
+    // }
 
     @Test
     void processBuy_validTrade_usesAllMocks() {
