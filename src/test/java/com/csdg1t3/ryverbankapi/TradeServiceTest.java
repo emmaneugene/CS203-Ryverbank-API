@@ -321,11 +321,7 @@ public class TradeServiceTest {
     //     when(calendar.getInstance()).thenReturn(calendar.setTime(date));
     //     when(tradeRepo.findByActionAndSymbolAndStatusIn(action, symbol, VALID_STATUSES)).thenReturn(found);  
     // }
-    // git fetch and pull
-    // git add . 
-    // git commit -m "create test caes for tradeservicetest"
-    // git push 
-    // ekkekek
+
 
     @Test
     void makeTrade_withinTradingTimeAndMarketBuy_returnProcessedTrade() {
