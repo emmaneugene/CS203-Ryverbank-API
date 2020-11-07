@@ -102,5 +102,53 @@ public class StockControllerTest {
         // assert
         assertEquals(stocks, returned);
         verify(stockSvc).getAllUpdatedStocks();
+
+
+    @Test
+    void getStocks_NoStocks_ReturnEmptyList(){
+        List<Stock> stocks = new ArrayList<Stock>();
+
+        when(stockSvc.getAllUpdatedStocks()).thenReturn(stocks);
+
+        List<Stock> returned = stockController.getStocks();
+
+        assertEquals(returned,stocks);
+        verify(stockSvc).getAllUpdatedStocks();
+    }
+
+    @Test
+    void getStocks_AllStocks_ReturnAllStocks(){
+        Stock stock1 = new Stock(s1_Symbol, s1_LastPrice, s1_BidVolume, s1_bid, s1_AskVolume, s1_ask);
+        Stock stock2 = new Stock(s2_Symbol, s2_LastPrice, s2_BidVolume, s2_bid, s2_AskVolume, s2_ask);
+        List<Stock> stocks = new ArrayList<Stock>();
+        stocks.add(stock1);
+        stocks.add(stock2);
+
+        when(stockSvc.getAllUpdatedStocks()).thenReturn(stocks);
+
+        List<Stock> returned = stockController.getStocks();
+
+        assertEquals(returned,stocks);
+        verify(stockSvc).getAllUpdatedStocks();
+    }
+
+    @Test
+    void getStock_NoStock_ThrowStockNotFoundException(){
+        when(stockSvc.getUpdatedStock(any(String.class))).thenReturn(Optional.empty());
+
+        assertThrows(StockNotFoundException.class, () ->  stockController.getStock("XXXX"), "Could not find stock XXXX");
+        verify(stockSvc).getUpdatedStock("XXXX");
+
+    }
+
+    @Test
+    void getStock_FoundStock_ReturnStockWithUpdates(){
+        Stock stock1 = new Stock(s1_Symbol, s1_LastPrice, s1_BidVolume, s1_bid, s1_AskVolume, s1_ask);
+        Optional<Stock> found = Optional.of(stock1);
+        when(stockSvc.getUpdatedStock(any(String.class))).thenReturn(found);
+
+        Stock returned = stockController.getStock("A17U");
+        assertEquals(stock1,returned);
+        verify(stockSvc).getUpdatedStock("A17U");
     }
 }
