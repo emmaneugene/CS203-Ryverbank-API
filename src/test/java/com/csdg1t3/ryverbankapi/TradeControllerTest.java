@@ -65,4 +65,7 @@ public class TradeControllerTest {
         verify(tradeRepo).findByCustomerId(id);
         verify(uAuth).getAuthenticatedUser();
     }
+
+   //@Test
+
 }
