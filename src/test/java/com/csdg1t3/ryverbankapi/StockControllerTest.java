@@ -102,6 +102,7 @@ public class StockControllerTest {
         // assert
         assertEquals(stocks, returned);
         verify(stockSvc).getAllUpdatedStocks();
+    }
 
 
     @Test
