@@ -43,21 +43,8 @@ public class AccountControllerTest {
 
     private User user = new User((long) 1, "Test User", "S9926201Z", "92307743", "23 Hume Rd", "testUser", "testing", "ROLE_USER", true);
 
-    private final String u1_FULL_NAME = "cspotatoes";
-    private final String  u1_USERNAME = "potato";
-    private final String u1_PASSWORD = "iamgoodpotato123";
-    private final String u1_ROLE = "ROLE_USER";
-    private final String NRIC = "S1234567G";
-    private final String PHONE_NO = "93223235";
-    private final String u1_PASSWORD_ENCODED = "$2a$10$1/dOPkY80t.wyXV3p1MR0OhEJOnkljtU2AGkalTv1E3MZtJUqmmLO";
-
-    private final String u2_FULL_NAME = "Tan Li Ling";
-    private final String  u2_USERNAME = "manager_1";
-    private final String u2_PASSWORD = "01_manager_01";
-    private final String u2_ROLE = "ROLE_MANAGER";
-
     @Test
-    void createAccount_ValidUserId_ReturnsSavedAccount(){ 
+    void addAccount_ValidUserId_ReturnsSavedAccount(){ 
         //Arrange
         Account newAccount = new Account(Long.valueOf(1), user, user.getId(), 1000.0, 1000.0);
             
@@ -78,7 +65,7 @@ public class AccountControllerTest {
     }
     
     @Test
-    void createAccount_InvalidUserID_ThrowsAccountNotValidException(){
+    void addAccount_InvalidUserID_ThrowsAccountNotValidException(){
         // Arrange
         user.setId(Long.valueOf(100));
         Account newAccount = new Account(Long.valueOf(100), user, user.getId(), 1000.0, 1000.0);
@@ -94,7 +81,7 @@ public class AccountControllerTest {
     
     //assert that account balance is valid
     @Test
-    void createAccount_ValidAccountBalance_ReturnsSavedAccount(){
+    void addAccount_ValidAccountBalance_ReturnsSavedAccount(){
         //Arrange
         Account newAccount = new Account(Long.valueOf(1), user, user.getId(), 1000.0, 1000.0);
             
@@ -109,12 +96,13 @@ public class AccountControllerTest {
 
         //assert result
         assertNotNull(savedAccount);
+        assertEquals(savedAccount, newAccount);
         verify(userRepo).findById(newAccount.getCustomer_id());
         verify(accountRepo).save(newAccount);
     }
 
     @Test
-    void createAccount_InvalidAccountBalance_ThrowsAccountNotValidException() { 
+    void addAccount_InvalidAccountBalance_ThrowsAccountNotValidException() { 
         Account newAccount = new Account(Long.valueOf(100), user, user.getId(), -1000.0, -1000.0);
 
         // mock userRepo behaviour
@@ -141,6 +129,18 @@ public class AccountControllerTest {
         verify(accountRepo).findById(id);
         verify(uAuth).getAuthenticatedUser();
     }
+
+    @Test
+    void getAccount_AccountNotFound_ThrowAccountNotFoundException() {
+        Long id = Long.valueOf(10000);
+        Account newAccount = new Account(id, user, user.getId(), 1000.0, 1000.0);
+
+        when(accountRepo.findById((any(Long.class)))).thenReturn(Optional.empty());
+        // Assert result
+        assertThrows(AccountNotFoundException.class, () -> accountController.getAccount(id), "Could not find account 10000");
+        verify(accountRepo).findById(id);
+    }
+
 
     @Test
     void getAccount_isOtherUser_ThrowsRoleNotAuthorisedException() {
@@ -312,5 +312,14 @@ public class AccountControllerTest {
         assertThrows(RoleNotAuthorisedException.class, () -> accountController.getTransfers(id1), "You cannot view another customer's accounts");
         verify(accountRepo).findById(id1);
         verify(uAuth).getAuthenticatedUser();
+    }
+
+    @Test
+    void getTransaction_AccountNotFound_ThrowsAccountNotFoundException() { 
+
+        when(accountRepo.findById((long) 1)).thenReturn(Optional.empty());
+
+        assertThrows(AccountNotFoundException.class, () -> accountController.getTransfers((long)1), "Could not find account 1");
+        verify(accountRepo).findById((long) 1);
     }
 }
