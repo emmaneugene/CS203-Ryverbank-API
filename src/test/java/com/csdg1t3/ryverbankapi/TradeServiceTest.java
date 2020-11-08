@@ -353,4 +353,14 @@ public class TradeServiceTest {
         verify(transferRepo).save(transfer);
     }
 
+    // @Test 
+    // void updatePortfolioAsset_assetNotFound() {
+    //     List<Asset> assets = new ArrayList<>();
+    //     Portfolio portfolio = new Portfolio(Long.valueOf(1), CUST_ID, customer, assets, 0, 0);
+
+    //     tradeSvc.updatePortfolioAsset(portfolio, "A17U", 3.42, 10);
+
+    //     assertEquals(1, portfolio.getAssets().size());
+    // }
+
 }
