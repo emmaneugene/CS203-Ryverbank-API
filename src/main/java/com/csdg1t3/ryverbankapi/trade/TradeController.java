@@ -194,7 +194,8 @@ public class TradeController {
      * 
      * This method is only authorised for ROLE_USER, as configured in SecurityConfig
      * 
-     * @param trade The trade to be cancelled.
+     * @param id The ID of the trade to be cancelled. 
+     * @param tradeDetails The trade to be cancelled.
      * @return The cancelled trade.
      */
     @ResponseStatus(HttpStatus.OK)

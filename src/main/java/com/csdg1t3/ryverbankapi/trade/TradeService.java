@@ -7,6 +7,9 @@ import java.util.*;
 
 import com.csdg1t3.ryverbankapi.account.*;
 
+/**
+ * Service layer that aids in trade processing
+ */
 @Service
 public class TradeService {
     private TradeRepository tradeRepo;
@@ -59,6 +62,7 @@ public class TradeService {
     /**
      * Processes and expired trade. If the trade's account ID is 0, it is a market maker trade,
      * and will not be expired
+     * @param trade The trade to expire
      */
     public void processExpiredTrade(Trade trade) {
         if (trade.getAccount_id() == 0)
@@ -84,7 +88,7 @@ public class TradeService {
      * Retrieves all open or partial-filled buy trades
      * 
      * @param symbol The symbol of the stock which buy trades are to be retrieved.
-     * @return a list of open or partial-filled buy trades
+     * @return A list of open or partial-filled buy trades
      */
     public List<Trade> listValidBuyTradesForStock(String symbol) {
         return tradeRepo.findByActionAndSymbolAndStatusIn("buy", symbol, VALID_STATUSES);
@@ -94,7 +98,7 @@ public class TradeService {
      * Retrieves all open or partial-filled sell trades
      * 
      * @param symbol The symbol of the stock which sell trades are to be retrieved.
-     * @return a list of open or partial-filled sell trades
+     * @return A list of open or partial-filled sell trades
      */
     public List<Trade> listValidSellTradesForStock(String symbol) {
         return tradeRepo.findByActionAndSymbolAndStatusIn("sell", symbol, VALID_STATUSES);
@@ -386,9 +390,8 @@ public class TradeService {
         tradeRepo.save(sell);
     }
 
-    /**
-     * Computes new average price given 2 prices and their respective quantities
-     */
+    
+    // Computes new average price given 2 prices and their respective quantities
     public double averageOf(double price1, int qty1, double price2, int qty2) {
         return (price1 * qty1 + price2 * qty2) / (qty1 + qty2);
     }
@@ -400,10 +403,10 @@ public class TradeService {
      * If the sender or receiver account is null, that account is associated with a market maker
      * trade, and hence no account operations will occur
      * 
-     * @param transfer
-     * @param sender
-     * @param receiver
-     * @return created transfer
+     * @param transfer The transfer to be made
+     * @param sender The sender of the transfer
+     * @param receiver The receiver of the transfer
+     * @return Created transfer
      */
     public Transfer createTradeTransfer(Transfer transfer, Account sender, Account receiver) {
         if (sender != null) {
@@ -435,6 +438,9 @@ public class TradeService {
      * a stock that they did not own.
      * 
      * @param portfolio The portfolio to be updated.
+     * @param symbol The symbol of the stock asset to update
+     * @param price The unit price of the stock
+     * @param qty The change in quantity of stock (positive or negative)
      */
     public void updatePortfolioAsset(Portfolio portfolio, String symbol, Double price, int qty) {
         List<Asset> assets = portfolio.getAssets();

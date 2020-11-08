@@ -35,7 +35,8 @@ public class StockController {
      * Get an individual stock as specified by its symbol. This method calls updateStockDetails() 
      * to get the most recent information on bid volume, bid, ask volume and ask
      * 
-     * @return the stock specified by the symbol
+     * @param symbol The stock symbol or code
+     * @return The stock specified by the symbol
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/api/stocks/{symbol}")

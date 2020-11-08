@@ -59,9 +59,9 @@ public class Account {
      * Full field constructor for class Account.
      * @param id The unique ID number for the account.
      * @param customer The customer who owns the account.
-     * @param customerId The unique ID of the customer who owns the account.
+     * @param customer_id The unique ID of the customer who owns the account.
      * @param balance The customer's total amount of money.
-     * @param availableBalance The customer's available amount of money.
+     * @param available_balance The customer's available amount of money.
      */
     public Account(Long id, User customer, Long customer_id, Double balance, 
     Double available_balance) {

@@ -9,9 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * POJO that stores the details of a trade
- * Trade is linked to Account & Customer in a many-to-one relationship, and each Trade must have an 
- * Account & Customer
+ * POJO that stores the details of a trade. Trade is linked to both Account and Customer in a 
+ * many-to-one relationship
  * 
  */
 @Entity
@@ -85,6 +84,7 @@ public class Trade {
      * @param account The customer's account being used for the trade
      * @param customer The customer making the trade
      * @param status The status of the trade
+     * @param processed A boolean that indicates whether the trade has been processed
      * @param amtReserved The amount of funds put on hold for the trade
      */
     public Trade(Long id, String action, String symbol, int quantity, Double bid, Double ask, 

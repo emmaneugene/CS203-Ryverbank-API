@@ -108,7 +108,7 @@ public class AccountController {
      * @param accountId The account ID of the transactions to be retrieved.
      * @return The transaction details of the account with the given account ID.
      * @throws AccountNotFoundException If account ID is not found
-     * @throws RoleNotAuthorizedException If the user ID of the person accessing the account 
+     * @throws RoleNotAuthorisedException If the user ID of the person accessing the account 
      *                                    does not match the user ID tied to the account.
      */
     @ResponseStatus(HttpStatus.OK)
@@ -142,7 +142,8 @@ public class AccountController {
      * 2. ensure that user sending the request owns the account
      * 3. ensure that the sender has sufficient funds for transfer
      * 
-     * @param accountId The account ID that the sender wishes to transfer money out from.
+     * @param senderId The account ID that the sender wishes to transfer money out from.
+     * @param transfer The transfer to be made
      * @return The transaction created in the database.
      * @throws TransferNotValidException If sender and receiver fields are the same or there is insufficient balance.
      * @throws AccountNotValidException If account ID in sender field is different from the logged in customer's account.
