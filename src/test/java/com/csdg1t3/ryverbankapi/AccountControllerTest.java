@@ -143,6 +143,18 @@ public class AccountControllerTest {
 
 
     @Test
+    void getAccount_AccountNotFound_ThrowAccountNotFoundException() {
+        Long id = Long.valueOf(10000);
+        Account newAccount = new Account(id, user, user.getId(), 1000.0, 1000.0);
+
+        when(accountRepo.findById((any(Long.class)))).thenReturn(Optional.empty());
+        // Assert result
+        assertThrows(AccountNotFoundException.class, () -> accountController.getAccount(id), "Could not find account 10000");
+        verify(accountRepo).findById(id);
+    }
+
+
+    @Test
     void getAccount_isOtherUser_ThrowsRoleNotAuthorisedException() {
        //Arrange
        Long id1 = Long.valueOf(1);
@@ -312,6 +324,19 @@ public class AccountControllerTest {
         assertThrows(RoleNotAuthorisedException.class, () -> accountController.getTransfers(id1), "You cannot view another customer's accounts");
         verify(accountRepo).findById(id1);
         verify(uAuth).getAuthenticatedUser();
+    }
+
+    @Test
+    void getAccounts_ReturnAllAccounts(){
+        List<Account> accounts = new ArrayList<Account>();
+        when(uAuth.getAuthenticatedUser()).thenReturn(user);
+        when(accountRepo.findByCustId(any(Long.class))).thenReturn(accounts);
+        
+
+        List<Account> returned = accountController.getAccounts();
+        assertEquals(returned, accounts);
+        verify(uAuth).getAuthenticatedUser();
+        verify(accountRepo).findByCustId((long) 1);
     }
 
     @Test
