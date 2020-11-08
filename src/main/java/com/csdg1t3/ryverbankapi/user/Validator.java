@@ -67,17 +67,11 @@ public class Validator {
             return false;
         }
 
-        if (phoneNo.charAt(0) == '8') {
-            if (phoneNo.charAt(1) == '0') {
-                return false;
-            }
-        }
-
-        if (phoneNo.charAt(0) == '9') {
-            if (phoneNo.charAt(1) == '9') {
-                return false;
-            }
-        }
+        // Additional feature: Further validation of phoneNo (excluded for acceptance testing)
+        // if (phoneNo.charAt(0) == '8' && phoneNo.charAt(1) == '0' 
+        //     || phoneNo.charAt(0) == '9' && phoneNo.charAt(1) == '9') {
+        //     return false;
+        // }
         return true;
     }
 }
