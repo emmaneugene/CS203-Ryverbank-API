@@ -54,20 +54,8 @@ public class TradeServiceTest {
 
     private final User customer = new User((long) 1,"cspotatoes","S1234567G", "93223235", "Potato island", "potato","$2a$10$1/dOPkY80t.wyXV3p1MR0OhEJOnkljtU2AGkalTv1E3MZtJUqmmLO","ROLE_USER", true );
     private final User newCustomer = new User((long) 3,"tony starks","S1234567G", "93223235", "starship", "iamironman","i<3carmen","ROLE_USER", true );
-    private final User manager = new User((long) 2,"Tan Li Ling","S1234567G", "93223235", "Potato island", "manager_1","$2a$10$HQKNcTWJ5Teo4dCwUeDc7uzijJoMJWgKvljwzQ/3aAS6w5Gf.Bblu","ROLE_MANAGER", true );
-
-    private final String NEWCUSTOMER_USERNAME = "iamironman";
-    private final String NEWCUSTOMER_PASSWORD = "i<3carmen";
-    private final String NEWCUSTOMER_PASSWORD_ENCODED = "$2a$10$57cVEHOoCgQ5oXRRw8OD6OgufxqaW84orLtw9moW.cHEgxIFvy/F.";
     
     private final long CUST_ID = (long) 1;
-    private final String CUSTOMER_FULL_NAME = "cspotatoes";
-    private final String  CUSTOMER_USERNAME = "potato";
-    private final String CUSTOMER_PASSWORD = "iamgoodpotato123";
-    private final String CUSTOMER_ROLE = "ROLE_USER";
-    private final String NRIC = "S1234567G";
-    private final String PHONE = "93223235";
-    private final String CUSTOMER_PASSWORD_ENCODED = "$2a$10$1/dOPkY80t.wyXV3p1MR0OhEJOnkljtU2AGkalTv1E3MZtJUqmmLO";
 
     private static final List<String> VALID_STATUSES = Arrays.asList("open", "partial-filled");
 
@@ -78,7 +66,7 @@ public class TradeServiceTest {
     private Trade sell = new Trade(Long.valueOf(2), "sell", stock.getSymbol(), 0, 0.0, stock.getAsk(), 3.33, 200, System.currentTimeMillis(), tonyAccount, newCustomer, "open", false, 0.0);
     private List<Asset> assets = new ArrayList<>();
     private Portfolio portfolio = new Portfolio(Long.valueOf(1), CUST_ID, customer, assets, 0.0, 0.0);
-    private Asset asset = new Asset(Long.valueOf(1), sell.getSymbol(), portfolio, 500, 500, 3.23, 3.3);
+    private Asset asset = new Asset(Long.valueOf(1), sell.getSymbol(), portfolio, 200, 200, 3.33, 666);
         
     //assert that all mocks are used when given zero unprocessed trades
     @Test
@@ -341,26 +329,25 @@ public class TradeServiceTest {
         assertEquals(sell.getStatus(), "open");
     }
 
-    @Test
-    void createTradeTransfer_validDetails_returnTransfer() {
-        Transfer transfer = new Transfer(Long.valueOf(1), sell.getAccount(), buy.getAccount(), sell.getAccount_id(), buy.getAccount_id(), sell.getAsk());
+    @Test 
+    void processCancelTrade_sellingTrade_statusChanged() {
+        when(assetRepo.findByPortfolioCustomerIdAndCode(sell.getCustomer_id(), sell.getSymbol())).thenReturn(Optional.of(asset));
 
-        when(transferRepo.save(any(Transfer.class))).thenReturn(transfer);
+        tradeSvc.processCancelTrade(sell);
 
-        Transfer returned = tradeSvc.createTradeTransfer(transfer, sell.getAccount(), buy.getAccount());
-
-        assertEquals(returned, transfer);
-        verify(transferRepo).save(transfer);
+        assertEquals("cancelled", sell.getStatus());
+        verify(assetRepo).findByPortfolioCustomerIdAndCode(sell.getCustomer_id(), sell.getSymbol());
     }
 
-    // @Test 
-    // void updatePortfolioAsset_assetNotFound() {
-    //     List<Asset> assets = new ArrayList<>();
-    //     Portfolio portfolio = new Portfolio(Long.valueOf(1), CUST_ID, customer, assets, 0, 0);
+    @Test 
+    void processCancelTrade_buyingTrade_statusChanged() {
+        Optional<Account> found = Optional.of(account);
+        when(accountRepo.findById(buy.getCustomer_id())).thenReturn(found);
 
-    //     tradeSvc.updatePortfolioAsset(portfolio, "A17U", 3.42, 10);
+        tradeSvc.processCancelTrade(buy);
 
-    //     assertEquals(1, portfolio.getAssets().size());
-    // }
+        assertEquals("cancelled", buy.getStatus());
+        verify(accountRepo).findById(buy.getCustomer_id());
+    }
 
 }
