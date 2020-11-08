@@ -3,6 +3,7 @@ package com.csdg1t3.ryverbankapi.trade;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.text.DecimalFormat;
 
 import java.util.List;
 
@@ -112,8 +113,9 @@ public class Portfolio {
 
     @Override
     public String toString() {
-        return String.format("Portfolio[customerId=%d, assets[\n%s\n], unrealized_gain_loss=%.2lf, total_gain_loss=%.2lf",
-        this.id, assetsToString(), this.unrealized_gain_loss, this.realized_gain_loss);
+         DecimalFormat dc = new DecimalFormat("#.##");
+        // return String.format("Portfolio[customerId=%d, assets[\n%s\n], unrealized_gain_loss=%.2lf, total_gain_loss=%.2lf",
+        // this.id, assetsToString(), this.unrealized_gain_loss, this.realized_gain_loss);
+        return "Portfolio[customerId=" + customer_id + ", assets["+ assetsToString()+ "], unrealized_gain_loss="+ dc.format(unrealized_gain_loss) + ", total_gain_loss=" + dc.format(realized_gain_loss);
     }
-
 }

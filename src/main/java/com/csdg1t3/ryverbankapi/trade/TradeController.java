@@ -1,4 +1,4 @@
-package com.csdg1t3.ryverbankapi.trade;
+ package com.csdg1t3.ryverbankapi.trade;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -114,7 +114,7 @@ public class TradeController {
                     throw new TradeNotValidException("Buy trade should include a bid value");
                 if (trade.getBid() < 0)
                     throw new TradeNotValidException("Buy trade bid should be non-negative");
-                trade.setAsk(null);
+               trade.setAsk(null);
                 break;
             case "sell":
                 if (trade.getAsk() == null) 
@@ -201,7 +201,10 @@ public class TradeController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/api/trades/{id}")
     public Trade cancelTrade(@PathVariable Long id, @RequestBody Trade tradeDetails) {
-        Trade trade = getTrade(id);
+        if (!tradeRepo.existsById(id))
+            throw new TradeNotFoundException(id);
+
+        Trade trade = tradeRepo.findById(id).get();
         
         if (!uAuth.idMatchesAuthenticatedUser(trade.getCustomer_id()))
             throw new TradeNotValidException("You cannot modify another user's trade");

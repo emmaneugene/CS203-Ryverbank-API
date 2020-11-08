@@ -2,7 +2,6 @@ package com.csdg1t3.ryverbankapi.user;
 
 import java.util.Collection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.*;
@@ -39,7 +38,6 @@ public class User implements UserDetails {
     private String nric;
 
     @NotNull(message = "Phone number should not be null")
-    @Size(min = 8, max = 8, message = "Phone number should be exactly 8 characters")
     private String phone;
 
     @NotNull(message = "Address should not be null")
@@ -57,7 +55,6 @@ public class User implements UserDetails {
     @NotNull(message = "Authorities should not be null")
     private String authorities;
 
-    // can be null if manager or analyst 
     @NotNull(message = "Active boolean should not be null")
     private Boolean active;
     

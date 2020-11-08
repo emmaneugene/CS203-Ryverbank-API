@@ -60,7 +60,7 @@ public class TradeService {
     }
 
     /**
-     * Processes and expired trade. If the trade's account ID is 0, it is a market maker trade,
+     * Processes an expired trade. If the trade's account ID is 0, it is a market maker trade,
      * and will not be expired
      * @param trade The trade to expire
      */

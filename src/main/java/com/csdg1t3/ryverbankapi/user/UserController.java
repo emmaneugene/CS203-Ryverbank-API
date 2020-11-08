@@ -28,13 +28,15 @@ public class UserController {
     private PortfolioRepository portfolioRepo;
     private UserAuthenticator uAuth;
     private BCryptPasswordEncoder encoder;
+    private Validator validator;
 
     public UserController(UserRepository userRepo, PortfolioRepository portfolioRepo, 
-    UserAuthenticator uAuth, BCryptPasswordEncoder encoder) {
+    UserAuthenticator uAuth, BCryptPasswordEncoder encoder, Validator validator) {
         this.userRepo = userRepo;
         this.portfolioRepo = portfolioRepo;
         this.uAuth = uAuth;
         this.encoder = encoder;
+        this.validator = validator;
     }
 
     /**
@@ -106,18 +108,24 @@ public class UserController {
         if (userRepo.existsByNric(user.getNric()))
             throw new UserConflictException("Customer with NRIC already exists");
 
-        if (!Validator.validateNRIC(user.getNric())) 
+        if (!validator.validateNRIC(user.getNric())) 
             throw new UserNotValidException("NRIC is invalid");
 
-        if (!Validator.validatePhoneno(user.getPhone())) 
+        if (!validator.validatePhoneno(user.getPhone())) 
             throw new UserNotValidException("Phone number is invalid");
 
         user.setPassword(encoder.encode(user.getPassword()));
 
-        User savedUser = userRepo.save(user);
+        if(!user.getActive()){
+            throw new UserNotValidException("New user should be active");
+        }
 
+        User savedUser = userRepo.save(user);
+       
         if (user.getStringAuthorities().contains("ROLE_USER")) {
-            portfolioRepo.save(new Portfolio(null, user.getId(), user, null, 0, 0));
+            Portfolio newPortfolio = new Portfolio(null, user.getId(), user, null, 0, 0);
+            portfolioRepo.save(newPortfolio);
+            savedUser.setPortfolio(newPortfolio);
         } 
 
         return savedUser;
@@ -153,7 +161,7 @@ public class UserController {
             throw new RoleNotAuthorisedException("You cannot update another customer's details");
         
         if (newUserInfo.getPhone() != null)
-            if (!Validator.validatePhoneno(user.getPhone())) 
+            if (!validator.validatePhoneno(user.getPhone())) 
                 throw new UserNotValidException("Phone number is invalid");
             user.setPhone(newUserInfo.getPhone());
         
