@@ -5,6 +5,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import static org.mockito.Mockito.*;
+import org.mockito.stubbing.*;
+import org.mockito.invocation.*;
+
 import java.util.*;
 
 import com.csdg1t3.ryverbankapi.user.*;
@@ -31,6 +35,10 @@ public class StockServiceTest {
     @InjectMocks
     private StockService stockSvc;
 
+    private static final Stock stock1 = new Stock("A17U",3.23,20000, 3.19, 20000,3.24);
+    private static final Stock updatedStock1 = new Stock("A17U",3.21,20000, 3.19, 20000,3.25);
+    private static final Stock stock2 = new Stock("A17U",1.65,20000, 1.51, 20000,1.81);
+
     @Test
     void getAllUpdatedStocks_emptyListOfStocks_ReturnEmptyStockList() {
         List<Stock> stocks = new ArrayList<Stock>();
@@ -45,29 +53,36 @@ public class StockServiceTest {
 
     @Test
     void getAllUpdatedStocks_listOfStocks_ReturnAllStocks() {
-        Stock stock = new Stock("A17U", 3.23, 500, 3.33, 500, 3.35);
         List<Stock> stocks = new ArrayList<Stock>();
-        stocks.add(stock);
+        stocks.add(stock1);
 
         when(stockRepo.findAll()).thenReturn(stocks);
+        List<Stock> updatedStocks = new ArrayList<Stock>();
+        updatedStocks.add(updatedStock1);
+        StockService spy = spy(stockSvc);
+        doAnswer( new Answer() {
+            public Object answer(InvocationOnMock invocation) {
+                return updatedStock1;
+            }
+        }).when(spy).updateStockDetails(any(Stock.class));
+      //  List<Stock> returnedList = spy.getAllUpdatedStocks();
 
-        List<Stock> returnedList = stockSvc.getAllUpdatedStocks();
-
-        assertEquals(stocks, returnedList);
+        assertEquals(stocks, spy.getAllUpdatedStocks());
+        //assertEquals(stockInUpdateStockDetails,updatedStock1.toString());
         verify(stockRepo).findAll();
+        verify(spy).updateStockDetails(stock1);
     }
 
     @Test
     void getUpdatedStock_validStock_ReturnUpdatedStock() {
-        Stock stock = new Stock("A17U", 3.23, 500, 3.33, 500, 3.35);
-        Optional<Stock> found = Optional.of(stock);
+        Optional<Stock> found = Optional.of(stock1);
 
         when(stockRepo.findBySymbol(any(String.class))).thenReturn(found);
 
-        Optional<Stock> returnedStock = stockSvc.getUpdatedStock(stock.getSymbol());
+        Optional<Stock> returnedStock = stockSvc.getUpdatedStock(stock1.getSymbol());
 
-        assertEquals(found, returnedStock);
-        verify(stockRepo).findBySymbol(stock.getSymbol());
+        assertEquals(stock1, returnedStock.get());
+        verify(stockRepo).findBySymbol(stock1.getSymbol());
     }
 
     @Test
@@ -106,7 +121,7 @@ public class StockServiceTest {
     @Test
     void updateStockDetails_invalidStock_usesAllMocks() {
         String symbol = "inValid";
-        Stock stock = new Stock();
+         Stock stock = stock1;
         stock.setSymbol(symbol);
         
         when(tradeSvc.getHighestBidTradeForStock(symbol)).thenReturn(null);
