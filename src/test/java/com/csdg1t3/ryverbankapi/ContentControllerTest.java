@@ -364,36 +364,6 @@ public class ContentControllerTest{
         verify(contentRepo).findById(contentid);
     }
 
-    // @Test
-    // void updateContent_Analyst_ReturnUpdatedContentUnapproved(){
-    //     Long contentid = (long) 2;
-    //     Content content2 = new Content(contentid,"BBB", "YAS" , "dfjnksdjsdgjksdgjs" , "CRI LINK", true);
-    //     Content newContent2 = new Content(contentid,"jfidgdwg", "ijgowgig" , "igj0wfgijw" , "CRI godjwfgw0io", true);
-
-    //     fillContent();
-    //     Long id3 = (long) 3;
-    //     User analyst = new User(id3, u3_FULL_NAME, NRIC, PHONE_NO, "ANALYST TWO STORY HOUSE", u3_USERNAME, u3_PASSWORD, u3_ROLE, true);
-    //     when(uAuth.getAuthenticatedUser()).thenReturn(analyst);
-    //     when(contentRepo.findById(contentid)).thenReturn(Optional.of(content2));
-
-    //     Content returned = contentController.updateContent(contentid, newContent2);
-    //     System.out.println("Returned in updare = "+ returned);
-    //     newContent2.setApproved(false);
-    //       //assert
-    //       assertEquals(returned, newContent2);
-    //       assertTrue(returned.getApproved());
-    //       verify(uAuth).getAuthenticatedUser();
-    //       verify(contentRepo).save(newContent2);
-    // }
-
-    // void updateContent_ManagerApproveContent_ReturnUpdatedContentApproved(){
-
-    // }
-
-    // void updateContent_ManagerUnapproveContent_ReturnUpdatedContentpproved(){
-        
-    // }
-
     void deleteContent_ContentNotInRepo_ThrowsContentNotFoundException(){
         Long contentid = (long) 2;
         Content content2 = new Content(contentid,"BBB", "YAS" , "dfjnksdjsdgjksdgjs" , "CRI LINK", true);
@@ -401,6 +371,4 @@ public class ContentControllerTest{
         assertThrows(ContentNotFoundException.class, () -> contentController.deleteContent(contentid), "Unable to find content 2");
         verify(contentRepo).findById(contentid);
     }
-
-
 }

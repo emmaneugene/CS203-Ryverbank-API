@@ -3,7 +3,6 @@ package com.csdg1t3.ryverbankapi.account;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.validation.Valid;
 
 import java.util.List;
 import java.util.ArrayList;

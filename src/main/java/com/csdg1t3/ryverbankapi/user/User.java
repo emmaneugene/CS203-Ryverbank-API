@@ -2,7 +2,6 @@ package com.csdg1t3.ryverbankapi.user;
 
 import java.util.Collection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.*;
