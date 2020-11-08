@@ -46,10 +46,11 @@ public class Portfolio {
     /**
      * Full field constructor for class Portfolio.
      * @param id The unique ID number for the portfolio
+     * @param customer_id The ID of the customer that owns the portfolio
      * @param customer The customer who owns the portfolio
      * @param assets The assets that the portfolio contains
      * @param unrealized_gain_loss The unrealized gain loss of the customer's assets
-     * @param total_gain_loss The total gain loss of the customer's assets
+     * @param realized_gain_loss The total gain loss of the customer's assets
      */
     public Portfolio(Long id, Long customer_id, User customer, List<Asset> assets, 
     double unrealized_gain_loss, double realized_gain_loss) {

@@ -15,6 +15,7 @@ public class RestTemplateClient {
 
     /**
      * Adds authentication information for the RestTemplate
+     * @param restTemplateBuilder A builder for RestTemplate
      */
     public RestTemplateClient(RestTemplateBuilder restTemplateBuilder) {
         this.template = restTemplateBuilder
@@ -59,10 +60,5 @@ public class RestTemplateClient {
         return template.getForEntity(URI + "/{id}", User.class, Long.toString(id));
     }
 
-    // public String updateUser(final String URI, User newUser){
-    //     String toReturn = URI + " " + newUser;
-    //     template.put(URI, newUser);
-    //     return toReturn;
-    // }
-    
+
 }

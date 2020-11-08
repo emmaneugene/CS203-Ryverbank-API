@@ -24,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * Configure SecurityConfig with AuthenticationManagerBuilder
      * @param auth The AuthenticationManagerBuilder to be used.
-     * @throws Exception
+     * @throws Exception In the event of errors in configuring AuthenticationManager
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * Defines which role is able to access specific URLs
      * @param http The HTTP Security
-     * @throws Exception
+     * @throws Exception In the event of errors in HTTPSecurity configuration
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -79,6 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * which hashes what is given to it.
      * 
      * For our use case, it would be used to hash plaintext passwords.
+     * @return a new BCryptPasswordEncoder object
      */
     @Bean
     public BCryptPasswordEncoder encoder() {
