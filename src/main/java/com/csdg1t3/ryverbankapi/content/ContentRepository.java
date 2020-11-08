@@ -16,5 +16,6 @@ public interface ContentRepository extends JpaRepository<Content, Long>{
     List<Content> findAll();
     List<Content> findByApproved(Boolean approved);
     Optional<Content> findById(Long id);
+    Optional<Content> findByTitle(String title);
        
 }
