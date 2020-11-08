@@ -1,21 +1,21 @@
 package com.csdg1t3.ryverbankapi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.csdg1t3.ryverbankapi.user.*;
 import com.csdg1t3.ryverbankapi.security.*;
 import com.csdg1t3.ryverbankapi.trade.*;
 import com.csdg1t3.ryverbankapi.account.*;
 
+import java.security.Timestamp;
 import java.util.*;
 
 import org.junit.jupiter.api.Test;
@@ -74,13 +74,13 @@ public class TradeServiceTest {
     private Account account = new Account((long) 1, customer, customer.getId(), 1000.00, 1000.00);
     private Account tonyAccount = new Account(Long.valueOf(2), newCustomer, newCustomer.getId(), 100000.0, 100000.0);
     private Stock stock = new Stock("A17U", 3.23, 500, 3.33, 500, 3.35);
-    private Trade buy = new Trade(Long.valueOf(1), "buy", stock.getSymbol(), 200, 0.0, stock.getAsk(), 3.33, 200, System.currentTimeMillis(), account, customer, "open", false, 0.0);
-    private Trade sell = new Trade(Long.valueOf(2), "sell", stock.getSymbol(), 200, 3.34, stock.getAsk(), 0.0, 0, System.currentTimeMillis(), tonyAccount, newCustomer, "open", false, 0.0);
+    private Trade buy = new Trade(Long.valueOf(1), "buy", stock.getSymbol(), 200, 3.34, stock.getAsk(), 3.33, 200, System.currentTimeMillis(), account, customer, "open", false, 0.0);
+    private Trade sell = new Trade(Long.valueOf(2), "sell", stock.getSymbol(), 0, 0.0, stock.getAsk(), 3.33, 200, System.currentTimeMillis(), tonyAccount, newCustomer, "open", false, 0.0);
     private List<Asset> assets = new ArrayList<>();
     private Portfolio portfolio = new Portfolio(Long.valueOf(1), CUST_ID, customer, assets, 0.0, 0.0);
     private Asset asset = new Asset(Long.valueOf(1), sell.getSymbol(), portfolio, 500, 500, 3.23, 3.3);
         
-    
+    //assert that all mocks are used when given zero unprocessed trades
     @Test
     void processUnprocessedTrades_noUnprocessedTrades_usesAllMocks() {
         List<Trade> unprocessed = new ArrayList<Trade>();
@@ -92,7 +92,7 @@ public class TradeServiceTest {
         verify(tradeRepo).findByProcessed(false);
     }
     
-
+    //assert that all mocks are used when given a list of unprocessed trades
     @Test 
     void processUnprocessedTrades_listOfUnprocessedTrades_usesAllMocks() {
         List<Trade> trades = new ArrayList<>();
@@ -105,7 +105,7 @@ public class TradeServiceTest {
         verify(tradeRepo).findByProcessed(false);       
     }
     
-
+    //assert that all mocks are used when there are no expired trades 
     @Test
     void expireTrades_noExpiredTrades_usesAllMocks() {
         List<Trade> expired = new ArrayList<Trade>();
@@ -117,6 +117,7 @@ public class TradeServiceTest {
         verify(tradeRepo).findByStatusIn(VALID_STATUSES);
     }
 
+    // assert that all mocks are used when there are expired trades
     @Test
     void expireTrades_listOfExpiredTrades_usesAllMocks() {
         List<Trade> trades = new ArrayList<>();
@@ -137,7 +138,8 @@ public class TradeServiceTest {
         verify(assetRepo).findByPortfolioCustomerIdAndCode(sell.getCustomer_id(), sell.getSymbol());
         verify(assetRepo).save(asset);
     }
-
+    
+    //assert that for sell trade, all mocks are used 
     @Test
     void processExpiredTrade_SellTrade_usesAllMocks() { 
         assets.add(asset);
@@ -150,6 +152,7 @@ public class TradeServiceTest {
         verify(assetRepo).save(asset);
     } 
 
+    //assert that for buy trade, all mocks are used 
     @Test
     void processExpiredTrade_BuyTrade_usesAllMocks() { 
         when(accountRepo.findById(buy.getAccount_id())).thenReturn(Optional.of(account));
@@ -276,7 +279,7 @@ public class TradeServiceTest {
         assertEquals(returned, buy);
         verify(tradeRepo).findByActionAndSymbolAndStatusIn(action, symbol, VALID_STATUSES);
 
-    }
+    } 
 
     @Test
     void getHighestBidTradeForStock_invalidStock_returnNull() {
@@ -308,123 +311,56 @@ public class TradeServiceTest {
         verify(tradeRepo).findByActionAndSymbolAndStatusIn(action, symbol, VALID_STATUSES);
     }
 
-    // @Test
-    // void makeTrade_withinTradingTimeAndBuy_returnProcessedTrade() {
-    //     Date date = new Date();
-    //     date.set(Calendar.HOUR_OF_DAY, 13);
-    //     date.set(Calendar.DAY_OF_WEEK, 3);
-    //     String action = "buy";
-    //     String symbol = buy.getSymbol();
-    //     List<Trade> found = new ArrayList<>();
-    //     found.add(buy);
-        
-    //     when(calendar.getInstance()).thenReturn(calendar.setTime(date));
-    //     when(tradeRepo.findByActionAndSymbolAndStatusIn(action, symbol, VALID_STATUSES)).thenReturn(found);  
-    // }
-
-
     @Test
-    void makeTrade_withinTradingTimeAndMarketBuy_returnProcessedTrade() {
-        
+    void fillTrades_validTradesPriceAndQuantity_tradesStatusNotOpen() {
+        Portfolio sellerPortfolio = new Portfolio(Long.valueOf(2), newCustomer.getId(), customer, assets, 0.0, 0.0);
+        Optional<Portfolio> sellerFound = Optional.of(sellerPortfolio);
+        Optional<Portfolio> buyerFound = Optional.of(portfolio);
+        when(portfolioRepo.findByCustomerId(sell.getCustomer_id())).thenReturn(sellerFound);
+        when(portfolioRepo.findByCustomerId(buy.getCustomer_id())).thenReturn(buyerFound);
+        when(stockRepo.findBySymbol(any(String.class))).thenReturn(Optional.of(stock));
+
+        tradeSvc.fillTrades(buy, sell, sell.getAsk(), sell.getQuantity());
+
+        assertNotEquals(sell.getStatus(), "open");
+        assertNotEquals(buy.getStatus(), "open");
+        verify(portfolioRepo).findByCustomerId(sell.getCustomer_id());
+        verify(portfolioRepo).findByCustomerId(buy.getCustomer_id());
+        verify(stockRepo).findBySymbol(sell.getSymbol());
     }
 
     @Test
-    void makeTrade_withinTradingTimeAndSell_returnProcessedTrade() {
-        
+    void fillTrades_sameBuyerAndSeller_tradesStatusOpen() {
+        sell.setAccount(account);
+        sell.setCustomer(customer);
+        sell.setCustomer_id(customer.getId());
+
+        tradeSvc.fillTrades(buy, sell, sell.getAsk(), sell.getQuantity());
+
+        assertEquals(buy.getStatus(), "open");
+        assertEquals(sell.getStatus(), "open");
     }
-
-    @Test
-    void makeTrade_withinTradingTimeAndMarketSell_returnProcessedTrade() {
-        
-    }
-
-    @Test
-    void makeTrade_outsideTradingTime_returnUnprocessedTrade() {
-        
-    }
-
-    @Test
-    void processBuy_validTrade_usesAllMocks() {
-    }
-    
-    @Test
-    void processBuy_invalidTrade_usesAllMocks() {
-
-    }
-
-    @Test
-    void processSell_validTrade_usesAllMocks() {
-
-    }
-
-    @Test
-    void processSell_invalidTrade_usesAllMocks() {
-
-    }
-
-    @Test
-    void processMarketBuy_validTrade_usesAllMocks() {
-
-    }
-
-    @Test
-    void processMarketBuy_invalidTrade_usesAllMocks() {
-
-    }
-
-    @Test
-    void processMarketSell_validTrade_usesAllMocks() {
-
-    }
-
-    @Test
-    void processMarketSell_invalidTrade_usesAllMocks() {
-
-    }
-
-    @Test
-    void fillTrades_validTradesPriceAndQuantity_usesAllMocks() {
-
-    }
-
-    @Test
-    void fillTrades_sameBuyerAndSeller_usesAllMocks() {
-
-    }
-
-    // not sure if we need this
-    // @Test
-    // void fillTrades_invalidBuyOrSell_usesAllMocks() {
-
-    // }
-
-    // @Test
-    // void fillTrades_invalidPrice_usesAllMocks() {
-
-    // }
-
-    // @Test
-    // void fillTrades_invalidQuantity_usesAllMocks() {
-
-    // }
 
     @Test
     void createTradeTransfer_validDetails_returnTransfer() {
+        Transfer transfer = new Transfer(Long.valueOf(1), sell.getAccount(), buy.getAccount(), sell.getAccount_id(), buy.getAccount_id(), sell.getAsk());
 
+        when(transferRepo.save(any(Transfer.class))).thenReturn(transfer);
+
+        Transfer returned = tradeSvc.createTradeTransfer(transfer, sell.getAccount(), buy.getAccount());
+
+        assertEquals(returned, transfer);
+        verify(transferRepo).save(transfer);
     }
 
-    @Test
-    void createTradeTransfer_invalidSender_returnTransfer() {
+    // @Test 
+    // void updatePortfolioAsset_assetNotFound() {
+    //     List<Asset> assets = new ArrayList<>();
+    //     Portfolio portfolio = new Portfolio(Long.valueOf(1), CUST_ID, customer, assets, 0, 0);
 
-    }
+    //     tradeSvc.updatePortfolioAsset(portfolio, "A17U", 3.42, 10);
 
-    @Test
-    void createTradeTransfer_invalidReceiver_returnTransfer() {
-
-    }
-
-    // @Test
-    // void updatePortfolioAsset_emptyTransfer_returnEmptyTransfer() {
-
+    //     assertEquals(1, portfolio.getAssets().size());
     // }
+
 }

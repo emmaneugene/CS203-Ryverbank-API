@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Transfer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = true)
@@ -35,7 +35,7 @@ public class Transfer {
 
     public Transfer() {}
 
-    public Transfer(long id, Account sender, Account receiver, Long accFrom, Long accTo, Double amount) {
+    public Transfer(Long id, Account sender, Account receiver, Long accFrom, Long accTo, Double amount) {
         this.id = id;
         this.sender = sender;
         this.receiver = receiver;
@@ -44,7 +44,7 @@ public class Transfer {
         this.amount = amount;
     }
 
-    public long getId() { return id; }
+    public Long getId() { return id; }
 
     @JsonIgnore
     public Account getSender() { return sender; }
